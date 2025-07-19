@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Heart, MessageCircle, Share, MoreHorizontal, Play, Crown } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-const MediaPreview = ({ media, isWinner, isSelected, onClick }) => {
+const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option, totalVotes }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   if (!media) return null;
@@ -30,11 +30,45 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick }) => {
             <Play className="w-6 h-6 ml-1" />
           </div>
         </div>
-        {isWinner && (
+        
+        {/* Progress Bar Overlay */}
+        {totalVotes > 0 && (
+          <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-white text-xs font-semibold">
+                {option.id.toUpperCase()}
+              </span>
+              <span className="text-white text-xs font-bold">
+                {percentage}%
+              </span>
+            </div>
+            <div className="w-full bg-white/30 rounded-full h-1">
+              <div 
+                className={cn(
+                  "h-1 rounded-full transition-all duration-700 ease-out",
+                  isSelected 
+                    ? "bg-blue-500"
+                    : isWinner 
+                      ? "bg-green-500"
+                      : "bg-white/80"
+                )}
+                style={{ width: `${percentage}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Winner Badge */}
+        {isWinner && totalVotes > 0 && (
           <div className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
             <Crown className="w-3 h-3" />
             Ganador
           </div>
+        )}
+
+        {/* Selection Ring */}
+        {isSelected && (
+          <div className="absolute inset-0 ring-3 ring-blue-500 rounded-lg"></div>
         )}
       </div>
     );
@@ -47,21 +81,56 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick }) => {
         alt="Poll option"
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
+      
+      {/* Overlay for hover effect */}
       <div className={cn(
         "absolute inset-0 transition-all duration-300",
         isSelected 
-          ? "bg-blue-600/20 ring-2 ring-blue-500"
+          ? "bg-blue-600/10"
           : isWinner 
-            ? "bg-green-600/20 ring-2 ring-green-500"
+            ? "bg-green-600/10"
             : "group-hover:bg-black/10"
-      )}>
-        {isWinner && (
-          <div className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-            <Crown className="w-3 h-3" />
-            Ganador
+      )} />
+
+      {/* Progress Bar Overlay */}
+      {totalVotes > 0 && (
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-white text-sm font-semibold">
+              {option.id.toUpperCase()}
+            </span>
+            <span className="text-white text-sm font-bold bg-black/50 px-2 py-1 rounded-full">
+              {percentage}%
+            </span>
           </div>
-        )}
-      </div>
+          <div className="w-full bg-white/30 rounded-full h-1.5">
+            <div 
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-700 ease-out",
+                isSelected 
+                  ? "bg-blue-500"
+                  : isWinner 
+                    ? "bg-green-500"
+                    : "bg-white/90"
+              )}
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Winner Badge */}
+      {isWinner && totalVotes > 0 && (
+        <div className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shadow-lg">
+          <Crown className="w-3 h-3" />
+          Ganador
+        </div>
+      )}
+
+      {/* Selection Ring */}
+      {isSelected && (
+        <div className="absolute inset-0 ring-3 ring-blue-500 rounded-lg"></div>
+      )}
     </div>
   );
 };
