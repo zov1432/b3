@@ -204,41 +204,21 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment }) => {
 
               return (
                 <div key={option.id} className="space-y-2">
-                  {/* Media Preview */}
+                  {/* Media Preview with Overlay Progress */}
                   <MediaPreview 
                     media={option.media}
                     isWinner={isWinner}
                     isSelected={isSelected}
                     onClick={() => handleVote(option.id)}
+                    percentage={percentage}
+                    option={option}
+                    totalVotes={poll.totalVotes}
                   />
                   
-                  {/* Option Info */}
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className={cn(
-                        "text-sm font-bold px-2 py-1 rounded-full",
-                        isSelected 
-                          ? "bg-blue-100 text-blue-700"
-                          : isWinner && poll.totalVotes > 0
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-700"
-                      )}>
-                        {option.id.toUpperCase()}
-                      </span>
-                      <span className={cn(
-                        "text-sm font-semibold px-2 py-1 rounded-full",
-                        isSelected 
-                          ? "bg-blue-600 text-white"
-                          : isWinner && poll.totalVotes > 0
-                            ? "bg-green-600 text-white"
-                            : "bg-gray-600 text-white"
-                      )}>
-                        {percentage}%
-                      </span>
-                    </div>
-                    
+                  {/* Option Text Only */}
+                  <div className="px-1">
                     <p className={cn(
-                      "text-sm font-medium leading-tight",
+                      "text-sm font-medium leading-tight text-center",
                       isSelected 
                         ? "text-blue-800"
                         : isWinner && poll.totalVotes > 0
@@ -247,23 +227,6 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment }) => {
                     )}>
                       {option.text}
                     </p>
-
-                    {/* Progress Bar */}
-                    {poll.totalVotes > 0 && (
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div 
-                          className={cn(
-                            "h-1.5 rounded-full transition-all duration-700 ease-out",
-                            isSelected 
-                              ? "bg-gradient-to-r from-blue-500 to-blue-600"
-                              : isWinner 
-                                ? "bg-gradient-to-r from-green-500 to-green-600"
-                                : "bg-gradient-to-r from-gray-400 to-gray-500"
-                          )}
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
-                    )}
                   </div>
                 </div>
               );
