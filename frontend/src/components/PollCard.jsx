@@ -1,9 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
-import { Heart, MessageCircle, Share, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageCircle, Share, MoreHorizontal, Play, Crown } from 'lucide-react';
 import { cn } from '../lib/utils';
+
+const MediaPreview = ({ media, isWinner, isSelected, onClick }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  if (!media) return null;
+
+  if (media.type === 'video') {
+    return (
+      <div className="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer" onClick={onClick}>
+        <img 
+          src={media.thumbnail} 
+          alt="Video thumbnail"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/40 transition-colors">
+          <div className={cn(
+            "w-12 h-12 rounded-full flex items-center justify-center transition-all",
+            isSelected 
+              ? "bg-blue-600 text-white"
+              : isWinner 
+                ? "bg-green-600 text-white"
+                : "bg-white/90 text-gray-800 group-hover:bg-white group-hover:scale-110"
+          )}>
+            <Play className="w-6 h-6 ml-1" />
+          </div>
+        </div>
+        {isWinner && (
+          <div className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <Crown className="w-3 h-3" />
+            Ganador
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer" onClick={onClick}>
+      <img 
+        src={media.url} 
+        alt="Poll option"
+        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+      <div className={cn(
+        "absolute inset-0 transition-all duration-300",
+        isSelected 
+          ? "bg-blue-600/20 ring-2 ring-blue-500"
+          : isWinner 
+            ? "bg-green-600/20 ring-2 ring-green-500"
+            : "group-hover:bg-black/10"
+      )}>
+        {isWinner && (
+          <div className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+            <Crown className="w-3 h-3" />
+            Ganador
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const PollCard = ({ poll, onVote, onLike, onShare, onComment }) => {
   const handleVote = (optionId) => {
@@ -64,7 +125,7 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment }) => {
           </h2>
         </div>
 
-        {/* Options Grid */}
+        {/* Media Grid - Similar to second reference image */}
         <div className="px-4 pb-4">
           <div className="grid grid-cols-2 gap-3">
             {poll.options.map((option) => {
@@ -73,48 +134,25 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment }) => {
               const isSelected = poll.userVote === option.id;
 
               return (
-                <div
-                  key={option.id}
-                  onClick={() => handleVote(option.id)}
-                  className={cn(
-                    "relative overflow-hidden rounded-xl border-2 cursor-pointer transition-all duration-300 min-h-[80px] flex items-center justify-center",
-                    poll.userVote 
-                      ? "cursor-default" 
-                      : "hover:scale-105 hover:shadow-lg cursor-pointer",
-                    isSelected 
-                      ? "border-blue-500 bg-blue-50 shadow-lg ring-2 ring-blue-200" 
-                      : isWinner && poll.totalVotes > 0
-                        ? "border-green-500 bg-green-50 ring-2 ring-green-200"
-                        : "border-gray-200 hover:border-gray-300 bg-white"
-                  )}
-                >
-                  {/* Progress Bar Background */}
-                  {poll.totalVotes > 0 && (
-                    <div 
-                      className={cn(
-                        "absolute inset-0 transition-all duration-700 ease-out",
-                        isSelected 
-                          ? "bg-gradient-to-r from-blue-200/40 to-blue-300/40"
-                          : isWinner 
-                            ? "bg-gradient-to-r from-green-200/40 to-green-300/40"
-                            : "bg-gradient-to-r from-gray-200/30 to-gray-300/30"
-                      )}
-                      style={{ 
-                        width: `${percentage}%`,
-                        transformOrigin: 'left'
-                      }}
-                    />
-                  )}
-
-                  <div className="relative z-10 text-center px-3 py-4 w-full">
-                    <div className="flex items-center justify-between mb-2">
+                <div key={option.id} className="space-y-2">
+                  {/* Media Preview */}
+                  <MediaPreview 
+                    media={option.media}
+                    isWinner={isWinner}
+                    isSelected={isSelected}
+                    onClick={() => handleVote(option.id)}
+                  />
+                  
+                  {/* Option Info */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
                       <span className={cn(
-                        "text-lg font-bold",
+                        "text-sm font-bold px-2 py-1 rounded-full",
                         isSelected 
-                          ? "text-blue-700"
+                          ? "bg-blue-100 text-blue-700"
                           : isWinner && poll.totalVotes > 0
-                            ? "text-green-700"
-                            : "text-gray-700"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-700"
                       )}>
                         {option.id.toUpperCase()}
                       </span>
@@ -129,6 +167,7 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment }) => {
                         {percentage}%
                       </span>
                     </div>
+                    
                     <p className={cn(
                       "text-sm font-medium leading-tight",
                       isSelected 
@@ -139,6 +178,23 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment }) => {
                     )}>
                       {option.text}
                     </p>
+
+                    {/* Progress Bar */}
+                    {poll.totalVotes > 0 && (
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div 
+                          className={cn(
+                            "h-1.5 rounded-full transition-all duration-700 ease-out",
+                            isSelected 
+                              ? "bg-gradient-to-r from-blue-500 to-blue-600"
+                              : isWinner 
+                                ? "bg-gradient-to-r from-green-500 to-green-600"
+                                : "bg-gradient-to-r from-gray-400 to-gray-500"
+                          )}
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               );
