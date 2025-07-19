@@ -19,20 +19,20 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         
-        {/* Progress Bar Background - Fills entire image */}
+        {/* Progress Bar Background - Fills vertically from bottom */}
         {totalVotes > 0 && (
           <div 
             className={cn(
-              "absolute inset-0 transition-all duration-700 ease-out opacity-60",
+              "absolute inset-x-0 bottom-0 transition-all duration-700 ease-out",
               isSelected 
-                ? "bg-gradient-to-r from-blue-500/70 to-blue-600/70"
+                ? "bg-gradient-to-t from-blue-500/70 to-blue-600/70"
                 : isWinner 
-                  ? "bg-gradient-to-r from-green-500/70 to-green-600/70"
-                  : "bg-gradient-to-r from-gray-400/50 to-gray-500/50"
+                  ? "bg-gradient-to-t from-green-500/70 to-green-600/70"
+                  : "bg-gradient-to-t from-gray-400/50 to-gray-500/50"
             )}
             style={{ 
-              width: `${percentage}%`,
-              transformOrigin: 'left'
+              height: `${percentage}%`,
+              transformOrigin: 'bottom'
             }}
           />
         )}
@@ -85,20 +85,20 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
       
-      {/* Progress Bar Background - Fills entire image proportionally */}
+      {/* Progress Bar Background - Fills vertically from bottom */}
       {totalVotes > 0 && (
         <div 
           className={cn(
-            "absolute inset-0 transition-all duration-700 ease-out",
+            "absolute inset-x-0 bottom-0 transition-all duration-700 ease-out",
             isSelected 
-              ? "bg-gradient-to-r from-blue-500/60 to-blue-600/60"
+              ? "bg-gradient-to-t from-blue-500/60 to-blue-600/60"
               : isWinner 
-                ? "bg-gradient-to-r from-green-500/60 to-green-600/60"
-                : "bg-gradient-to-r from-gray-400/40 to-gray-500/40"
+                ? "bg-gradient-to-t from-green-500/60 to-green-600/60"
+                : "bg-gradient-to-t from-gray-400/40 to-gray-500/40"
           )}
           style={{ 
-            width: `${percentage}%`,
-            transformOrigin: 'left'
+            height: `${percentage}%`,
+            transformOrigin: 'bottom'
           }}
         />
       )}
