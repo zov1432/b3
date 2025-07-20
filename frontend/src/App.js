@@ -9,9 +9,11 @@ import NotificationsPage from './pages/NotificationsPage';
 import { Toaster } from './components/ui/toaster';
 import { createPoll } from './services/mockData';
 import { useToast } from './hooks/use-toast';
+import { TikTokProvider, useTikTok } from './contexts/TikTokContext';
 
-function App() {
+function AppContent() {
   const { toast } = useToast();
+  const { isTikTokMode } = useTikTok();
 
   const handleCreatePoll = (pollData) => {
     const newPoll = createPoll(pollData);
@@ -36,13 +38,23 @@ function App() {
           <Route path="*" element={<Navigate to="/feed" replace />} />
         </Routes>
 
-        {/* Bottom Navigation - Always visible */}
-        <BottomNavigation onCreatePoll={handleCreatePoll} />
+        {/* Bottom Navigation - Hidden in TikTok mode */}
+        {!isTikTokMode && (
+          <BottomNavigation onCreatePoll={handleCreatePoll} />
+        )}
 
         {/* Toast notifications */}
         <Toaster />
       </BrowserRouter>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <TikTokProvider>
+      <AppContent />
+    </TikTokProvider>
   );
 }
 
