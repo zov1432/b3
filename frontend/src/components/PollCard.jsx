@@ -246,18 +246,30 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false
                       />
                     </div>
                     
-                    {/* Option Text */}
+                    {/* Option Text with User Info */}
                     <div className="px-1 flex-shrink-0">
-                      <p className={cn(
-                        "text-xs font-medium leading-tight text-center line-clamp-2",
-                        isSelected 
-                          ? "text-blue-800"
-                          : isWinner && poll.totalVotes > 0
-                            ? "text-green-800"
-                            : "text-gray-800"
-                      )}>
-                        {option.text}
-                      </p>
+                      <div className="text-center">
+                        {option.user && (
+                          <div className="flex items-center justify-center gap-1 mb-1">
+                            <p className="text-xs font-semibold text-gray-700">
+                              {option.user.displayName}
+                            </p>
+                            {option.user.verified && (
+                              <CheckCircle className="w-3 h-3 text-blue-500 fill-current" />
+                            )}
+                          </div>
+                        )}
+                        <p className={cn(
+                          "text-xs font-medium leading-tight text-center line-clamp-2",
+                          isSelected 
+                            ? "text-blue-800"
+                            : isWinner && poll.totalVotes > 0
+                              ? "text-green-800"
+                              : "text-gray-800"
+                        )}>
+                          {option.text}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 );
