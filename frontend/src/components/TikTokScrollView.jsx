@@ -1,9 +1,119 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PollCard from './PollCard';
 import { cn } from '../lib/utils';
-import { Grid3X3, ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Crown } from 'lucide-react';
+import { Grid3X3, ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Crown, CheckCircle, User } from 'lucide-react';
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
+
+// Componente UserProfile para mostrar información del usuario
+const UserProfile = ({ user, onClose }) => (
+  <div className="fixed inset-0 z-60 bg-black/90 flex items-center justify-center p-4"
+       onClick={onClose}>
+    <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4"
+         onClick={(e) => e.stopPropagation()}>
+      <div className="text-center">
+        <Avatar className="w-24 h-24 mx-auto mb-4 ring-4 ring-blue-500">
+          <AvatarImage src={user.avatar} />
+          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-2xl font-bold">
+            {user.displayName.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+        
+        <div className="mb-4">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <h2 className="text-xl font-bold text-gray-900">{user.displayName}</h2>
+            {user.verified && (
+              <CheckCircle className="w-5 h-5 text-blue-500 fill-current" />
+            )}
+          </div>
+          <p className="text-gray-500">@{user.username}</p>
+        </div>
+        
+        <div className="bg-gray-50 rounded-xl p-4 mb-4">
+          <div className="flex items-center justify-center gap-2">
+            <User className="w-4 h-4 text-gray-600" />
+            <span className="text-lg font-semibold text-gray-900">{user.followers}</span>
+            <span className="text-gray-600">seguidores</span>
+          </div>
+        </div>
+        
+        <div className="flex gap-3">
+          <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+            Seguir
+          </Button>
+          <Button variant="outline" className="flex-1">
+            Ver perfil
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Componente UserButton clickeable
+const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserClick }) => (
+  <div className="absolute top-4 right-4 flex flex-col items-center gap-2 z-20">
+    {/* Avatar del usuario - clickeable */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onUserClick(user);
+      }}
+      className="group relative transition-transform duration-200 hover:scale-110"
+    >
+      <Avatar className={cn(
+        "w-12 h-12 transition-all duration-200 ring-2",
+        isSelected 
+          ? "ring-blue-400 shadow-lg shadow-blue-500/50" 
+          : isWinner
+            ? "ring-green-400 shadow-lg shadow-green-500/50"
+            : "ring-white/30 shadow-lg"
+      )}>
+        <AvatarImage src={user.avatar} />
+        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
+          {user.displayName.charAt(0)}
+        </AvatarFallback>
+      </Avatar>
+      
+      {/* Verificación overlay */}
+      {user.verified && (
+        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
+          <CheckCircle className="w-4 h-4 text-blue-500 fill-current" />
+        </div>
+      )}
+      
+      {/* Hover tooltip */}
+      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="bg-black/80 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
+          @{user.username}
+        </div>
+      </div>
+    </button>
+    
+    {/* Nombre de usuario */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onUserClick(user);
+      }}
+      className="bg-black/80 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm hover:bg-black/90 transition-all duration-200 hover:scale-105"
+    >
+      {user.displayName}
+    </button>
+    
+    {/* Porcentaje */}
+    <div className={cn(
+      "px-3 py-1.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm",
+      isSelected 
+        ? "bg-blue-600/90 text-white" 
+        : isWinner
+          ? "bg-green-600/90 text-white"
+          : "bg-black/80 text-white"
+    )}>
+      {percentage}%
+    </div>
+  </div>
+);
 
 const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, index, total }) => {
   const handleVote = (optionId) => {
