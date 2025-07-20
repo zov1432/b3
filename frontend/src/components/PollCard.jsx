@@ -168,46 +168,46 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false
 
   if (fullScreen) {
     return (
-      <Card className="w-full h-full max-h-screen group bg-gradient-to-br from-white to-gray-50 border-0 shadow-2xl overflow-hidden flex flex-col">
+      <Card className="w-full h-full max-h-[90vh] group bg-white/95 backdrop-blur-sm border border-white/20 shadow-2xl overflow-hidden flex flex-col rounded-xl">
         <CardContent className="p-0 flex flex-col h-full">
           {/* Header - Compact for full screen */}
-          <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0 bg-white/90 backdrop-blur-sm">
+          <div className="flex items-center justify-between p-4 pb-3 flex-shrink-0 bg-white/90 backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <Avatar className="ring-2 ring-blue-500/20">
+              <Avatar className="ring-2 ring-blue-500/20 w-10 h-10">
                 <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
                   {poll.author.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="font-semibold text-gray-900">{poll.author}</h3>
-                <p className="text-sm text-gray-500">{poll.timeAgo}</p>
+                <h3 className="font-semibold text-gray-900 text-sm">{poll.author}</h3>
+                <p className="text-xs text-gray-500">{poll.timeAgo}</p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" className="hover:bg-gray-100">
+            <Button variant="ghost" size="sm" className="hover:bg-gray-100 h-8 w-8 p-0">
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </div>
 
           {/* Poll Title - Compact */}
           <div className="px-4 pb-3 flex-shrink-0 bg-white/90 backdrop-blur-sm">
-            <h2 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2">
+            <h2 className="text-base font-bold text-gray-900 leading-tight line-clamp-2">
               {poll.title}
             </h2>
           </div>
 
           {/* Media Grid - Takes most space */}
-          <div className="px-4 pb-4 flex-1 flex flex-col justify-center">
-            <div className="grid grid-cols-2 gap-4 h-full max-h-96">
+          <div className="px-4 pb-4 flex-1 flex flex-col justify-center min-h-0">
+            <div className="grid grid-cols-2 gap-3 h-full max-h-80">
               {poll.options.map((option) => {
                 const percentage = getPercentage(option.votes);
                 const isWinner = option.id === winningOption.id && poll.totalVotes > 0;
                 const isSelected = poll.userVote === option.id;
 
                 return (
-                  <div key={option.id} className="space-y-3 flex flex-col h-full">
-                    {/* Media Preview - Taller in full screen */}
-                    <div className="relative flex-1 min-h-48">
+                  <div key={option.id} className="space-y-2 flex flex-col h-full min-h-0">
+                    {/* Media Preview - Responsive height */}
+                    <div className="relative flex-1 min-h-[120px]">
                       <MediaPreview 
                         media={option.media}
                         isWinner={isWinner}
@@ -223,7 +223,7 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false
                     {/* Option Text */}
                     <div className="px-1 flex-shrink-0">
                       <p className={cn(
-                        "text-sm font-medium leading-tight text-center",
+                        "text-xs font-medium leading-tight text-center line-clamp-2",
                         isSelected 
                           ? "text-blue-800"
                           : isWinner && poll.totalVotes > 0
@@ -240,41 +240,41 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false
           </div>
 
           {/* Vote Count - Compact */}
-          <div className="px-4 pb-3 flex-shrink-0 bg-white/90 backdrop-blur-sm">
-            <p className="text-sm text-gray-600 font-medium">
+          <div className="px-4 pb-2 flex-shrink-0 bg-white/90 backdrop-blur-sm">
+            <p className="text-xs text-gray-600 font-medium">
               {formatNumber(poll.totalVotes)} votos
             </p>
           </div>
 
           {/* Social Actions - Compact and sticky */}
           <div className="flex items-center justify-between px-4 py-3 bg-white/95 backdrop-blur-sm border-t border-gray-100 flex-shrink-0">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onLike(poll.id)}
                 className={cn(
-                  "flex items-center gap-2 hover:scale-105 transition-transform",
+                  "flex items-center gap-2 hover:scale-105 transition-transform h-8 px-2",
                   poll.userLiked 
                     ? "text-red-600 hover:text-red-700" 
                     : "text-gray-600 hover:text-red-600"
                 )}
               >
                 <Heart className={cn(
-                  "w-5 h-5 transition-all",
+                  "w-4 h-4 transition-all",
                   poll.userLiked && "fill-current"
                 )} />
-                <span className="font-medium">{formatNumber(poll.likes)}</span>
+                <span className="font-medium text-xs">{formatNumber(poll.likes)}</span>
               </Button>
               
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onComment(poll.id)}
-                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 hover:scale-105 transition-transform"
+                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 hover:scale-105 transition-transform h-8 px-2"
               >
-                <MessageCircle className="w-5 h-5" />
-                <span className="font-medium">{formatNumber(poll.comments)}</span>
+                <MessageCircle className="w-4 h-4" />
+                <span className="font-medium text-xs">{formatNumber(poll.comments)}</span>
               </Button>
             </div>
 
@@ -282,10 +282,10 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false
               variant="ghost"
               size="sm"
               onClick={() => onShare(poll.id)}
-              className="flex items-center gap-2 text-gray-600 hover:text-green-600 hover:scale-105 transition-transform"
+              className="flex items-center gap-2 text-gray-600 hover:text-green-600 hover:scale-105 transition-transform h-8 px-2"
             >
-              <Share className="w-5 h-5" />
-              <span className="font-medium">{formatNumber(poll.shares)}</span>
+              <Share className="w-4 h-4" />
+              <span className="font-medium text-xs">{formatNumber(poll.shares)}</span>
             </Button>
           </div>
         </CardContent>
