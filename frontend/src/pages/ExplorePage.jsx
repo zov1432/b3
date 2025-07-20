@@ -59,6 +59,7 @@ const ExplorePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todo');
   const [polls, setPolls] = useState(mockPolls);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'tiktok'
   const { toast } = useToast();
 
   const categories = ['Todo', 'Trending', 'Moda', 'Comida', 'Entretenimiento', 'Deportes'];
