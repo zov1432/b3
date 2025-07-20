@@ -7,7 +7,14 @@ export const mockPolls = [
     options: [
       { 
         id: 'a', 
-        text: 'Laura - Vestido rosa elegante', 
+        user: {
+          username: 'Laura_Style',
+          displayName: 'Laura',
+          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b8c5?w=400&h=400&fit=crop&crop=face',
+          verified: true,
+          followers: '125K'
+        },
+        text: 'Vestido rosa elegante', 
         votes: 45,
         media: {
           type: 'image',
@@ -16,7 +23,14 @@ export const mockPolls = [
       },
       { 
         id: 'b', 
-        text: 'Sethi - Look casual chic', 
+        user: {
+          username: 'sethi_fashion',
+          displayName: 'Sethi',
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+          verified: false,
+          followers: '89K'
+        },
+        text: 'Look casual chic', 
         votes: 32,
         media: {
           type: 'image',
@@ -25,7 +39,14 @@ export const mockPolls = [
       },
       { 
         id: 'c', 
-        text: 'Micaela - Estilo bohemio', 
+        user: {
+          username: 'micaela_boho',
+          displayName: 'Micaela',
+          avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
+          verified: false,
+          followers: '56K'
+        },
+        text: 'Estilo bohemio', 
         votes: 18,
         media: {
           type: 'image',
@@ -34,7 +55,14 @@ export const mockPolls = [
       },
       { 
         id: 'd', 
-        text: 'Natalia - Outfit vintage', 
+        user: {
+          username: 'natalia_vintage',
+          displayName: 'Natalia',
+          avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face',
+          verified: true,
+          followers: '234K'
+        },
+        text: 'Outfit vintage', 
         votes: 5,
         media: {
           type: 'image',
@@ -57,6 +85,13 @@ export const mockPolls = [
     options: [
       { 
         id: 'a', 
+        user: {
+          username: 'italian_chef',
+          displayName: 'Marco Rossi',
+          avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face',
+          verified: true,
+          followers: '456K'
+        },
         text: 'Pizza casera italiana', 
         votes: 45,
         media: {
@@ -66,6 +101,13 @@ export const mockPolls = [
       },
       { 
         id: 'b', 
+        user: {
+          username: 'sushi_master',
+          displayName: 'Hiroshi',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
+          verified: true,
+          followers: '789K'
+        },
         text: 'Sushi tradicional', 
         votes: 32,
         media: {
@@ -75,6 +117,13 @@ export const mockPolls = [
       },
       { 
         id: 'c', 
+        user: {
+          username: 'mexican_foodie',
+          displayName: 'Carlos',
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+          verified: false,
+          followers: '123K'
+        },
         text: 'Tacos mexicanos', 
         votes: 18,
         media: {
@@ -84,6 +133,13 @@ export const mockPolls = [
       },
       { 
         id: 'd', 
+        user: {
+          username: 'burger_king_chef',
+          displayName: 'Alex',
+          avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
+          verified: false,
+          followers: '67K'
+        },
         text: 'Hamburguesa gourmet', 
         votes: 5,
         media: {
@@ -107,6 +163,13 @@ export const mockPolls = [
     options: [
       { 
         id: 'a', 
+        user: {
+          username: 'jalaiah_official',
+          displayName: 'Jalaiah H.',
+          avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face',
+          verified: true,
+          followers: '2.1M'
+        },
         text: 'Renegade Dance', 
         votes: 40,
         media: {
@@ -117,6 +180,13 @@ export const mockPolls = [
       },
       { 
         id: 'b', 
+        user: {
+          username: 'keara_wilson',
+          displayName: 'Keara',
+          avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
+          verified: true,
+          followers: '1.5M'
+        },
         text: 'Savage Challenge', 
         votes: 35,
         media: {
@@ -127,6 +197,13 @@ export const mockPolls = [
       },
       { 
         id: 'c', 
+        user: {
+          username: 'jakepaul_dance',
+          displayName: 'Jake P.',
+          avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
+          verified: true,
+          followers: '3.2M'
+        },
         text: 'WAP Dance', 
         votes: 15,
         media: {
@@ -137,6 +214,13 @@ export const mockPolls = [
       },
       { 
         id: 'd', 
+        user: {
+          username: 'nia_sioux',
+          displayName: 'Nia S.',
+          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b8c5?w=400&h=400&fit=crop&crop=face',
+          verified: true,
+          followers: '876K'
+        },
         text: 'Corvette Corvette', 
         votes: 10,
         media: {
