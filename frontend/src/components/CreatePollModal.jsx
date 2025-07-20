@@ -207,6 +207,66 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
             />
           </div>
 
+          {/* Selector de Música */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-base font-semibold">
+                Música de Fondo (Opcional)
+              </Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowMusicSelector(!showMusicSelector)}
+                className="text-blue-600 border-blue-300 hover:bg-blue-50"
+              >
+                <Music className="w-4 h-4 mr-1" />
+                {selectedMusic ? 'Cambiar música' : 'Agregar música'}
+              </Button>
+            </div>
+            
+            {/* Música seleccionada preview */}
+            {selectedMusic && !showMusicSelector && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={selectedMusic.cover} 
+                    alt={selectedMusic.title}
+                    className="w-12 h-12 rounded-lg object-cover ring-2 ring-blue-200"
+                  />
+                  <div>
+                    <p className="font-semibold text-gray-900">{selectedMusic.title}</p>
+                    <p className="text-sm text-gray-600">{selectedMusic.artist}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                        {selectedMusic.category}
+                      </span>
+                      {selectedMusic.isOriginal && (
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                          Original
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Selector de música */}
+            {showMusicSelector && (
+              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50/50">
+                <MusicSelector
+                  onSelectMusic={(music) => {
+                    setSelectedMusic(music);
+                    setShowMusicSelector(false);
+                  }}
+                  selectedMusic={selectedMusic}
+                  pollTitle={title}
+                />
+              </div>
+            )}
+          </div>
+
           {/* Opciones con Media */}
           <div className="space-y-4">
             <Label className="text-base font-semibold">
