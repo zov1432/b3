@@ -116,10 +116,16 @@ const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserCli
 );
 
 const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, index, total }) => {
+  const [selectedUser, setSelectedUser] = useState(null);
+
   const handleVote = (optionId) => {
     if (!poll.userVote) {
       onVote(poll.id, optionId);
     }
+  };
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
   };
 
   const formatNumber = (num) => {
@@ -153,6 +159,14 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
            maxHeight: '100vh',
            maxHeight: '100dvh'
          }}>
+      {/* User Profile Modal */}
+      {selectedUser && (
+        <UserProfile 
+          user={selectedUser} 
+          onClose={() => setSelectedUser(null)} 
+        />
+      )}
+
       {/* Header - Fixed at top with safe area */}
       <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/80 to-transparent px-4 pt-safe-4 pb-8"
            style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
@@ -259,22 +273,15 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                 <div className="absolute inset-0 ring-2 ring-green-400 ring-inset"></div>
               )}
 
-              {/* Option letter and percentage - Enhanced visibility */}
-              <div className="absolute top-4 right-4 flex flex-col items-center gap-2 z-20">
-                <div className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center font-bold text-base shadow-2xl backdrop-blur-sm",
-                  isSelected 
-                    ? "bg-blue-600/90 text-white ring-2 ring-blue-300" 
-                    : isWinner && poll.totalVotes > 0
-                      ? "bg-green-600/90 text-white ring-2 ring-green-300"
-                      : "bg-black/80 text-white ring-1 ring-white/30"
-                )}>
-                  {option.id.toUpperCase()}
-                </div>
-                <div className="bg-black/80 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm">
-                  {percentage}%
-                </div>
-              </div>
+              {/* User Button - Replaces letter/percentage display */}
+              <UserButton
+                user={option.user}
+                percentage={percentage}
+                isSelected={isSelected}
+                isWinner={isWinner && poll.totalVotes > 0}
+                onClick={() => handleVote(option.id)}
+                onUserClick={handleUserClick}
+              />
 
               {/* Winner badge - Enhanced */}
               {isWinner && poll.totalVotes > 0 && (
