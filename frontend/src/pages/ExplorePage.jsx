@@ -206,29 +206,16 @@ const ExplorePage = () => {
         </header>
       )}
 
-      {/* TikTok Mode - Full Screen */}
+      {/* TikTok Mode - Full Screen Immersive */}
       {viewMode === 'tiktok' && (
-        <div className="relative h-screen">
-          {/* Overlay toggle button for TikTok mode */}
-          <div className="absolute top-4 right-4 z-50">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className="bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm"
-            >
-              <Grid3X3 className="w-4 h-4" />
-            </Button>
-          </div>
-          
-          <TikTokScrollView
-            polls={filteredPolls}
-            onVote={handleVote}
-            onLike={handleLike}
-            onShare={handleShare}
-            onComment={handleComment}
-          />
-        </div>
+        <TikTokScrollView
+          polls={filteredPolls}
+          onVote={handleVote}
+          onLike={handleLike}
+          onShare={handleShare}
+          onComment={handleComment}
+          onExitTikTok={() => setViewMode('grid')}
+        />
       )}
 
       {/* Grid Mode - Original Layout */}
