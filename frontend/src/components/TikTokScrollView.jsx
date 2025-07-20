@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PollCard from './PollCard';
 import { cn } from '../lib/utils';
-import { Grid3X3, ChevronUp, ChevronDown } from 'lucide-react';
+import { Grid3X3, ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Crown } from 'lucide-react';
 import { Button } from './ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
 const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, index, total }) => {
   const handleVote = (optionId) => {
