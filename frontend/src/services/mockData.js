@@ -316,6 +316,38 @@ export const toggleLike = (pollId) => {
 
 // Función para crear nueva votación
 export const createPoll = (pollData) => {
+  // Usuarios de ejemplo para nuevas votaciones
+  const sampleUsers = [
+    {
+      username: 'user_one',
+      displayName: 'Usuario 1',
+      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b8c5?w=400&h=400&fit=crop&crop=face',
+      verified: false,
+      followers: Math.floor(Math.random() * 100) + 'K'
+    },
+    {
+      username: 'user_two',
+      displayName: 'Usuario 2',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+      verified: Math.random() > 0.7,
+      followers: Math.floor(Math.random() * 200) + 'K'
+    },
+    {
+      username: 'user_three',
+      displayName: 'Usuario 3',
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
+      verified: Math.random() > 0.8,
+      followers: Math.floor(Math.random() * 150) + 'K'
+    },
+    {
+      username: 'user_four',
+      displayName: 'Usuario 4',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
+      verified: false,
+      followers: Math.floor(Math.random() * 80) + 'K'
+    }
+  ];
+
   const newPoll = {
     id: Date.now().toString(),
     title: pollData.title,
@@ -323,6 +355,7 @@ export const createPoll = (pollData) => {
     timeAgo: 'hace unos momentos',
     options: pollData.options.map((option, index) => ({
       id: String.fromCharCode(97 + index), // a, b, c, d
+      user: sampleUsers[index] || sampleUsers[0], // Usar usuarios de ejemplo
       text: option.text,
       votes: 0,
       media: option.media
