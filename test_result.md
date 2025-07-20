@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: Las publicaciones no se han adaptado perfectamente al scroll tipo tiktok - solucionalo
+user_problem_statement: Agregar opciones de poner música y corregir si hay algún error y después poder descargar en móvil
 
 backend:
   - task: "Backend API Health Check"
