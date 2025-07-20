@@ -232,7 +232,7 @@ const ExplorePage = () => {
           onLike={handleLike}
           onShare={handleShare}
           onComment={handleComment}
-          onExitTikTok={() => setViewMode('grid')}
+          onExitTikTok={handleExitTikTok}
         />
       )}
 
