@@ -5,14 +5,16 @@ import { Button } from './ui/button';
 import { Heart, MessageCircle, Share, MoreHorizontal, Play, Crown } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option, totalVotes }) => {
+const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option, totalVotes, fullScreen = false }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   if (!media) return null;
 
+  const heightClass = fullScreen ? "h-full min-h-48" : "h-40";
+
   if (media.type === 'video') {
     return (
-      <div className="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer" onClick={onClick}>
+      <div className={cn("relative w-full rounded-lg overflow-hidden group cursor-pointer", heightClass)} onClick={onClick}>
         <img 
           src={media.thumbnail} 
           alt="Video thumbnail"
@@ -78,7 +80,7 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
   }
 
   return (
-    <div className="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer" onClick={onClick}>
+    <div className={cn("relative w-full rounded-lg overflow-hidden group cursor-pointer", heightClass)} onClick={onClick}>
       <img 
         src={media.url} 
         alt="Poll option"
