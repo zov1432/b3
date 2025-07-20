@@ -135,20 +135,17 @@ frontend:
           agent: "main"
           comment: "Added missing cn import from '../lib/utils'"
 
-  - task: "Implement TikTok-style vertical scroll in ExplorePage"
-    implemented: true
+  - task: "Improve TikTok-style scroll to perfectly adapt to full screen"
+    implemented: false
     working: "NA"
-    file: "/app/frontend/src/pages/ExplorePage.jsx"
+    file: "/app/frontend/src/components/TikTokScrollView.jsx"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
-          comment: "Starting implementation of TikTok-style vertical scroll with toggle between grid and full-screen TikTok modes"
-        - working: "NA"
-          agent: "main"
-          comment: "Completed implementation: 1) Created TikTokScrollView component with snap scrolling, 2) Modified PollCard for full-screen mode, 3) Added toggle button in ExplorePage header, 4) Added keyboard navigation and smooth scroll behavior. Ready for testing."
+          comment: "Starting improvements for full-screen TikTok experience: 1) Perfect screen adaptation, 2) Hide bottom navigation, 3) Immersive experience, 4) Better responsive behavior"
 
 metadata:
   created_by: "main_agent"
