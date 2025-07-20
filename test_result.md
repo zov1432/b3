@@ -236,8 +236,7 @@ test_plan:
   current_focus:
     - "Integración de selector de música en creación de encuestas"
     - "Reproductor de música en TikTok ScrollView"
-    - "PWA - Progressive Web App para descarga móvil"
-    - "Sistema de descarga y compartir contenido móvil"
+    - "Eliminación de funcionalidades PWA y descarga móvil"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
