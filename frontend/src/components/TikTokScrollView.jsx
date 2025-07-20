@@ -387,11 +387,6 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
             <Share className="w-7 h-7" />
             <span className="font-bold text-base">{formatNumber(poll.shares)}</span>
           </Button>
-
-          {/* Download Button */}
-          <div className="ml-4">
-            <DownloadButton poll={poll} />
-          </div>
         </div>
       </div>
 
