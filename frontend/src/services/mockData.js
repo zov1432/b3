@@ -4,6 +4,16 @@ export const mockPolls = [
     title: '¿Quién ganó el mejor outfit de hoy?',
     author: 'Noviago',
     timeAgo: 'hace 2 semanas',
+    music: {
+      id: 'music_1',
+      title: 'Style & Fashion',
+      artist: 'Fashion Beats',
+      duration: 30,
+      url: '/music/style-fashion.mp3', // Mock URL
+      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=center',
+      isOriginal: false,
+      waveform: [0.2, 0.5, 0.8, 0.3, 0.7, 0.9, 0.4, 0.6, 0.8, 0.2, 0.5, 0.7, 0.9, 0.3, 0.6, 0.8, 0.4, 0.7, 0.5, 0.9]
+    },
     options: [
       { 
         id: 'a', 
@@ -82,6 +92,16 @@ export const mockPolls = [
     title: '¿Cuál es la mejor receta de cocina?',
     author: 'ChefMaster',
     timeAgo: 'hace 1 hora',
+    music: {
+      id: 'music_2',
+      title: 'Cooking Vibes',
+      artist: 'Kitchen Beats',
+      duration: 45,
+      url: '/music/cooking-vibes.mp3',
+      cover: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&crop=center',
+      isOriginal: true,
+      waveform: [0.3, 0.7, 0.4, 0.8, 0.5, 0.9, 0.2, 0.6, 0.8, 0.4, 0.7, 0.3, 0.9, 0.5, 0.8, 0.6, 0.4, 0.7, 0.9, 0.2]
+    },
     options: [
       { 
         id: 'a', 
@@ -160,6 +180,16 @@ export const mockPolls = [
     title: '¿Cuál es el mejor baile de TikTok?',
     author: 'DanceMaster',
     timeAgo: 'hace 3 días',
+    music: {
+      id: 'music_3',
+      title: 'Dance Revolution 2025',
+      artist: 'DJ TikTok',
+      duration: 60,
+      url: '/music/dance-revolution.mp3',
+      cover: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=center',
+      isOriginal: false,
+      waveform: [0.1, 0.9, 0.3, 0.8, 0.6, 0.4, 0.9, 0.2, 0.7, 0.5, 0.8, 0.3, 0.6, 0.9, 0.4, 0.7, 0.2, 0.8, 0.5, 0.9]
+    },
     options: [
       { 
         id: 'a', 
