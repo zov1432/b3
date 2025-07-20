@@ -64,7 +64,7 @@ const ExplorePage = () => {
 
   const trendingTopics = [
     { 
-      icon: Fire, 
+      icon: Flame, 
       title: 'Outfits de verano 2025', 
       subtitle: '1.2M votaciones', 
       trending: true, 
