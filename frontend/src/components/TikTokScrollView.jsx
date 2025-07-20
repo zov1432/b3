@@ -36,9 +36,16 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
   const winningOption = getWinningOption();
 
   return (
-    <div className="w-full h-screen flex flex-col relative snap-start snap-always bg-black overflow-hidden">
-      {/* Header - Fixed at top */}
-      <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/60 to-transparent p-4 pb-8">
+    <div className="w-full min-h-screen h-screen flex flex-col relative snap-start snap-always bg-black overflow-hidden" 
+         style={{
+           height: '100vh',
+           height: '100dvh', // Dynamic viewport height for better mobile support
+           maxHeight: '100vh',
+           maxHeight: '100dvh'
+         }}>
+      {/* Header - Fixed at top with safe area */}
+      <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/80 to-transparent px-4 pt-safe-4 pb-8"
+           style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="ring-2 ring-white/30 w-12 h-12">
@@ -64,8 +71,14 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
         </div>
       </div>
 
-      {/* Main content - Full screen grid */}
-      <div className="absolute inset-0 grid grid-cols-2 gap-1">
+      {/* Main content - Perfect full screen grid with safe areas */}
+      <div className="absolute inset-0 grid grid-cols-2 gap-0.5"
+           style={{
+             top: 0,
+             bottom: 0,
+             left: 'env(safe-area-inset-left, 0)',
+             right: 'env(safe-area-inset-right, 0)'
+           }}>
         {poll.options.map((option, optionIndex) => {
           const percentage = getPercentage(option.votes);
           const isWinner = option.id === winningOption.id && poll.totalVotes > 0;
@@ -74,101 +87,117 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           return (
             <div
               key={option.id}
-              className="relative cursor-pointer group h-full overflow-hidden"
+              className="relative cursor-pointer group h-full w-full overflow-hidden touch-manipulation"
               onClick={() => handleVote(option.id)}
+              style={{ 
+                WebkitTapHighlightColor: 'transparent',
+                touchAction: 'manipulation'
+              }}
             >
-              {/* Background image/color - Full coverage */}
-              <div className="absolute inset-0">
+              {/* Background image/color - Perfect coverage */}
+              <div className="absolute inset-0 w-full h-full">
                 {option.media?.url ? (
                   <img 
                     src={option.media.url} 
                     alt={option.text}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
+                    style={{ 
+                      objectFit: 'cover',
+                      objectPosition: 'center'
+                    }}
                   />
                 ) : (
                   <div className={cn(
                     "w-full h-full",
-                    optionIndex === 0 ? "bg-gradient-to-br from-yellow-400 to-orange-500" :
-                    optionIndex === 1 ? "bg-gradient-to-br from-gray-300 to-gray-500" :
-                    optionIndex === 2 ? "bg-gradient-to-br from-yellow-500 to-red-500" :
-                    "bg-gradient-to-br from-amber-600 to-orange-700"
+                    optionIndex === 0 ? "bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500" :
+                    optionIndex === 1 ? "bg-gradient-to-br from-gray-300 via-gray-500 to-gray-700" :
+                    optionIndex === 2 ? "bg-gradient-to-br from-yellow-500 via-red-500 to-pink-600" :
+                    "bg-gradient-to-br from-amber-600 via-orange-700 to-red-800"
                   )} />
                 )}
               </div>
 
-              {/* Progress overlay - Fills from bottom */}
+              {/* Interactive overlay for better touch response */}
+              <div className="absolute inset-0 bg-transparent active:bg-white/10 transition-colors duration-150"></div>
+
+              {/* Progress overlay - Smooth animated fill from bottom */}
               {poll.totalVotes > 0 && (
                 <div 
                   className={cn(
-                    "absolute inset-x-0 bottom-0 transition-all duration-700 ease-out",
+                    "absolute inset-x-0 bottom-0 transition-all duration-1000 ease-out",
                     isSelected 
-                      ? "bg-gradient-to-t from-blue-500/80 to-blue-600/60"
+                      ? "bg-gradient-to-t from-blue-500/90 via-blue-600/70 to-blue-400/40"
                       : isWinner 
-                        ? "bg-gradient-to-t from-green-500/80 to-green-600/60"
-                        : "bg-gradient-to-t from-black/40 to-transparent"
+                        ? "bg-gradient-to-t from-green-500/90 via-green-600/70 to-green-400/40"
+                        : "bg-gradient-to-t from-black/50 via-black/30 to-transparent"
                   )}
                   style={{ 
-                    height: `${percentage}%`,
+                    height: `${Math.max(percentage, 5)}%`, // Minimum 5% for visibility
+                    transform: `translateY(${100 - Math.max(percentage, 5)}%)`,
+                    transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)'
                   }}
                 />
               )}
 
-              {/* Hover/interaction overlay */}
-              <div className={cn(
-                "absolute inset-0 transition-all duration-300",
-                "bg-black/0 group-hover:bg-black/20",
-                isSelected && "bg-blue-500/20",
-                isWinner && poll.totalVotes > 0 && "bg-green-500/20"
-              )} />
+              {/* Selection indicator */}
+              {isSelected && (
+                <div className="absolute inset-0 ring-4 ring-blue-400 ring-inset animate-pulse"></div>
+              )}
 
-              {/* Option letter and percentage - Top right */}
-              <div className="absolute top-3 right-3 flex flex-col items-center gap-1 z-20">
+              {/* Winner indicator */}
+              {isWinner && poll.totalVotes > 0 && (
+                <div className="absolute inset-0 ring-2 ring-green-400 ring-inset"></div>
+              )}
+
+              {/* Option letter and percentage - Enhanced visibility */}
+              <div className="absolute top-4 right-4 flex flex-col items-center gap-2 z-20">
                 <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg",
+                  "w-10 h-10 rounded-full flex items-center justify-center font-bold text-base shadow-2xl backdrop-blur-sm",
                   isSelected 
-                    ? "bg-blue-600 text-white" 
+                    ? "bg-blue-600/90 text-white ring-2 ring-blue-300" 
                     : isWinner && poll.totalVotes > 0
-                      ? "bg-green-600 text-white"
-                      : "bg-black/70 text-white"
+                      ? "bg-green-600/90 text-white ring-2 ring-green-300"
+                      : "bg-black/80 text-white ring-1 ring-white/30"
                 )}>
                   {option.id.toUpperCase()}
                 </div>
-                <div className="bg-black/70 text-white px-2 py-1 rounded-full text-xs font-bold">
+                <div className="bg-black/80 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm">
                   {percentage}%
                 </div>
               </div>
 
-              {/* Winner badge */}
+              {/* Winner badge - Enhanced */}
               {isWinner && poll.totalVotes > 0 && (
-                <div className="absolute top-3 left-3 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shadow-lg z-20">
-                  <Crown className="w-3 h-3" />
+                <div className="absolute top-4 left-4 bg-green-600/95 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1.5 shadow-2xl backdrop-blur-sm z-20 animate-pulse">
+                  <Crown className="w-4 h-4" />
                   Ganador
                 </div>
               )}
 
-              {/* Option text - Bottom of each section */}
-              <div className="absolute bottom-4 left-3 right-3 z-20">
-                <p className={cn(
-                  "text-white font-bold text-base leading-tight drop-shadow-lg text-center",
-                  "bg-black/50 px-3 py-2 rounded-lg backdrop-blur-sm"
+              {/* Option text - Better positioning and readability */}
+              <div className="absolute bottom-6 left-4 right-4 z-20">
+                <div className={cn(
+                  "text-white font-bold text-lg leading-tight text-center",
+                  "bg-black/70 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl",
+                  "border border-white/20"
                 )}>
                   {option.text}
-                </p>
+                </div>
               </div>
-
-              {/* Selection ring */}
-              {isSelected && (
-                <div className="absolute inset-0 ring-4 ring-blue-500 ring-inset z-10"></div>
-              )}
             </div>
           );
         })}
       </div>
 
-      {/* Bottom info and actions - Fixed at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-4 pt-8">
-        <div className="mb-3">
-          <p className="text-white/90 font-semibold text-sm">
+      {/* Bottom info and actions - Enhanced with safe area */}
+      <div className="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/90 via-black/70 to-transparent px-4 pt-8"
+           style={{ 
+             paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))',
+             paddingLeft: 'max(1rem, env(safe-area-inset-left))',
+             paddingRight: 'max(1rem, env(safe-area-inset-right))'
+           }}>
+        <div className="mb-4">
+          <p className="text-white/90 font-semibold text-base">
             {formatNumber(poll.totalVotes)} votos
           </p>
         </div>
@@ -183,15 +212,15 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                 onLike(poll.id);
               }}
               className={cn(
-                "flex items-center gap-2 hover:scale-110 transition-transform text-white hover:text-red-400 h-auto p-2",
-                poll.userLiked && "text-red-500"
+                "flex items-center gap-2 hover:scale-110 transition-all duration-200 text-white hover:text-red-400 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm",
+                poll.userLiked && "text-red-500 bg-red-500/20"
               )}
             >
               <Heart className={cn(
-                "w-6 h-6 transition-all",
-                poll.userLiked && "fill-current"
+                "w-7 h-7 transition-all duration-200",
+                poll.userLiked && "fill-current scale-110"
               )} />
-              <span className="font-bold">{formatNumber(poll.likes)}</span>
+              <span className="font-bold text-base">{formatNumber(poll.likes)}</span>
             </Button>
             
             <Button
@@ -201,10 +230,10 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                 e.stopPropagation();
                 onComment(poll.id);
               }}
-              className="flex items-center gap-2 text-white hover:text-blue-400 hover:scale-110 transition-transform h-auto p-2"
+              className="flex items-center gap-2 text-white hover:text-blue-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm"
             >
-              <MessageCircle className="w-6 h-6" />
-              <span className="font-bold">{formatNumber(poll.comments)}</span>
+              <MessageCircle className="w-7 h-7" />
+              <span className="font-bold text-base">{formatNumber(poll.comments)}</span>
             </Button>
           </div>
 
@@ -215,36 +244,42 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
               e.stopPropagation();
               onShare(poll.id);
             }}
-            className="flex items-center gap-2 text-white hover:text-green-400 hover:scale-110 transition-transform h-auto p-2"
+            className="flex items-center gap-2 text-white hover:text-green-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm"
           >
-            <Share className="w-6 h-6" />
-            <span className="font-bold">{formatNumber(poll.shares)}</span>
+            <Share className="w-7 h-7" />
+            <span className="font-bold text-base">{formatNumber(poll.shares)}</span>
           </Button>
         </div>
       </div>
 
-      {/* Progress indicator - Right side */}
-      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex flex-col gap-1 z-20">
+      {/* Progress indicator - Enhanced design */}
+      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 z-20"
+           style={{ right: 'max(1rem, env(safe-area-inset-right))' }}>
         {Array.from({ length: total }, (_, i) => (
           <div
             key={i}
             className={cn(
-              "w-1 h-6 rounded-full transition-all duration-300",
+              "rounded-full transition-all duration-500",
               i === index
-                ? "bg-white shadow-lg"
-                : "bg-white/30"
+                ? "bg-white shadow-2xl w-2 h-8 ring-2 ring-white/50"
+                : "bg-white/40 w-1.5 h-6"
             )}
           />
         ))}
       </div>
 
-      {/* Scroll hints - only on first card */}
+      {/* Scroll hints - Enhanced for first card */}
       {index === 0 && (
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-20">
-          <ChevronDown className="w-6 h-6 text-white/70" />
-          <p className="text-white/70 text-sm font-medium bg-black/50 px-3 py-1 rounded-full">
+        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-3 z-20"
+             style={{ 
+               bottom: 'max(8rem, calc(8rem + env(safe-area-inset-bottom)))'
+             }}>
+          <div className="animate-bounce">
+            <ChevronDown className="w-8 h-8 text-white/80" />
+          </div>
+          <div className="text-white/80 text-sm font-medium bg-black/60 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20">
             Desliza para ver más
-          </p>
+          </div>
         </div>
       )}
     </div>
