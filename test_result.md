@@ -104,6 +104,43 @@
 
 user_problem_statement: Las publicaciones no se han adaptado perfectamente al scroll tipo tiktok - solucionalo
 
+backend:
+  - task: "Backend API Health Check"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Verified root endpoint /api/ returns correct 'Hello World' message with 200 status code"
+
+  - task: "Backend Status Check Endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Verified both POST /api/status (creates status check with UUID and timestamp) and GET /api/status (retrieves status check list) working correctly"
+
+  - task: "Backend Poll Endpoints Verification"
+    implemented: false
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "No poll-related endpoints found in backend - this is expected as the current implementation only has basic status check functionality"
+
 frontend:
   - task: "Fix React runtime errors in ExplorePage"
     implemented: true
