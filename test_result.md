@@ -116,6 +116,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "Verified root endpoint /api/ returns correct 'Hello World' message with 200 status code"
+        - working: true
+          agent: "testing"
+          comment: "Re-verified after frontend changes: Health check endpoint still working correctly, returning proper JSON response with 200 status code"
 
   - task: "Backend Status Check Endpoints"
     implemented: true
@@ -128,6 +131,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "Verified both POST /api/status (creates status check with UUID and timestamp) and GET /api/status (retrieves status check list) working correctly"
+        - working: true
+          agent: "testing"
+          comment: "Re-verified after frontend changes: Both endpoints functioning properly. POST creates records with UUID and timestamp, GET retrieves list correctly. MongoDB persistence working."
 
   - task: "Backend Poll Endpoints Verification"
     implemented: false
