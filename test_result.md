@@ -135,6 +135,18 @@ frontend:
           agent: "main"
           comment: "Added missing cn import from '../lib/utils'"
 
+  - task: "Implement TikTok-style vertical scroll in ExplorePage"
+    implemented: false
+    working: "NA"
+    file: "/app/frontend/src/pages/ExplorePage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Starting implementation of TikTok-style vertical scroll with toggle between grid and full-screen TikTok modes"
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
