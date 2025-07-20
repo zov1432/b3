@@ -383,6 +383,7 @@ export const createPoll = (pollData) => {
     title: pollData.title,
     author: 'Usuario', // En la implementación real sería el usuario logueado
     timeAgo: 'hace unos momentos',
+    music: pollData.music || null, // Incluir música si está disponible
     options: pollData.options.map((option, index) => ({
       id: String.fromCharCode(97 + index), // a, b, c, d
       user: sampleUsers[index] || sampleUsers[0], // Usar usuarios de ejemplo
