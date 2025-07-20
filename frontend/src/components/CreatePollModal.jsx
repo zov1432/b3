@@ -12,9 +12,10 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { Plus, X, Sparkles, Upload, Image, Video, Play } from 'lucide-react';
+import { Plus, X, Sparkles, Upload, Image, Video, Play, Music } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { fileToBase64 } from '../services/mockData';
+import MusicSelector from './MusicSelector';
 
 const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
   if (!media) return null;
