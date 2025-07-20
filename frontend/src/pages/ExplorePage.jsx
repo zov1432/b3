@@ -8,6 +8,7 @@ import TikTokScrollView from '../components/TikTokScrollView';
 import { Search, TrendingUp, Filter, Users, Crown, Flame, Grid3X3, Play } from 'lucide-react';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
+import { useTikTok } from '../contexts/TikTokContext';
 import { cn } from '../lib/utils';
 
 const TrendingCard = ({ icon: Icon, title, subtitle, trending, color = "blue" }) => (
