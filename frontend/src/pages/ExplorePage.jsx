@@ -4,7 +4,7 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import PollCard from '../components/PollCard';
-import { Search, TrendingUp, Filter, Users, Crown, Fire } from 'lucide-react';
+import { Search, TrendingUp, Filter, Users, Crown, Flame } from 'lucide-react';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
 import { cn } from '../lib/utils';
