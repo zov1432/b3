@@ -184,23 +184,17 @@ frontend:
           agent: "main"
           comment: "Fixed missing imports for Avatar, Heart, MessageCircle, Share, Crown, MoreHorizontal components"
 
-  - task: "Improve TikTok-style scroll to perfectly adapt to full screen"
+  - task: "Replace option letters with usernames in TikTok scroll"
     implemented: true
     working: "NA"
-    file: "/app/frontend/src/components/TikTokScrollView.jsx"
-    stuck_count: 1
+    file: "/app/frontend/src/components/TikTokScrollView.jsx, /app/frontend/src/components/PollCard.jsx, /app/frontend/src/services/mockData.js"
+    stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
-          comment: "Starting improvements for full-screen TikTok experience: 1) Perfect screen adaptation, 2) Hide bottom navigation, 3) Immersive experience, 4) Better responsive behavior"
-        - working: "NA"
-          agent: "main"
-          comment: "Completed full-screen improvements: 1) Created TikTokContext for global state management, 2) Enhanced TikTokScrollView with perfect screen adaptation (fixed inset-0), 3) Improved scroll behavior with touch/swipe support, 4) Hidden bottom navigation in TikTok mode, 5) Added immersive dark background, 6) Enhanced responsive design for mobile/desktop, 7) Added CSS overscroll prevention. Ready for testing."
-        - working: "NA"
-          agent: "main"
-          comment: "User reports that TikTok scroll is not perfectly adapted. Need to identify specific issues with full-screen adaptation and scroll behavior."
+          comment: "Implemented complete username system: 1) Updated mock data to include user objects with avatar, username, displayName, verification status and followers, 2) Created UserProfile modal component for viewing user details, 3) Created UserButton component with clickeable avatars and usernames, 4) Updated TikTokScrollView to show user avatars and names instead of A,B,C,D letters, 5) Added verification badges and follower counts, 6) Updated PollCard component for consistency, 7) Made usernames clickable to view profiles with Follow/View Profile buttons."
 
 metadata:
   created_by: "main_agent"
