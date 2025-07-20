@@ -214,29 +214,17 @@ frontend:
           agent: "main"
           comment: "Creado componente MusicPlayer completo: 1) Reproductor con controles play/pause, progreso, volumen, reiniciar, 2) Visualización de waveform animada que refleja progreso, 3) Información de música (título, artista, categoría), 4) Integración en TikTokScrollView con posicionamiento responsive, 5) Indicador de música original, 6) Diseño inmersivo con backdrop-blur"
 
-  - task: "PWA - Progressive Web App para descarga móvil"
+  - task: "Eliminación de funcionalidades PWA y descarga móvil"
     implemented: true
     working: "NA"
-    file: "/app/frontend/public/manifest.json, /app/frontend/public/sw.js, /app/frontend/public/index.html, /app/frontend/src/components/PWAInstallPrompt.jsx"
+    file: "Múltiples archivos eliminados y referencias limpiadas"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
-          comment: "Implementación completa de PWA: 1) Manifest.json configurado con iconos, shortcuts, screenshots, 2) Service Worker con caché offline, sincronización en background, push notifications, 3) PWAInstallPrompt con instrucciones específicas para iOS/Android, 4) Meta tags completos para PWA en index.html, 5) Registro automático de Service Worker, 6) Capacidades offline para votaciones y likes"
-
-  - task: "Sistema de descarga y compartir contenido móvil"
-    implemented: true
-    working: "NA"
-    file: "/app/frontend/src/utils/downloadUtils.js, /app/frontend/src/components/DownloadButton.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: true
-    status_history:
-        - working: "NA"
-          agent: "main"
-          comment: "Sistema completo de descarga implementado: 1) Generación automática de imágenes de encuestas con Canvas, 2) DownloadButton con opciones para compartir, descargar imagen PNG, descargar datos JSON, 3) Soporte nativo para compartir móvil con Web Share API, 4) Fallback a portapapeles y descarga directa, 5) Detección de capacidades del dispositivo, 6) Integración en TikTokScrollView, 7) Diseño responsive y optimizado para móviles"
+          comment: "Eliminadas completamente las funcionalidades de PWA y descarga móvil por solicitud del usuario: 1) Eliminados archivos: manifest.json, sw.js, PWAInstallPrompt.jsx, DownloadButton.jsx, downloadUtils.js, carpeta icons, 2) Limpiadas todas las referencias en App.js, TikTokScrollView.jsx, index.html, 3) Eliminados meta tags de PWA, service worker registration, 4) Mantenida solo la funcionalidad de música como solicitado"
 
 metadata:
   created_by: "main_agent"
