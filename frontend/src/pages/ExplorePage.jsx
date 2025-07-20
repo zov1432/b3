@@ -150,120 +150,186 @@ const ExplorePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 pb-20">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <Search className="w-4 h-4 text-white" />
+    <div className={cn(
+      "min-h-screen pb-20",
+      viewMode === 'tiktok' 
+        ? "bg-black overflow-hidden" 
+        : "bg-gradient-to-br from-blue-50 via-white to-purple-50"
+    )}>
+      {/* Header - Only show in grid mode */}
+      {viewMode === 'grid' && (
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Search className="w-4 h-4 text-white" />
+                </div>
+                <h1 className="text-xl font-bold text-gray-900">Explorar</h1>
               </div>
-              <h1 className="text-xl font-bold text-gray-900">Explorar</h1>
+              <div className="flex items-center gap-2">
+                {/* View Toggle */}
+                <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                  <Button
+                    variant={viewMode === 'grid' ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    className={cn(
+                      "h-8 px-3",
+                      viewMode === 'grid' 
+                        ? "bg-white shadow-sm" 
+                        : "hover:bg-gray-200"
+                    )}
+                  >
+                    <Grid3X3 className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'tiktok' ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode('tiktok')}
+                    className={cn(
+                      "h-8 px-3",
+                      viewMode === 'tiktok' 
+                        ? "bg-white shadow-sm" 
+                        : "hover:bg-gray-200"
+                    )}
+                  >
+                    <Play className="w-4 h-4" />
+                  </Button>
+                </div>
+                <Button variant="ghost" size="sm" className="hover:bg-gray-100">
+                  <Filter className="w-5 h-5" />
+                </Button>
+              </div>
             </div>
-            <Button variant="ghost" size="sm" className="hover:bg-gray-100">
-              <Filter className="w-5 h-5" />
+          </div>
+        </header>
+      )}
+
+      {/* TikTok Mode - Full Screen */}
+      {viewMode === 'tiktok' && (
+        <div className="relative h-screen">
+          {/* Overlay toggle button for TikTok mode */}
+          <div className="absolute top-4 right-4 z-50">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setViewMode('grid')}
+              className="bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm"
+            >
+              <Grid3X3 className="w-4 h-4" />
             </Button>
           </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Search Bar */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <Input
-            placeholder="Buscar votaciones, usuarios, temas..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 h-12 text-base bg-white shadow-sm focus:shadow-md transition-all"
+          
+          <TikTokScrollView
+            polls={filteredPolls}
+            onVote={handleVote}
+            onLike={handleLike}
+            onShare={handleShare}
+            onComment={handleComment}
           />
         </div>
+      )}
 
-        {/* Categories */}
-        <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-          {categories.map((category) => (
-            <CategoryButton
-              key={category}
-              category={category}
-              isActive={activeCategory === category}
-              onClick={setActiveCategory}
+      {/* Grid Mode - Original Layout */}
+      {viewMode === 'grid' && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Search Bar */}
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              placeholder="Buscar votaciones, usuarios, temas..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 h-12 text-base bg-white shadow-sm focus:shadow-md transition-all"
             />
-          ))}
-        </div>
-
-        {/* Trending Topics */}
-        {!searchTerm && activeCategory === 'Todo' && (
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <Flame className="w-5 h-5 text-red-500" />
-              <h2 className="text-lg font-bold text-gray-900">Temas Populares</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {trendingTopics.map((topic, index) => (
-                <TrendingCard
-                  key={index}
-                  icon={topic.icon}
-                  title={topic.title}
-                  subtitle={topic.subtitle}
-                  trending={topic.trending}
-                  color={topic.color}
-                />
-              ))}
-            </div>
           </div>
-        )}
 
-        {/* Results Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-lg font-bold text-gray-900">
-              {searchTerm ? `Resultados para "${searchTerm}"` : 
-               activeCategory === 'Todo' ? 'Todas las votaciones' : `Categoría: ${activeCategory}`}
-            </h2>
-            <p className="text-sm text-gray-600">{filteredPolls.length} votaciones encontradas</p>
-          </div>
-        </div>
-
-        {/* Polls Grid */}
-        {filteredPolls.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Search className="w-12 h-12 text-gray-400" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              {searchTerm ? 'No se encontraron resultados' : 'No hay votaciones en esta categoría'}
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {searchTerm 
-                ? 'Intenta con otros términos de búsqueda'
-                : 'Prueba con otra categoría o crea la primera votación'
-              }
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredPolls.map((poll, index) => (
-              <div 
-                key={poll.id}
-                className="animate-fade-in opacity-0"
-                style={{
-                  animation: 'fadeIn 0.6s ease-out forwards',
-                  animationDelay: `${index * 0.1}s`
-                }}
-              >
-                <PollCard
-                  poll={poll}
-                  onVote={handleVote}
-                  onLike={handleLike}
-                  onShare={handleShare}
-                  onComment={handleComment}
-                />
-              </div>
+          {/* Categories */}
+          <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+            {categories.map((category) => (
+              <CategoryButton
+                key={category}
+                category={category}
+                isActive={activeCategory === category}
+                onClick={setActiveCategory}
+              />
             ))}
           </div>
-        )}
-      </div>
+
+          {/* Trending Topics */}
+          {!searchTerm && activeCategory === 'Todo' && (
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <Flame className="w-5 h-5 text-red-500" />
+                <h2 className="text-lg font-bold text-gray-900">Temas Populares</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {trendingTopics.map((topic, index) => (
+                  <TrendingCard
+                    key={index}
+                    icon={topic.icon}
+                    title={topic.title}
+                    subtitle={topic.subtitle}
+                    trending={topic.trending}
+                    color={topic.color}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Results Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">
+                {searchTerm ? `Resultados para "${searchTerm}"` : 
+                 activeCategory === 'Todo' ? 'Todas las votaciones' : `Categoría: ${activeCategory}`}
+              </h2>
+              <p className="text-sm text-gray-600">{filteredPolls.length} votaciones encontradas</p>
+            </div>
+          </div>
+
+          {/* Polls Grid */}
+          {filteredPolls.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="w-12 h-12 text-gray-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                {searchTerm ? 'No se encontraron resultados' : 'No hay votaciones en esta categoría'}
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {searchTerm 
+                  ? 'Intenta con otros términos de búsqueda'
+                  : 'Prueba con otra categoría o crea la primera votación'
+                }
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredPolls.map((poll, index) => (
+                <div 
+                  key={poll.id}
+                  className="animate-fade-in opacity-0"
+                  style={{
+                    animation: 'fadeIn 0.6s ease-out forwards',
+                    animationDelay: `${index * 0.1}s`
+                  }}
+                >
+                  <PollCard
+                    poll={poll}
+                    onVote={handleVote}
+                    onLike={handleLike}
+                    onShare={handleShare}
+                    onComment={handleComment}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes fadeIn {
