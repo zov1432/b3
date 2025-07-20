@@ -44,6 +44,9 @@ function AppContent() {
           <BottomNavigation onCreatePoll={handleCreatePoll} />
         )}
 
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt />
+
         {/* Toast notifications */}
         <Toaster />
       </BrowserRouter>
