@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: Fix errors in the social voting application navigation and profile screens
+user_problem_statement: Implementar mejoras en la funcionalidad de scroll vertical tipo TikTok para adaptarse perfectamente a toda la pantalla
 
 frontend:
   - task: "Fix React runtime errors in ExplorePage"
