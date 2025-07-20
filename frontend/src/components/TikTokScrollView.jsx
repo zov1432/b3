@@ -118,6 +118,7 @@ const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserCli
 
 const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, index, total }) => {
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
   const handleVote = (optionId) => {
     if (!poll.userVote) {
@@ -127,6 +128,10 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
 
   const handleUserClick = (user) => {
     setSelectedUser(user);
+  };
+
+  const handleMusicToggle = (playing) => {
+    setIsMusicPlaying(playing);
   };
 
   const formatNumber = (num) => {
