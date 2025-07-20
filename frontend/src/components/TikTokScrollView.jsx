@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PollCard from './PollCard';
 import MusicPlayer from './MusicPlayer';
-import DownloadButton from './DownloadButton';
 import { cn } from '../lib/utils';
 import { Grid3X3, ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Crown, CheckCircle, User } from 'lucide-react';
 import { Button } from './ui/button';
