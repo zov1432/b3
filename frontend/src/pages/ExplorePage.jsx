@@ -191,7 +191,7 @@ const ExplorePage = () => {
                   <Button
                     variant={viewMode === 'grid' ? "default" : "ghost"}
                     size="sm"
-                    onClick={() => setViewMode('grid')}
+                    onClick={() => handleExitTikTok()}
                     className={cn(
                       "h-8 px-3",
                       viewMode === 'grid' 
@@ -204,7 +204,7 @@ const ExplorePage = () => {
                   <Button
                     variant={viewMode === 'tiktok' ? "default" : "ghost"}
                     size="sm"
-                    onClick={() => setViewMode('tiktok')}
+                    onClick={() => handleTikTokMode()}
                     className={cn(
                       "h-8 px-3",
                       viewMode === 'tiktok' 
