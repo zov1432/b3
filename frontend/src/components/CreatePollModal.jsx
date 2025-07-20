@@ -149,6 +149,7 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
     setTimeout(() => {
       onCreatePoll({
         title: title.trim(),
+        music: selectedMusic, // Incluir música seleccionada
         options: validOptions.map(opt => ({
           text: opt.text.trim(),
           media: opt.media
@@ -157,7 +158,9 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
 
       toast({
         title: "¡Votación creada!",
-        description: "Tu votación ha sido publicada exitosamente",
+        description: selectedMusic 
+          ? `Tu votación ha sido publicada con "${selectedMusic.title}"` 
+          : "Tu votación ha sido publicada exitosamente",
       });
 
       // Reset form
@@ -166,6 +169,8 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
         { text: '', media: null },
         { text: '', media: null }
       ]);
+      setSelectedMusic(null);
+      setShowMusicSelector(false);
       setIsCreating(false);
       setIsOpen(false);
     }, 1000);
