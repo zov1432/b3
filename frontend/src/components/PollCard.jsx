@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
-import { Heart, MessageCircle, Share, MoreHorizontal, Play, Crown } from 'lucide-react';
+import { Heart, MessageCircle, Share, MoreHorizontal, Play, Crown, CheckCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option, totalVotes, fullScreen = false }) => {
@@ -53,12 +53,25 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
           </div>
         </div>
         
-        {/* Percentage and Letter Overlay */}
-        <div className="absolute top-2 right-2 flex items-center gap-2">
-          <span className="bg-black/70 text-white px-2 py-1 rounded-full text-xs font-bold">
-            {option.id.toUpperCase()}
-          </span>
-          <span className="bg-black/70 text-white px-2 py-1 rounded-full text-xs font-bold">
+        {/* User Avatar and Percentage Overlay */}
+        <div className="absolute top-2 right-2 flex flex-col items-center gap-1">
+          <Avatar className={cn(
+            "w-8 h-8 ring-2 transition-all",
+            isSelected 
+              ? "ring-blue-400"
+              : isWinner
+                ? "ring-green-400"
+                : "ring-white/50"
+          )}>
+            <AvatarImage src={option.user?.avatar} />
+            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-xs">
+              {option.user?.displayName?.charAt(0) || option.id.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          {option.user?.verified && (
+            <CheckCircle className="w-3 h-3 text-blue-500 fill-current -mt-1" />
+          )}
+          <span className="bg-black/70 text-white px-2 py-0.5 rounded-full text-xs font-bold">
             {percentage}%
           </span>
         </div>
@@ -110,12 +123,25 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
         "absolute inset-0 transition-all duration-300 group-hover:bg-black/10"
       )} />
 
-      {/* Percentage and Letter Overlay */}
-      <div className="absolute top-2 right-2 flex items-center gap-2">
-        <span className="bg-black/70 text-white px-2 py-1 rounded-full text-xs font-bold">
-          {option.id.toUpperCase()}
-        </span>
-        <span className="bg-black/70 text-white px-2 py-1 rounded-full text-xs font-bold">
+      {/* User Avatar and Percentage Overlay */}
+      <div className="absolute top-2 right-2 flex flex-col items-center gap-1">
+        <Avatar className={cn(
+          "w-8 h-8 ring-2 transition-all",
+          isSelected 
+            ? "ring-blue-400"
+            : isWinner
+              ? "ring-green-400"
+              : "ring-white/50"
+        )}>
+          <AvatarImage src={option.user?.avatar} />
+          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-xs">
+            {option.user?.displayName?.charAt(0) || option.id.toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        {option.user?.verified && (
+          <CheckCircle className="w-3 h-3 text-blue-500 fill-current -mt-1" />
+        )}
+        <span className="bg-black/70 text-white px-2 py-0.5 rounded-full text-xs font-bold">
           {percentage}%
         </span>
       </div>
