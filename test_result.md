@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: Agregar opciones de poner música y corregir si hay algún error y después poder descargar en móvil
+user_problem_statement: Agregar opciones de poner música - eliminar funciones de PWA y descarga móvil
 
 backend:
   - task: "Backend API Health Check"
