@@ -57,6 +57,8 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
     { text: '', media: null },
     { text: '', media: null }
   ]);
+  const [selectedMusic, setSelectedMusic] = useState(null);
+  const [showMusicSelector, setShowMusicSelector] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
 
