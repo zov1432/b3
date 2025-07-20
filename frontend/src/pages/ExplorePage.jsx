@@ -61,7 +61,24 @@ const ExplorePage = () => {
   const [activeCategory, setActiveCategory] = useState('Todo');
   const [polls, setPolls] = useState(mockPolls);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'tiktok'
+  const { enterTikTokMode, exitTikTokMode } = useTikTok();
   const { toast } = useToast();
+
+  // Handle TikTok mode toggle
+  const handleTikTokMode = () => {
+    if (viewMode === 'grid') {
+      setViewMode('tiktok');
+      enterTikTokMode();
+    } else {
+      setViewMode('grid');
+      exitTikTokMode();
+    }
+  };
+
+  const handleExitTikTok = () => {
+    setViewMode('grid');
+    exitTikTokMode();
+  };
 
   const categories = ['Todo', 'Trending', 'Moda', 'Comida', 'Entretenimiento', 'Deportes'];
 
