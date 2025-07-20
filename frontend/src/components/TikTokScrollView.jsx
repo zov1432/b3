@@ -291,7 +291,7 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
   const [activeIndex, setActiveIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
 
-  // Improved scroll handling with throttling
+  // Enhanced scroll handling with better throttling and snap detection
   const handleScroll = useCallback(() => {
     if (isScrolling) return;
     
@@ -307,28 +307,44 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
     }
   }, [activeIndex, polls.length, isScrolling]);
 
+  // Enhanced scroll listener with improved throttling
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     let scrollTimeout;
+    let rafId;
+
     const throttledScroll = () => {
       setIsScrolling(true);
       clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        setIsScrolling(false);
-        handleScroll();
-      }, 100);
+      
+      // Cancel previous RAF
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+      
+      // Use RAF for smooth updates
+      rafId = requestAnimationFrame(() => {
+        scrollTimeout = setTimeout(() => {
+          setIsScrolling(false);
+          handleScroll();
+        }, 50); // Reduced timeout for more responsive behavior
+      });
     };
 
     container.addEventListener('scroll', throttledScroll, { passive: true });
+    
     return () => {
       container.removeEventListener('scroll', throttledScroll);
       clearTimeout(scrollTimeout);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
     };
   }, [handleScroll]);
 
-  // Enhanced keyboard navigation
+  // Enhanced keyboard navigation with better UX
   useEffect(() => {
     const handleKeyDown = (event) => {
       const container = containerRef.current;
@@ -361,27 +377,47 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeIndex, polls.length, onExitTikTok]);
 
-  // Touch/swipe support for mobile
+  // Enhanced touch/swipe support with better gesture detection
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     let startY = 0;
     let startTime = 0;
+    let startScrollTop = 0;
+    let isDragging = false;
 
     const handleTouchStart = (e) => {
       startY = e.touches[0].clientY;
       startTime = Date.now();
+      startScrollTop = container.scrollTop;
+      isDragging = true;
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      
+      // Prevent default scrolling behavior for better control
+      if (Math.abs(e.touches[0].clientY - startY) > 10) {
+        e.preventDefault();
+      }
     };
 
     const handleTouchEnd = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      
       const endY = e.changedTouches[0].clientY;
       const endTime = Date.now();
       const deltaY = startY - endY;
       const deltaTime = endTime - startTime;
 
-      // Swipe detection (minimum distance and maximum time)
-      if (Math.abs(deltaY) > 50 && deltaTime < 300) {
+      // Enhanced swipe detection with velocity consideration
+      const velocity = Math.abs(deltaY) / deltaTime;
+      const isQuickSwipe = deltaTime < 300 && velocity > 0.5;
+      const isLongSwipe = Math.abs(deltaY) > 100;
+
+      if (isQuickSwipe || isLongSwipe) {
         if (deltaY > 0 && activeIndex < polls.length - 1) {
           // Swipe up - next
           container.scrollTo({
@@ -398,44 +434,67 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
       }
     };
 
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    // Enhanced event listeners with better options
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
     container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
       container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
       container.removeEventListener('touchend', handleTouchEnd);
     };
   }, [activeIndex, polls.length]);
 
+  // No polls state - Enhanced design
   if (!polls.length) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-        <div className="text-center">
-          <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+           style={{
+             height: '100vh',
+             height: '100dvh'
+           }}>
+        <div className="text-center px-6">
+          <div className="w-32 h-32 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-8">
+            <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h4a1 1 0 011 1v2m0 0V1a1 1 0 011-1h4a1 1 0 011 1v3M7 4a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V5a1 1 0 00-1-1H7z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">No hay votaciones</h3>
-          <p className="text-gray-400">No se encontraron votaciones para mostrar</p>
+          <h3 className="text-3xl font-bold text-white mb-4">No hay votaciones</h3>
+          <p className="text-gray-400 text-lg">No se encontraron votaciones para mostrar</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black">
-      {/* Exit button - floating and minimal */}
+    <div className="fixed inset-0 z-50 bg-black overflow-hidden"
+         style={{
+           height: '100vh',
+           height: '100dvh',
+           width: '100vw',
+           width: '100dvw'
+         }}>
+      {/* Exit button - Better positioning with safe areas */}
       <Button
         onClick={onExitTikTok}
-        className="fixed top-4 right-4 z-50 bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm border-none p-2 h-10 w-10 rounded-full"
+        className="fixed z-50 bg-black/60 text-white hover:bg-black/80 backdrop-blur-md border-none p-3 h-12 w-12 rounded-full shadow-2xl transition-all duration-200 hover:scale-110"
         size="sm"
+        style={{
+          top: 'max(1rem, env(safe-area-inset-top))',
+          right: 'max(1rem, env(safe-area-inset-right))'
+        }}
       >
-        <Grid3X3 className="w-4 h-4" />
+        <Grid3X3 className="w-5 h-5" />
       </Button>
 
-      {/* Navigation hints - minimal */}
-      <div className="fixed left-4 top-1/2 transform -translate-y-1/2 z-40 flex flex-col gap-4">
+      {/* Navigation hints - Enhanced design and positioning */}
+      <div className="fixed z-40 flex flex-col gap-4 transition-opacity duration-300"
+           style={{
+             left: 'max(1rem, env(safe-area-inset-left))',
+             top: '50%',
+             transform: 'translateY(-50%)'
+           }}>
         <Button
           onClick={() => {
             const container = containerRef.current;
@@ -447,10 +506,10 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
             }
           }}
           disabled={activeIndex === 0}
-          className="bg-black/30 text-white hover:bg-black/50 backdrop-blur-sm border-none p-2 h-8 w-8 rounded-full disabled:opacity-30"
+          className="bg-black/40 text-white hover:bg-black/60 backdrop-blur-md border-none p-2.5 h-10 w-10 rounded-full disabled:opacity-20 transition-all duration-200 hover:scale-110 shadow-xl"
           size="sm"
         >
-          <ChevronUp className="w-4 h-4" />
+          <ChevronUp className="w-5 h-5" />
         </Button>
         
         <Button
@@ -464,20 +523,26 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
             }
           }}
           disabled={activeIndex === polls.length - 1}
-          className="bg-black/30 text-white hover:bg-black/50 backdrop-blur-sm border-none p-2 h-8 w-8 rounded-full disabled:opacity-30"
+          className="bg-black/40 text-white hover:bg-black/60 backdrop-blur-md border-none p-2.5 h-10 w-10 rounded-full disabled:opacity-20 transition-all duration-200 hover:scale-110 shadow-xl"
           size="sm"
         >
-          <ChevronDown className="w-4 h-4" />
+          <ChevronDown className="w-5 h-5" />
         </Button>
       </div>
 
-      {/* Main scroll container - full screen */}
+      {/* Main scroll container - Perfect full screen with enhanced snap */}
       <div 
         ref={containerRef}
         className="w-full h-full overflow-y-scroll overflow-x-hidden scrollbar-hide snap-y snap-mandatory"
         style={{
+          height: '100vh',
+          height: '100dvh',
+          width: '100vw',
+          width: '100dvw',
           scrollBehavior: 'smooth',
           WebkitOverflowScrolling: 'touch',
+          scrollSnapType: 'y mandatory',
+          scrollSnapStop: 'always'
         }}
       >
         {polls.map((poll, index) => (
@@ -495,6 +560,7 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
         ))}
       </div>
 
+      {/* Enhanced CSS for better scroll behavior and mobile support */}
       <style jsx>{`
         .scrollbar-hide {
           -ms-overflow-style: none;
@@ -517,9 +583,52 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
           scroll-snap-stop: always;
         }
 
-        /* Prevent overscroll */
+        /* Perfect full screen support */
+        @supports (height: 100dvh) {
+          .h-screen {
+            height: 100dvh;
+          }
+        }
+
+        /* Prevent overscroll and improve touch behavior */
         body {
           overscroll-behavior: none;
+          -webkit-overflow-scrolling: touch;
+          touch-action: pan-y;
+        }
+
+        /* Enhance mobile viewport behavior */
+        @media (max-width: 768px) {
+          /* Ensure proper mobile viewport handling */
+          .fixed.inset-0 {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 100vh;
+            height: 100dvh;
+          }
+        }
+
+        /* Better touch interaction */
+        * {
+          -webkit-tap-highlight-color: transparent;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+
+        /* Allow text selection for content */
+        .text-white, .text-gray-400 {
+          -webkit-user-select: auto;
+          -khtml-user-select: auto;
+          -moz-user-select: auto;
+          -ms-user-select: auto;
+          user-select: auto;
         }
       `}</style>
     </div>
