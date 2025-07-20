@@ -8,6 +8,7 @@ import PollCard from '../components/PollCard';
 import { Settings, MapPin, Calendar, Users, Vote, Trophy, Heart } from 'lucide-react';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
+import { cn } from '../lib/utils';
 
 const StatCard = ({ icon: Icon, label, value, color = "blue" }) => (
   <Card className="hover:shadow-md transition-shadow">
