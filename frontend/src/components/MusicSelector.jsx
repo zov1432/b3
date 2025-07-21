@@ -117,7 +117,6 @@ const MusicSelector = ({ onSelectMusic, selectedMusic, pollTitle = '' }) => {
   const [activeCategory, setActiveCategory] = useState('Todas');
   const [currentMusic, setCurrentMusic] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [showRecommended, setShowRecommended] = useState(true);
   const audioRef = useRef(null);
 
   // Obtener música filtrada
@@ -129,10 +128,13 @@ const MusicSelector = ({ onSelectMusic, selectedMusic, pollTitle = '' }) => {
   };
 
   const filteredMusic = getFilteredMusic();
-  const recommendedMusic = getRecommendedMusic(pollTitle);
 
   const handlePlay = (music) => {
-    // En una implementación real, aquí cargarías y reproducirías el archivo de audio
+    // Pausar música anterior si hay una reproduciéndose
+    if (isPlaying && currentMusic?.id !== music.id) {
+      setIsPlaying(false);
+    }
+    
     setCurrentMusic(music);
     setIsPlaying(true);
     
@@ -143,84 +145,52 @@ const MusicSelector = ({ onSelectMusic, selectedMusic, pollTitle = '' }) => {
     }, 3000);
   };
 
-  const handlePause = () => {
-    setIsPlaying(false);
-    setCurrentMusic(null);
-  };
-
   const handleSelectMusic = (music) => {
     onSelectMusic(music);
   };
 
-  const clearSelection = () => {
-    onSelectMusic(null);
-  };
-
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3 pb-3 border-b">
-        <Music className="w-5 h-5 text-blue-600" />
-        <h3 className="font-semibold text-lg">Seleccionar Música</h3>
+    <div className="space-y-3 bg-white">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-2 border-b">
+        <h3 className="font-bold text-lg">Agregar música</h3>
         {selectedMusic && (
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            onClick={clearSelection}
-            className="ml-auto text-red-600 hover:text-red-700"
+            onClick={() => onSelectMusic(null)}
+            className="text-gray-500 hover:text-red-500 text-xs"
           >
-            Quitar música
+            Quitar
           </Button>
         )}
       </div>
 
-      {/* Selected Music Display */}
-      {selectedMusic && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-          <div className="flex items-center gap-2 text-blue-700 mb-2">
-            <Check className="w-4 h-4" />
-            <span className="font-semibold text-sm">Música seleccionada:</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <img 
-              src={selectedMusic.cover} 
-              alt={selectedMusic.title}
-              className="w-10 h-10 rounded-lg object-cover"
-            />
-            <div>
-              <p className="font-semibold text-sm">{selectedMusic.title}</p>
-              <p className="text-xs text-blue-600">{selectedMusic.artist}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Search */}
+      {/* Quick search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
         <Input
-          placeholder="Buscar música por título o artista..."
+          placeholder="Buscar música..."
           value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setShowRecommended(false);
-          }}
-          className="pl-10"
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 bg-gray-50 border-0 rounded-full"
         />
       </div>
 
-      {/* Categories */}
+      {/* Quick categories - Horizontal scroll like TikTok */}
       {!searchQuery && (
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {musicCategories.map((category) => (
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {['Trending', 'Pop', 'Hip-Hop', 'Electronic', 'Rock'].map((category) => (
             <Button
               key={category}
               variant={activeCategory === category ? "default" : "outline"}
               size="sm"
-              onClick={() => {
-                setActiveCategory(category);
-                setShowRecommended(false);
-              }}
-              className="whitespace-nowrap"
+              onClick={() => setActiveCategory(category === 'Trending' ? 'Todas' : category)}
+              className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-medium ${
+                activeCategory === category || (category === 'Trending' && activeCategory === 'Todas')
+                  ? 'bg-black text-white hover:bg-gray-800' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-0'
+              }`}
             >
               {category}
             </Button>
@@ -228,87 +198,26 @@ const MusicSelector = ({ onSelectMusic, selectedMusic, pollTitle = '' }) => {
         </div>
       )}
 
-      {/* Recommended Music */}
-      {showRecommended && recommendedMusic.length > 0 && !searchQuery && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-yellow-500" />
-            <h4 className="font-semibold text-sm text-gray-700">
-              Recomendado para tu publicación
-            </h4>
+      {/* Music list - Simple vertical list like Instagram */}
+      <div className="space-y-1 max-h-64 overflow-y-auto">
+        {filteredMusic.length > 0 ? (
+          filteredMusic.map((music) => (
+            <SimpleMusicCard
+              key={music.id}
+              music={music}
+              isSelected={selectedMusic?.id === music.id}
+              isPlaying={currentMusic?.id === music.id && isPlaying}
+              onSelect={handleSelectMusic}
+              onPlay={handlePlay}
+            />
+          ))
+        ) : (
+          <div className="text-center py-8 text-gray-400">
+            <Music className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">No hay música disponible</p>
           </div>
-          <div className="grid grid-cols-1 gap-2">
-            {recommendedMusic.slice(0, 3).map((music) => (
-              <MusicCard
-                key={music.id}
-                music={music}
-                isSelected={selectedMusic?.id === music.id}
-                isPlaying={currentMusic?.id === music.id && isPlaying}
-                onSelect={handleSelectMusic}
-                onPlay={handlePlay}
-                onPause={handlePause}
-              />
-            ))}
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowRecommended(false)}
-            className="w-full text-sm text-gray-600 hover:text-gray-800"
-          >
-            Ver toda la biblioteca
-          </Button>
-        </div>
-      )}
-
-      {/* Music List */}
-      {!showRecommended && (
-        <ScrollArea className="h-64">
-          <div className="space-y-2">
-            {filteredMusic.length > 0 ? (
-              filteredMusic.map((music) => (
-                <MusicCard
-                  key={music.id}
-                  music={music}
-                  isSelected={selectedMusic?.id === music.id}
-                  isPlaying={currentMusic?.id === music.id && isPlaying}
-                  onSelect={handleSelectMusic}
-                  onPlay={handlePlay}
-                  onPause={handlePause}
-                />
-              ))
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <Music className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>No se encontró música que coincida con tu búsqueda</p>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      )}
-
-      {/* Currently Playing */}
-      {isPlaying && currentMusic && (
-        <div className="fixed bottom-4 right-4 bg-black text-white p-3 rounded-lg shadow-lg flex items-center gap-3 z-50">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
-              <Volume2 className="w-4 h-4" />
-            </div>
-            <div className="text-sm">
-              <p className="font-semibold">{currentMusic.title}</p>
-              <p className="text-gray-300 text-xs">{currentMusic.artist}</p>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handlePause}
-            className="text-white hover:text-gray-300"
-          >
-            <Pause className="w-4 h-4" />
-          </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
