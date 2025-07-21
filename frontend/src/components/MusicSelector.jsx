@@ -42,82 +42,72 @@ const MusicWaveform = ({ waveform, isPlaying, duration = 30 }) => {
   );
 };
 
-const MusicCard = ({ music, isSelected, isPlaying, onSelect, onPlay, onPause }) => {
+// Simplified TikTok/Instagram style music card
+const SimpleMusicCard = ({ music, isSelected, isPlaying, onSelect, onPlay }) => {
   return (
     <div 
       className={`
-        relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-200
-        ${isSelected 
-          ? 'border-blue-500 bg-blue-50' 
-          : 'border-gray-200 hover:border-gray-300 bg-white'
-        }
+        flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50
+        ${isSelected ? 'bg-blue-50 border-l-4 border-blue-500' : ''}
       `}
       onClick={() => onSelect(music)}
     >
-      {/* Selected indicator */}
-      {isSelected && (
-        <div className="absolute top-2 right-2 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center">
-          <Check className="w-3 h-3" />
-        </div>
-      )}
-
-      <div className="flex items-center gap-3">
-        {/* Cover */}
-        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
-          <img 
-            src={music.cover} 
-            alt={music.title}
-            className="w-full h-full object-cover"
-          />
-          {/* Play/Pause button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              isPlaying ? onPause() : onPlay(music);
-            }}
-            className="absolute inset-0 bg-black/40 flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity duration-200"
-          >
+      {/* Cover with play button */}
+      <div 
+        className="relative w-12 h-12 rounded-lg overflow-hidden bg-gradient-to-br from-pink-500 to-purple-600 flex-shrink-0"
+        onClick={(e) => {
+          e.stopPropagation();
+          onPlay(music);
+        }}
+      >
+        <img 
+          src={music.cover} 
+          alt={music.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+          <div className={`w-6 h-6 rounded-full bg-white/90 flex items-center justify-center transition-all ${isPlaying ? 'scale-110' : ''}`}>
             {isPlaying ? (
-              <Pause className="w-4 h-4" />
+              <div className="w-2 h-2 bg-black rounded-full animate-pulse" />
             ) : (
-              <Play className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-
-        {/* Info */}
-        <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-sm text-gray-900 truncate">
-            {music.title}
-          </h4>
-          <p className="text-xs text-gray-600 truncate">
-            {music.artist}
-          </p>
-          <div className="flex items-center gap-2 mt-1">
-            <Badge variant="secondary" className="text-xs px-2 py-0">
-              {music.category}
-            </Badge>
-            <span className="text-xs text-gray-500 flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {formatDuration(music.duration)}
-            </span>
-            {music.isOriginal && (
-              <Badge variant="default" className="text-xs px-2 py-0 bg-green-600">
-                Original
-              </Badge>
+              <Play className="w-3 h-3 text-black ml-0.5" />
             )}
           </div>
         </div>
       </div>
 
-      {/* Waveform */}
-      <div className="mt-2 text-blue-500">
-        <MusicWaveform 
-          waveform={music.waveform} 
-          isPlaying={isPlaying}
-          duration={music.duration}
-        />
+      {/* Music info */}
+      <div className="flex-1 min-w-0">
+        <h4 className="font-semibold text-sm text-gray-900 truncate">
+          {music.title}
+        </h4>
+        <p className="text-xs text-gray-500 truncate">
+          {music.artist}
+        </p>
       </div>
+
+      {/* Simple waveform indicator */}
+      <div className="flex items-center gap-0.5">
+        {music.waveform.slice(0, 4).map((height, index) => (
+          <div
+            key={index}
+            className={`w-1 bg-gray-400 rounded-full transition-all duration-75 ${
+              isPlaying ? 'animate-pulse' : ''
+            }`}
+            style={{
+              height: `${height * 12 + 4}px`,
+              animationDelay: `${index * 100}ms`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Selected indicator */}
+      {isSelected && (
+        <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center">
+          <Check className="w-3 h-3" />
+        </div>
+      )}
     </div>
   );
 };
