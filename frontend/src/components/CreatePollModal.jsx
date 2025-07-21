@@ -207,65 +207,67 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
             />
           </div>
 
-          {/* Selector de Música */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="text-base font-semibold">
-                Música de Fondo (Opcional)
-              </Label>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowMusicSelector(!showMusicSelector)}
-                className="text-blue-600 border-blue-300 hover:bg-blue-50"
-              >
-                <Music className="w-4 h-4 mr-1" />
-                {selectedMusic ? 'Cambiar música' : 'Agregar música'}
-              </Button>
-            </div>
-            
-            {/* Música seleccionada preview */}
-            {selectedMusic && !showMusicSelector && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-3">
-                <div className="flex items-center gap-3">
+          {/* Selector de Música Simplificado - Estilo TikTok */}
+          {selectedMusic ? (
+            /* Música seleccionada - Mostrar de forma compacta */
+            <div className="flex items-center justify-between bg-gradient-to-r from-pink-50 to-purple-50 border border-purple-200 rounded-lg p-3">
+              <div className="flex items-center gap-3">
+                <div className="relative w-10 h-10 rounded-lg overflow-hidden">
                   <img 
                     src={selectedMusic.cover} 
                     alt={selectedMusic.title}
-                    className="w-12 h-12 rounded-lg object-cover ring-2 ring-blue-200"
+                    className="w-full h-full object-cover"
                   />
-                  <div>
-                    <p className="font-semibold text-gray-900">{selectedMusic.title}</p>
-                    <p className="text-sm text-gray-600">{selectedMusic.artist}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
-                        {selectedMusic.category}
-                      </span>
-                      {selectedMusic.isOriginal && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                          Original
-                        </span>
-                      )}
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                    <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
+                      <Music className="w-2 h-2 text-black" />
                     </div>
                   </div>
                 </div>
+                <div>
+                  <p className="font-semibold text-sm text-gray-900">{selectedMusic.title}</p>
+                  <p className="text-xs text-gray-600">{selectedMusic.artist}</p>
+                </div>
               </div>
-            )}
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelectedMusic(null);
+                  setShowMusicSelector(false);
+                }}
+                className="text-gray-500 hover:text-red-500"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          ) : (
+            /* Botón para agregar música - Estilo simple */
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowMusicSelector(!showMusicSelector)}
+              className="w-full h-12 border-dashed border-2 border-gray-300 hover:border-purple-400 hover:bg-purple-50 text-gray-600 hover:text-purple-600 transition-colors"
+            >
+              <Music className="w-5 h-5 mr-2" />
+              Agregar música
+            </Button>
+          )}
 
-            {/* Selector de música */}
-            {showMusicSelector && (
-              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50/50">
-                <MusicSelector
-                  onSelectMusic={(music) => {
-                    setSelectedMusic(music);
-                    setShowMusicSelector(false);
-                  }}
-                  selectedMusic={selectedMusic}
-                  pollTitle={title}
-                />
-              </div>
-            )}
-          </div>
+          {/* Selector de música expandido */}
+          {showMusicSelector && !selectedMusic && (
+            <div className="border rounded-lg overflow-hidden bg-white shadow-sm">
+              <MusicSelector
+                onSelectMusic={(music) => {
+                  setSelectedMusic(music);
+                  setShowMusicSelector(false);
+                }}
+                selectedMusic={selectedMusic}
+                pollTitle={title}
+              />
+            </div>
+          )}
 
           {/* Opciones con Media */}
           <div className="space-y-4">
