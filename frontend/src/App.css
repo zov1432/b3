@@ -32,3 +32,36 @@
         transform: rotate(360deg);
     }
 }
+
+/* TikTok/Instagram Style Enhancements */
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Smooth music selection animations */
+@keyframes musicPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.music-playing {
+    animation: musicPulse 2s ease-in-out infinite;
+}
+
+/* Custom gradient animations */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.gradient-animate {
+    background: linear-gradient(-45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+    background-size: 400% 400%;
+    animation: gradientShift 3s ease infinite;
+}
