@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing Script - Ultra-Addictive Polling System
-Tests all backend endpoints including the new addiction algorithm system.
+Backend API Testing Script - Authentication & Messaging System
+Tests complete authentication and messaging system with addiction integration.
 """
 
 import requests
@@ -23,6 +23,10 @@ def get_backend_url():
     except Exception as e:
         print(f"Error reading frontend .env file: {e}")
         return None
+
+# Global variables for test data
+test_users = []
+auth_tokens = []
 
 def test_health_check(base_url):
     """Test the root health check endpoint"""
