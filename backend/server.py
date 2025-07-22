@@ -39,10 +39,49 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
-app = FastAPI(title="Ultra-Addictive Polling App", description="More addictive than TikTok")
+app = FastAPI(title="Ultra-Addictive Social Network", description="More addictive than TikTok with messaging")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+
+# Security
+security = HTTPBearer()
+
+# Authentication dependency
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> UserResponse:
+    """Get current authenticated user"""
+    payload = verify_token(credentials.credentials)
+    if payload is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    user_id = payload.get("sub")
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+        )
+    
+    # Get user from database
+    user_data = await db.users.find_one({"id": user_id})
+    if not user_data:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+        )
+    
+    return UserResponse(**user_data)
+
+# Optional authentication (for some endpoints)
+async def get_current_user_optional(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Optional[UserResponse]:
+    """Get current user if authenticated, None otherwise"""
+    try:
+        return await get_current_user(credentials)
+    except HTTPException:
+        return None
 
 # Define Models
 class StatusCheck(BaseModel):
