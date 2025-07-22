@@ -71,9 +71,9 @@ const TestFOMO = () => {
           </ol>
         </div>
 
-        {/* Modal FOMO */}
+        {/* Modal FOMO Simple */}
         {!fomoHidden && (
-          <FOMOAlert
+          <SimpleFOMOAlert
             fomoContent={testFOMOData}
             onTakeAction={handleFOMOAction}
             onClose={handleFOMOClose}
