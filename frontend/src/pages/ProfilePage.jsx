@@ -38,7 +38,7 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("polls");
   const [polls, setPolls] = useState(mockPolls);
   const { toast } = useToast();
-  const { user, logout } = useAuth();
+  const { user: authUser, logout } = useAuth();
   const { userProfile, level, xp, streak, userAchievements } = useAddiction();
 
   const handleLogout = () => {
@@ -49,17 +49,24 @@ const ProfilePage = () => {
     });
   };
 
-  // Mock user data
-  const user = {
-    id: '1',
-    username: 'usuario_actual',
-    displayName: 'Mi Perfil',
+  // Use authenticated user data
+  const displayUser = {
+    id: authUser?.id || '1',
+    username: authUser?.username || 'usuario_actual',
+    displayName: authUser?.display_name || 'Mi Perfil',
+    email: authUser?.email || 'user@example.com',
     bio: '🎯 Creando votaciones épicas | 📊 Fan de las estadísticas | 🚀 Siempre innovando',
     location: 'Madrid, España',
-    joinDate: 'Marzo 2024',
-    avatar: 'https://github.com/shadcn.png',
+    joinDate: new Date(authUser?.created_at || Date.now()).toLocaleDateString('es-ES', { 
+      year: 'numeric', 
+      month: 'long' 
+    }),
+    avatar: authUser?.avatar_url || null,
     followers: 1234,
     following: 567,
+    totalVotes: userProfile?.total_votes || 89,
+    pollsCreated: userProfile?.total_polls_created || 23
+  };
     totalPolls: mockPolls.length,
     totalVotes: 15420,
     verified: true
