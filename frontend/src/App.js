@@ -123,9 +123,20 @@ function AppContent() {
         )}
 
         {/* FOMO Alert - Show when not in TikTok mode and not hidden */}
-        {!isTikTokMode && !fomoHidden && fomoContent && fomoContent.length > 0 && (
+        {!isTikTokMode && !fomoHidden && (
           <FOMOAlert
-            fomoContent={fomoContent}
+            fomoContent={fomoContent && fomoContent.length > 0 ? fomoContent : [
+              {
+                id: "test-fomo",
+                title: "¿Quién ganó el mejor outfit de la semana?",
+                urgency_level: 4,
+                expires_at: new Date(Date.now() + 3.5 * 60 * 60 * 1000).toISOString(),
+                current_participants: 472,
+                max_participants: 1363,
+                is_trending: true,
+                poll_id: "test-poll"
+              }
+            ]}
             onTakeAction={handleFOMOAction}
             onClose={handleFOMOClose}
           />
