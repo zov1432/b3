@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import BottomNavigation from './components/BottomNavigation';
 import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/ExplorePage';
