@@ -613,9 +613,25 @@ async def get_all_achievements():
     """Get all possible achievements"""
     return addiction_engine.achievements
 
+@api_router.get("/user/achievements")
+async def get_my_achievements(current_user: UserResponse = Depends(get_current_user)):
+    """Get current user's unlocked achievements"""
+    profile_data = await db.user_profiles.find_one({"id": current_user.id})
+    if not profile_data:
+        return []
+    
+    profile = UserProfile(**profile_data)
+    unlocked = []
+    
+    for achievement in addiction_engine.achievements:
+        if achievement.id in profile.achievements:
+            unlocked.append(achievement)
+    
+    return unlocked
+
 @api_router.get("/user/{user_id}/achievements")
 async def get_user_achievements(user_id: str):
-    """Get user's unlocked achievements"""
+    """Get user's unlocked achievements (public)"""
     profile_data = await db.user_profiles.find_one({"id": user_id})
     if not profile_data:
         raise HTTPException(status_code=404, detail="User not found")
