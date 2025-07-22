@@ -201,25 +201,25 @@ const ProfilePage = () => {
           <StatCard
             icon={Users}
             label="Seguidores"
-            value={user.followers.toLocaleString()}
+            value={displayUser.followers.toLocaleString()}
             color="blue"
           />
           <StatCard
             icon={Vote}
             label="Votaciones"
-            value={user.totalPolls}
+            value={displayUser.totalPolls}
             color="green"
           />
           <StatCard
             icon={Trophy}
             label="Votos totales"
-            value={user.totalVotes.toLocaleString()}
+            value={displayUser.totalVotes.toLocaleString()}
             color="purple"
           />
           <StatCard
             icon={Heart}
             label="Siguiendo"
-            value={user.following}
+            value={displayUser.following}
             color="red"
           />
         </div>
