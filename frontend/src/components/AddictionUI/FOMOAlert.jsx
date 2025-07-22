@@ -230,7 +230,7 @@ const FOMOAlert = ({
               }}
             />
           )}
-        </motion.div>
+        </div>
 
         {/* Pulsing effect for extreme urgency */}
         {urgencyLevel >= 5 && timeLeft && timeLeft.minutes < 5 && (
