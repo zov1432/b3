@@ -581,12 +581,13 @@ async def track_user_action(action: UserAction, current_user: UserResponse = Dep
     }
 
 @api_router.post("/user/behavior")
-async def track_user_behavior(behavior: UserBehavior):
+async def track_user_behavior(behavior: UserBehavior, current_user: UserResponse = Depends(get_current_user)):
     """Track detailed user behavior for addiction analytics"""
+    behavior.user_id = current_user.id
     await db.user_behavior.insert_one(behavior.dict())
     
     # Calculate real-time addiction score
-    recent_behaviors = await db.user_behavior.find({"user_id": behavior.user_id}).sort("timestamp", -1).limit(20).to_list(20)
+    recent_behaviors = await db.user_behavior.find({"user_id": current_user.id}).sort("timestamp", -1).limit(20).to_list(20)
     addiction_score = addiction_engine.calculate_addiction_score(recent_behaviors)
     
     return {
@@ -595,9 +596,15 @@ async def track_user_behavior(behavior: UserBehavior):
         "engagement_level": "addicted" if addiction_score > 80 else "high" if addiction_score > 60 else "medium" if addiction_score > 30 else "low"
     }
 
+@api_router.get("/user/streaks")
+async def get_my_streaks(current_user: UserResponse = Depends(get_current_user)):
+    """Get current user streaks"""
+    streaks = await db.user_streaks.find({"user_id": current_user.id}).to_list(10)
+    return [UserStreak(**streak) for streak in streaks]
+
 @api_router.get("/user/{user_id}/streaks")
 async def get_user_streaks(user_id: str):
-    """Get all user streaks"""
+    """Get user streaks (public)"""
     streaks = await db.user_streaks.find({"user_id": user_id}).to_list(10)
     return [UserStreak(**streak) for streak in streaks]
 
