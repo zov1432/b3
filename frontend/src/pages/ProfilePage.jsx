@@ -146,32 +146,50 @@ const ProfilePage = () => {
 
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-2xl font-bold">{user.displayName}</h2>
+                  <h2 className="text-2xl font-bold">{displayUser.displayName}</h2>
                   <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30">
-                    @{user.username}
+                    @{displayUser.username}
                   </Badge>
+                  {/* Level Badge */}
+                  {level && (
+                    <Badge variant="secondary" className="bg-gold/20 text-yellow-200 hover:bg-gold/30">
+                      Nivel {level}
+                    </Badge>
+                  )}
                 </div>
                 
-                <p className="text-white/90 max-w-md">{user.bio}</p>
+                <p className="text-white/90 max-w-md">{displayUser.bio}</p>
                 
                 <div className="flex items-center gap-4 text-sm text-white/80">
                   <div className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
-                    <span>{user.location}</span>
+                    <span>{displayUser.location}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    <span>Se unió en {user.joinDate}</span>
+                    <span>Se unió en {displayUser.joinDate}</span>
                   </div>
+                  {streak && streak > 0 && (
+                    <div className="flex items-center gap-1">
+                      <span className="font-bold">🔥 {streak}</span>
+                      <span className="text-white/80">días</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
               <div className="flex gap-2">
                 <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                  Editar Perfil
+                  <Settings className="w-4 h-4 mr-2" />
+                  Editar
                 </Button>
-                <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                  Compartir
+                <Button 
+                  variant="outline" 
+                  className="bg-red-500/20 border-red-500/30 text-white hover:bg-red-500/30"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Salir
                 </Button>
               </div>
             </div>
