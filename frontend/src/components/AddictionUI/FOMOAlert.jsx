@@ -78,7 +78,8 @@ const FOMOAlert = ({
   return (
     <AnimatePresence>
       <motion.div
-        className={`fixed bottom-4 left-4 right-4 md:left-auto md:w-96 z-[9997] pointer-events-auto ${className}`}
+        className={`fixed bottom-4 left-4 right-4 md:left-auto md:w-96 z-[99999] ${className}`}
+        style={{ pointerEvents: 'auto' }}
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
