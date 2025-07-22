@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FOMOAlert } from './components/AddictionUI';
+import SimpleFOMOAlert from './components/SimpleFOMOAlert';
 
 const TestFOMO = () => {
   const [fomoHidden, setFomoHidden] = useState(false);
