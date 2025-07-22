@@ -87,16 +87,9 @@ const FOMOAlert = ({
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <motion.div
-                className="bg-white/20 p-1 rounded-full"
-                animate={urgencyLevel >= 5 ? { rotate: [0, 10, -10, 0] } : {}}
-                transition={{ 
-                  duration: 0.5,
-                  repeat: urgencyLevel >= 5 ? Infinity : 0
-                }}
-              >
+              <div className="bg-white/20 p-1 rounded-full">
                 <AlertTriangle className="w-5 h-5 text-white" />
-              </motion.div>
+              </div>
               
               <span className="text-white font-bold text-sm">
                 {getUrgencyText()}
