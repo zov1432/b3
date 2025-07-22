@@ -80,6 +80,7 @@ const FOMOAlert = ({
       className={`fixed bottom-4 left-4 right-4 md:left-auto md:w-96 z-[99999] ${className}`}
       style={{ pointerEvents: 'auto' }}
     >
+      <div>
         <div
           className={`bg-gradient-to-r ${getUrgencyColor()} p-4 rounded-2xl shadow-2xl border-2 border-white/30`}
         >
