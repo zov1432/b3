@@ -122,15 +122,12 @@ function AppContent() {
           </div>
         )}
 
-        {/* FOMO Alert - Show when not in TikTok mode */}
-        {!isTikTokMode && fomoContent && fomoContent.length > 0 && (
+        {/* FOMO Alert - Show when not in TikTok mode and not hidden */}
+        {!isTikTokMode && !fomoHidden && fomoContent && fomoContent.length > 0 && (
           <FOMOAlert
             fomoContent={fomoContent}
             onTakeAction={handleFOMOAction}
-            onClose={() => {
-              // Hide FOMO for this session
-              sessionStorage.setItem('fomoHidden', 'true');
-            }}
+            onClose={handleFOMOClose}
           />
         )}
 
