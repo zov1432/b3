@@ -38,6 +38,16 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("polls");
   const [polls, setPolls] = useState(mockPolls);
   const { toast } = useToast();
+  const { user, logout } = useAuth();
+  const { userProfile, level, xp, streak, userAchievements } = useAddiction();
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Sesión cerrada",
+      description: "Has cerrado sesión exitosamente",
+    });
+  };
 
   // Mock user data
   const user = {
