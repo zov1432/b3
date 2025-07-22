@@ -132,12 +132,12 @@ const ProfilePage = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <div className="relative">
                 <Avatar className="w-24 h-24 ring-4 ring-white/20">
-                  <AvatarImage src={user.avatar} alt={user.displayName} />
+                  <AvatarImage src={displayUser.avatar} alt={displayUser.displayName} />
                   <AvatarFallback className="bg-white/20 text-white text-2xl font-bold">
-                    {user.displayName.charAt(0)}
+                    {displayUser.displayName.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                {user.verified && (
+                {displayUser.verified && (
                   <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center ring-4 ring-white">
                     <Trophy className="w-4 h-4 text-white" />
                   </div>
