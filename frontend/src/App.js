@@ -205,13 +205,23 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AddictionProvider>
-        <TikTokProvider>
-          <AppContent />
-        </TikTokProvider>
-      </AddictionProvider>
-    </AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        {/* Test page accessible without auth */}
+        <Route path="/test-fomo" element={<TestFOMO />} />
+        
+        {/* Main app with providers */}
+        <Route path="/*" element={
+          <AuthProvider>
+            <AddictionProvider>
+              <TikTokProvider>
+                <AppContent />
+              </TikTokProvider>
+            </AddictionProvider>
+          </AuthProvider>
+        } />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
