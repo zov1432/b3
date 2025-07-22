@@ -65,11 +65,9 @@ const ProfilePage = () => {
     followers: 1234,
     following: 567,
     totalVotes: userProfile?.total_votes || 89,
-    pollsCreated: userProfile?.total_polls_created || 23
-  };
+    pollsCreated: userProfile?.total_polls_created || 23,
     totalPolls: mockPolls.length,
-    totalVotes: 15420,
-    verified: true
+    verified: authUser?.is_verified || false
   };
 
   // Filter user's polls (in real app, this would be filtered by user ID)
