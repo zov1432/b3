@@ -11,19 +11,95 @@ import { createPoll } from './services/mockData';
 import { useToast } from './hooks/use-toast';
 import { TikTokProvider, useTikTok } from './contexts/TikTokContext';
 
+// Import Addiction System
+import { AddictionProvider, useAddiction } from './contexts/AddictionContext';
+import { 
+  RewardPopup, 
+  LevelUpAnimation, 
+  AchievementToast, 
+  ProgressBar,
+  FOMOAlert,
+  JackpotExplosion 
+} from './components/AddictionUI';
+
 function AppContent() {
   const { toast } = useToast();
   const { isTikTokMode } = useTikTok();
+  const {
+    showRewardPopup,
+    rewardData,
+    showLevelUp,
+    level,
+    showAchievement,
+    achievementData,
+    showJackpot,
+    jackpotData,
+    fomoContent,
+    setShowRewardPopup,
+    setShowLevelUp,
+    setShowAchievement,
+    setShowJackpot,
+    userProfile,
+    xp,
+    streak,
+    getXpToNextLevel,
+    getXpProgress
+  } = useAddiction();
 
-  const handleCreatePoll = (pollData) => {
+  const handleCreatePoll = async (pollData) => {
     const newPoll = createPoll(pollData);
-    // En la implementación real, esto haría una llamada a la API
+    
+    // Track poll creation for addiction system
+    await useAddiction().trackAction('create', {
+      poll_id: newPoll.id,
+      has_music: !!pollData.selectedMusic,
+      timestamp: new Date().toISOString()
+    });
+    
     console.log('Nueva votación creada:', newPoll);
+    
+    toast({
+      title: "¡Votación creada!",
+      description: "Tu votación ha sido publicada exitosamente",
+    });
+  };
+
+  const handleFOMOAction = (fomoItem) => {
+    // Navigate to the FOMO content
+    window.location.href = `/poll/${fomoItem.poll_id}`;
   };
 
   return (
-    <div className="App">
+    <div className="App relative">
       <BrowserRouter>
+        {/* Progress Bar - Always visible except in TikTok mode */}
+        {!isTikTokMode && userProfile && (
+          <div className="fixed top-4 left-4 right-4 z-[9990] pointer-events-none">
+            <div className="max-w-md mx-auto pointer-events-auto">
+              <ProgressBar
+                level={level}
+                xp={xp}
+                xpToNext={getXpToNextLevel()}
+                progress={getXpProgress()}
+                streak={streak}
+                className="backdrop-blur-md"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* FOMO Alert - Show when not in TikTok mode */}
+        {!isTikTokMode && fomoContent && fomoContent.length > 0 && (
+          <FOMOAlert
+            fomoContent={fomoContent}
+            onTakeAction={handleFOMOAction}
+            onClose={() => {
+              // Hide FOMO for this session
+              sessionStorage.setItem('fomoHidden', 'true');
+            }}
+          />
+        )}
+
         <Routes>
           {/* Redirect root to feed */}
           <Route path="/" element={<Navigate to="/feed" replace />} />
@@ -45,6 +121,36 @@ function AppContent() {
 
         {/* Toast notifications */}
         <Toaster />
+
+        {/* === ADDICTION UI COMPONENTS === */}
+        
+        {/* Reward Popup */}
+        <RewardPopup
+          show={showRewardPopup}
+          reward={rewardData}
+          onClose={() => setShowRewardPopup(false)}
+        />
+
+        {/* Level Up Animation */}
+        <LevelUpAnimation
+          show={showLevelUp}
+          level={level}
+          onClose={() => setShowLevelUp(false)}
+        />
+
+        {/* Achievement Toast */}
+        <AchievementToast
+          show={showAchievement}
+          achievement={achievementData}
+          onClose={() => setShowAchievement(false)}
+        />
+
+        {/* Jackpot Explosion */}
+        <JackpotExplosion
+          show={showJackpot}
+          jackpotData={jackpotData}
+          onClose={() => setShowJackpot(false)}
+        />
       </BrowserRouter>
     </div>
   );
@@ -52,9 +158,11 @@ function AppContent() {
 
 function App() {
   return (
-    <TikTokProvider>
-      <AppContent />
-    </TikTokProvider>
+    <AddictionProvider>
+      <TikTokProvider>
+        <AppContent />
+      </TikTokProvider>
+    </AddictionProvider>
   );
 }
 
