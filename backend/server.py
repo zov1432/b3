@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -12,14 +13,22 @@ import uuid
 from datetime import datetime, date, timedelta
 import random
 import asyncio
+import re
 
-# Import addiction system
+# Import models
 from models import (
     UserProfile, UserBehavior, AddictionMetrics, Achievement, UserStreak,
     RewardEvent, FOMOContent, PushNotification, SocialProof, DopamineHit,
-    NotificationType, AchievementType
+    NotificationType, AchievementType,
+    # Auth & Messaging models
+    User, UserCreate, UserLogin, UserResponse, Token,
+    Message, MessageCreate, Conversation, ConversationResponse
 )
 from addiction_engine import addiction_engine
+from auth import (
+    verify_password, get_password_hash, create_access_token, 
+    verify_token, ACCESS_TOKEN_EXPIRE_MINUTES
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
