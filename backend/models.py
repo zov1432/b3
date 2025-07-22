@@ -86,7 +86,7 @@ class UserStreak(BaseModel):
     streak_type: str  # daily_vote, daily_create, weekly_active
     current_count: int = 0
     best_count: int = 0
-    last_activity: date = Field(default_factory=date.today)
+    last_activity: datetime = Field(default_factory=datetime.utcnow)
     is_active: bool = True
     multiplier: float = 1.0  # streak bonus multiplier
 
