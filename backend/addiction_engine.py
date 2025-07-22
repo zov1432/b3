@@ -138,21 +138,25 @@ class AddictionEngine:
         # This would normally fetch from database
         streak = UserStreak(user_id=user_id, streak_type=activity_type)
         
-        today = date.today()
+        now = datetime.utcnow()
+        today = now.replace(hour=0, minute=0, second=0, microsecond=0)
         yesterday = today - timedelta(days=1)
         
-        if streak.last_activity == yesterday:
+        # Convert last_activity to date for comparison
+        last_activity_date = streak.last_activity.replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        if last_activity_date == yesterday:
             # Continue streak
             streak.current_count += 1
             streak.best_count = max(streak.best_count, streak.current_count)
-        elif streak.last_activity == today:
+        elif last_activity_date == today:
             # Already active today
             return streak
         else:
             # Streak broken
             streak.current_count = 1
         
-        streak.last_activity = today
+        streak.last_activity = now
         
         # Calculate streak multiplier (gets stronger over time)
         if streak.current_count >= 30:
