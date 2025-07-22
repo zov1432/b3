@@ -108,7 +108,309 @@ class UserAction(BaseModel):
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
-    return {"message": "Ultra-Addictive Polling API", "version": "2.0", "addiction_level": "Maximum"}
+    return {"message": "Ultra-Addictive Social Network API", "version": "3.0", "features": ["polling", "messaging", "addiction_system"]}
+
+# ============= AUTHENTICATION ENDPOINTS =============
+
+@api_router.post("/auth/register", response_model=Token)
+async def register(user_data: UserCreate):
+    """Register a new user"""
+    # Check if email already exists
+    existing_email = await db.users.find_one({"email": user_data.email})
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+    
+    # Check if username already exists
+    existing_username = await db.users.find_one({"username": user_data.username})
+    if existing_username:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already taken"
+        )
+    
+    # Validate username (alphanumeric + underscore only)
+    if not re.match(r'^[a-zA-Z0-9_]+$', user_data.username):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username can only contain letters, numbers, and underscores"
+        )
+    
+    # Create user
+    user = User(
+        email=user_data.email,
+        username=user_data.username,
+        display_name=user_data.display_name
+    )
+    
+    # Hash password and store separately
+    hashed_password = get_password_hash(user_data.password)
+    
+    # Save user to database
+    await db.users.insert_one(user.dict())
+    await db.user_passwords.insert_one({
+        "user_id": user.id,
+        "hashed_password": hashed_password
+    })
+    
+    # Create user profile for addiction system
+    profile = UserProfile(id=user.id, username=user.username)
+    await db.user_profiles.insert_one(profile.dict())
+    
+    # Create initial streak
+    streak = UserStreak(user_id=profile.id, streak_type="daily_vote")
+    await db.user_streaks.insert_one(streak.dict())
+    
+    # Create access token
+    access_token = create_access_token(
+        data={"sub": user.id},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    
+    # Update last login
+    await db.users.update_one(
+        {"id": user.id},
+        {"$set": {"last_login": datetime.utcnow()}}
+    )
+    
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+        expires_in=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        user=UserResponse(**user.dict())
+    )
+
+@api_router.post("/auth/login", response_model=Token)
+async def login(user_credentials: UserLogin):
+    """Login user"""
+    # Find user by email
+    user_data = await db.users.find_one({"email": user_credentials.email})
+    if not user_data:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+    
+    user = User(**user_data)
+    
+    # Check if user is active
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Account is deactivated"
+        )
+    
+    # Get password hash
+    password_data = await db.user_passwords.find_one({"user_id": user.id})
+    if not password_data:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+    
+    # Verify password
+    if not verify_password(user_credentials.password, password_data["hashed_password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+    
+    # Create access token
+    access_token = create_access_token(
+        data={"sub": user.id},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    
+    # Update last login
+    await db.users.update_one(
+        {"id": user.id},
+        {"$set": {"last_login": datetime.utcnow()}}
+    )
+    
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+        expires_in=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        user=UserResponse(**user.dict())
+    )
+
+@api_router.get("/auth/me", response_model=UserResponse)
+async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)):
+    """Get current user information"""
+    return current_user
+
+@api_router.get("/users/search")
+async def search_users(
+    q: str,
+    limit: int = 20,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Search users by username or display name"""
+    if len(q) < 2:
+        return []
+    
+    # Search by username or display name (case insensitive)
+    users = await db.users.find({
+        "$or": [
+            {"username": {"$regex": q, "$options": "i"}},
+            {"display_name": {"$regex": q, "$options": "i"}}
+        ],
+        "is_active": True,
+        "id": {"$ne": current_user.id}  # Exclude current user
+    }).limit(limit).to_list(limit)
+    
+    return [UserResponse(**user) for user in users]
+
+# ============= MESSAGING ENDPOINTS =============
+
+@api_router.get("/conversations")
+async def get_conversations(current_user: UserResponse = Depends(get_current_user)):
+    """Get user's conversations"""
+    conversations = await db.conversations.find({
+        "participants": current_user.id,
+        "is_active": True
+    }).sort("last_message_at", -1).to_list(50)
+    
+    result = []
+    for conv_data in conversations:
+        conv = Conversation(**conv_data)
+        
+        # Get participants info
+        participant_ids = [p for p in conv.participants if p != current_user.id]
+        participants_data = await db.users.find({"id": {"$in": participant_ids}}).to_list(10)
+        participants = [UserResponse(**p) for p in participants_data]
+        
+        result.append(ConversationResponse(
+            id=conv.id,
+            participants=participants,
+            last_message=conv.last_message,
+            last_message_at=conv.last_message_at,
+            unread_count=conv.unread_count.get(current_user.id, 0),
+            created_at=conv.created_at
+        ))
+    
+    return result
+
+@api_router.get("/conversations/{conversation_id}/messages")
+async def get_messages(
+    conversation_id: str,
+    limit: int = 50,
+    offset: int = 0,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Get messages in a conversation"""
+    # Check if user is participant
+    conversation = await db.conversations.find_one({
+        "id": conversation_id,
+        "participants": current_user.id
+    })
+    if not conversation:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversation not found"
+        )
+    
+    # Get messages
+    messages = await db.messages.find({
+        "conversation_id": conversation_id
+    }).sort("created_at", -1).skip(offset).limit(limit).to_list(limit)
+    
+    # Mark messages as read
+    await db.messages.update_many({
+        "conversation_id": conversation_id,
+        "recipient_id": current_user.id,
+        "is_read": False
+    }, {"$set": {"is_read": True}})
+    
+    # Update unread count
+    await db.conversations.update_one(
+        {"id": conversation_id},
+        {"$set": {f"unread_count.{current_user.id}": 0}}
+    )
+    
+    return [Message(**msg) for msg in reversed(messages)]
+
+@api_router.post("/messages")
+async def send_message(
+    message_data: MessageCreate,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Send a message"""
+    # Check if recipient exists
+    recipient = await db.users.find_one({"id": message_data.recipient_id})
+    if not recipient:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Recipient not found"
+        )
+    
+    # Check if recipient allows messages
+    if not recipient.get("allow_messages", True):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not accept messages"
+        )
+    
+    # Find or create conversation
+    conversation = await db.conversations.find_one({
+        "participants": {"$all": [current_user.id, message_data.recipient_id]},
+        "is_active": True
+    })
+    
+    if not conversation:
+        # Create new conversation
+        new_conv = Conversation(
+            participants=[current_user.id, message_data.recipient_id],
+            unread_count={
+                current_user.id: 0,
+                message_data.recipient_id: 0
+            }
+        )
+        await db.conversations.insert_one(new_conv.dict())
+        conversation_id = new_conv.id
+    else:
+        conversation_id = conversation["id"]
+    
+    # Create message
+    message = Message(
+        conversation_id=conversation_id,
+        sender_id=current_user.id,
+        recipient_id=message_data.recipient_id,
+        content=message_data.content,
+        message_type=message_data.message_type,
+        metadata=message_data.metadata
+    )
+    
+    await db.messages.insert_one(message.dict())
+    
+    # Update conversation
+    await db.conversations.update_one(
+        {"id": conversation_id},
+        {
+            "$set": {
+                "last_message": message_data.content,
+                "last_message_at": message.created_at,
+                "updated_at": message.created_at
+            },
+            "$inc": {f"unread_count.{message_data.recipient_id}": 1}
+        }
+    )
+    
+    return {"success": True, "message_id": message.id}
+
+@api_router.get("/messages/unread")
+async def get_unread_count(current_user: UserResponse = Depends(get_current_user)):
+    """Get total unread messages count"""
+    conversations = await db.conversations.find({
+        "participants": current_user.id,
+        "is_active": True
+    }).to_list(100)
+    
+    total_unread = sum(conv.get("unread_count", {}).get(current_user.id, 0) for conv in conversations)
+    
+    return {"unread_count": total_unread}
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
