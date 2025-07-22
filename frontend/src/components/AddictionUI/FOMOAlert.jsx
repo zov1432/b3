@@ -190,14 +190,9 @@ const FOMOAlert = ({
           >
             <span>¡Participar Ahora!</span>
             {urgencyLevel >= 4 && (
-              <motion.span
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 0.5, repeat: Infinity }}
-              >
-                ⚡
-              </motion.span>
+              <span>⚡</span>
             )}
-          </motion.button>
+          </button>
 
           {/* Progress indicator for multiple FOMO items */}
           {fomoContent.length > 1 && (
