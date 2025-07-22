@@ -91,7 +91,13 @@ class AddictionEngine:
         
         # Calculate frequency (sessions per day)
         if total_sessions > 1:
-            date_range = (datetime.utcnow() - datetime.fromisoformat(user_behavior[0]['timestamp'].replace('Z', '+00:00'))).days or 1
+            # Handle both datetime objects and string timestamps
+            timestamp = user_behavior[0]['timestamp']
+            if isinstance(timestamp, str):
+                first_session_time = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+            else:
+                first_session_time = timestamp
+            date_range = (datetime.utcnow() - first_session_time).days or 1
             session_frequency = total_sessions / date_range
         else:
             session_frequency = 1
