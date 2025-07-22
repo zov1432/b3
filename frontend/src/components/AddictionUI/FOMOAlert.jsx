@@ -258,8 +258,8 @@ const FOMOAlert = ({
             }}
           />
         )}
-      </motion.div>
-    </AnimatePresence>
+      </div>
+    </div>
   );
 };
 
