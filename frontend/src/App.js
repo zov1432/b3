@@ -8,6 +8,7 @@ import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import MessagesPage from './pages/MessagesPage';
 import AuthPage from './pages/AuthPage';
+import TestFOMO from './TestFOMO';
 import { Toaster } from './components/ui/toaster';
 import { createPoll } from './services/mockData';
 import { useToast } from './hooks/use-toast';
