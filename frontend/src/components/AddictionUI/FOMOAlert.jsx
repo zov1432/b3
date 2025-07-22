@@ -194,8 +194,14 @@ const FOMOAlert = ({
 
           {/* Action button */}
           <motion.button
-            onClick={() => onTakeAction && onTakeAction(currentFOMO)}
-            className="w-full bg-white/20 hover:bg-white/30 text-white font-bold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-sm border border-white/30"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onTakeAction && onTakeAction(currentFOMO);
+            }}
+            className="w-full bg-white/20 hover:bg-white/30 text-white font-bold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-sm border border-white/30 cursor-pointer"
+            style={{ pointerEvents: 'auto' }}
+            type="button"
             whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.3)' }}
             whileTap={{ scale: 0.98 }}
           >
