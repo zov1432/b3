@@ -144,6 +144,9 @@ function AppContent() {
         )}
 
         <Routes>
+          {/* Test page for FOMO modal */}
+          <Route path="/test-fomo" element={<TestFOMO />} />
+          
           {/* Redirect root to feed */}
           <Route path="/" element={<Navigate to="/feed" replace />} />
           
