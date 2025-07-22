@@ -76,15 +76,10 @@ const FOMOAlert = ({
   };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className={`fixed bottom-4 left-4 right-4 md:left-auto md:w-96 z-[99999] ${className}`}
-        style={{ pointerEvents: 'auto' }}
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 100, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      >
+    <div
+      className={`fixed bottom-4 left-4 right-4 md:left-auto md:w-96 z-[99999] ${className}`}
+      style={{ pointerEvents: 'auto' }}
+    >
         <motion.div
           className={`bg-gradient-to-r ${getUrgencyColor()} p-4 rounded-2xl shadow-2xl border-2 border-white/30`}
           animate={urgencyLevel >= 4 ? {
