@@ -427,13 +427,14 @@ async def get_status_checks():
 # ============= ADDICTION ENGINE ENDPOINTS =============
 
 @api_router.post("/user/profile")
-async def create_user_profile(username: str):
+async def create_user_profile(username: str, current_user: UserResponse = Depends(get_current_user)):
     """Create or get user profile with addiction tracking"""
-    existing_user = await db.user_profiles.find_one({"username": username})
-    if existing_user:
-        return UserProfile(**existing_user)
+    # Use authenticated user
+    existing_profile = await db.user_profiles.find_one({"id": current_user.id})
+    if existing_profile:
+        return UserProfile(**existing_profile)
     
-    profile = UserProfile(username=username)
+    profile = UserProfile(id=current_user.id, username=current_user.username)
     await db.user_profiles.insert_one(profile.dict())
     
     # Create initial streak
@@ -442,9 +443,34 @@ async def create_user_profile(username: str):
     
     return profile
 
+@api_router.get("/user/profile")
+async def get_my_profile(current_user: UserResponse = Depends(get_current_user)):
+    """Get current user profile with real-time addiction metrics"""
+    profile_data = await db.user_profiles.find_one({"id": current_user.id})
+    if not profile_data:
+        # Create profile if it doesn't exist
+        profile = UserProfile(id=current_user.id, username=current_user.username)
+        await db.user_profiles.insert_one(profile.dict())
+        return profile
+    
+    profile = UserProfile(**profile_data)
+    
+    # Get recent behavior for addiction scoring
+    behaviors = await db.user_behavior.find({"user_id": current_user.id}).sort("timestamp", -1).limit(50).to_list(50)
+    if behaviors:
+        addiction_score = addiction_engine.calculate_addiction_score(behaviors)
+        addiction_metrics = AddictionMetrics(
+            user_id=current_user.id,
+            addiction_score=addiction_score,
+            engagement_level="high" if addiction_score > 70 else "medium" if addiction_score > 40 else "low"
+        )
+        profile.addiction_metrics = addiction_metrics
+    
+    return profile
+
 @api_router.get("/user/profile/{user_id}")
 async def get_user_profile(user_id: str):
-    """Get user profile with real-time addiction metrics"""
+    """Get user profile with real-time addiction metrics (public endpoint)"""
     profile_data = await db.user_profiles.find_one({"id": user_id})
     if not profile_data:
         raise HTTPException(status_code=404, detail="User not found")
@@ -465,17 +491,21 @@ async def get_user_profile(user_id: str):
     return profile
 
 @api_router.post("/user/action")
-async def track_user_action(action: UserAction):
+async def track_user_action(action: UserAction, current_user: UserResponse = Depends(get_current_user)):
     """Track user action and trigger addiction mechanics"""
+    action.user_id = current_user.id  # Use authenticated user
+    
     current_time = datetime.utcnow()
     current_hour = current_time.hour
     
     # Get user profile
-    profile_data = await db.user_profiles.find_one({"id": action.user_id})
+    profile_data = await db.user_profiles.find_one({"id": current_user.id})
     if not profile_data:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    profile = UserProfile(**profile_data)
+        # Create profile if it doesn't exist
+        profile = UserProfile(id=current_user.id, username=current_user.username)
+        await db.user_profiles.insert_one(profile.dict())
+    else:
+        profile = UserProfile(**profile_data)
     
     # Generate variable reward
     reward = addiction_engine.generate_variable_reward(action.action_type, profile)
@@ -484,9 +514,9 @@ async def track_user_action(action: UserAction):
     if action.action_type == "vote":
         profile.total_votes += 1
         # Update streak
-        streak_data = await db.user_streaks.find_one({"user_id": action.user_id, "streak_type": "daily_vote"})
+        streak_data = await db.user_streaks.find_one({"user_id": current_user.id, "streak_type": "daily_vote"})
         if streak_data:
-            streak = addiction_engine.update_user_streak(action.user_id, "daily_vote")
+            streak = addiction_engine.update_user_streak(current_user.id, "daily_vote")
             await db.user_streaks.replace_one({"id": streak_data["id"]}, streak.dict())
             profile.current_streak = streak.current_count
     elif action.action_type == "create":
@@ -513,7 +543,7 @@ async def track_user_action(action: UserAction):
             
             # Trigger achievement dopamine hit
             dopamine_hit = addiction_engine.trigger_dopamine_hit(
-                action.user_id, "achievement_unlock", 
+                current_user.id, "achievement_unlock", 
                 {"achievement": achievement.name, "xp_bonus": achievement.xp_reward}
             )
             await db.dopamine_hits.insert_one(dopamine_hit.dict())
@@ -521,7 +551,7 @@ async def track_user_action(action: UserAction):
     # Level up dopamine hit
     if new_level > old_level:
         dopamine_hit = addiction_engine.trigger_dopamine_hit(
-            action.user_id, "level_up",
+            current_user.id, "level_up",
             {"old_level": old_level, "new_level": new_level}
         )
         await db.dopamine_hits.insert_one(dopamine_hit.dict())
@@ -529,14 +559,14 @@ async def track_user_action(action: UserAction):
     # Rare reward dopamine hit
     if reward.rare_reward:
         dopamine_hit = addiction_engine.trigger_dopamine_hit(
-            action.user_id, "rare_reward",
+            current_user.id, "rare_reward",
             {"reward_type": reward.rare_reward, "xp_bonus": reward.xp_gained}
         )
         await db.dopamine_hits.insert_one(dopamine_hit.dict())
     
     # Update profile in database
     profile.last_activity = current_time
-    await db.user_profiles.replace_one({"id": action.user_id}, profile.dict())
+    await db.user_profiles.replace_one({"id": current_user.id}, profile.dict())
     
     # Save reward event
     await db.reward_events.insert_one(reward.dict())
