@@ -67,8 +67,23 @@ function AppContent() {
   };
 
   const handleFOMOAction = (fomoItem) => {
-    // Navigate to the FOMO content
-    window.location.href = `/poll/${fomoItem.poll_id}`;
+    // Show participation success message
+    toast({
+      title: "¡Participación exitosa!",
+      description: `Te has unido a "${fomoItem.title}" exitosamente`,
+    });
+    
+    // Hide FOMO after participation
+    setFomoHidden(true);
+    sessionStorage.setItem('fomoHidden', 'true');
+    
+    // Navigate to explore page to see more content
+    navigate('/explore');
+  };
+
+  const handleFOMOClose = () => {
+    setFomoHidden(true);
+    sessionStorage.setItem('fomoHidden', 'true');
   };
 
   // Show loading while checking auth
