@@ -736,9 +736,47 @@ async def get_leaderboard():
     
     return leaderboard
 
+@api_router.get("/analytics/addiction")
+async def get_my_addiction_analytics(current_user: UserResponse = Depends(get_current_user)):
+    """Get detailed addiction analytics for current user"""
+    # Get user behavior over last 30 days
+    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    behaviors = await db.user_behavior.find({
+        "user_id": current_user.id,
+        "timestamp": {"$gte": thirty_days_ago}
+    }).sort("timestamp", -1).to_list(1000)
+    
+    if not behaviors:
+        return {"message": "No data available"}
+    
+    # Calculate detailed metrics
+    addiction_score = addiction_engine.calculate_addiction_score(behaviors)
+    total_sessions = len(behaviors)
+    avg_session_time = sum(b['session_duration'] for b in behaviors) / total_sessions if total_sessions > 0 else 0
+    total_interactions = sum(b['polls_viewed'] + b['polls_voted'] + b['likes_given'] for b in behaviors)
+    
+    # Get dopamine hits
+    dopamine_hits = await db.dopamine_hits.find({
+        "user_id": current_user.id,
+        "timestamp": {"$gte": thirty_days_ago}
+    }).sort("timestamp", -1).to_list(1000)
+    
+    analytics = {
+        "addiction_score": addiction_score,
+        "total_sessions": total_sessions,
+        "avg_session_time_minutes": avg_session_time / 60,
+        "total_interactions": total_interactions,
+        "dopamine_hits_count": len(dopamine_hits),
+        "addiction_level": "addicted" if addiction_score > 80 else "high" if addiction_score > 60 else "medium" if addiction_score > 30 else "low",
+        "retention_probability": min(addiction_score / 100, 0.95),
+        "engagement_trend": "increasing" if addiction_score > 70 else "stable" if addiction_score > 40 else "declining"
+    }
+    
+    return analytics
+
 @api_router.get("/analytics/addiction/{user_id}")
 async def get_addiction_analytics(user_id: str):
-    """Get detailed addiction analytics for user"""
+    """Get detailed addiction analytics for user (public/admin endpoint)"""
     # Get user behavior over last 30 days
     thirty_days_ago = datetime.utcnow() - timedelta(days=30)
     behaviors = await db.user_behavior.find({
