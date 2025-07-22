@@ -80,20 +80,8 @@ const FOMOAlert = ({
       className={`fixed bottom-4 left-4 right-4 md:left-auto md:w-96 z-[99999] ${className}`}
       style={{ pointerEvents: 'auto' }}
     >
-        <motion.div
+        <div
           className={`bg-gradient-to-r ${getUrgencyColor()} p-4 rounded-2xl shadow-2xl border-2 border-white/30`}
-          animate={urgencyLevel >= 4 ? {
-            scale: [1, 1.02, 1],
-            boxShadow: [
-              '0 10px 40px rgba(0,0,0,0.3)',
-              '0 10px 60px rgba(255,0,0,0.4)',
-              '0 10px 40px rgba(0,0,0,0.3)'
-            ]
-          } : {}}
-          transition={{ 
-            duration: 2,
-            repeat: urgencyLevel >= 4 ? Infinity : 0
-          }}
         >
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
