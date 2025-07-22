@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Compass, Plus, Bell, User } from 'lucide-react';
+import { Home, Compass, Plus, Bell, User, MessageCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
 import CreatePollModal from './CreatePollModal';
 
