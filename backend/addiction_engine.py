@@ -275,7 +275,13 @@ class AddictionEngine:
         """Analyze when user is most active"""
         hour_counts = {}
         for behavior in user_behavior:
-            hour = datetime.fromisoformat(behavior['timestamp'].replace('Z', '+00:00')).hour
+            # Handle both datetime objects and string timestamps
+            timestamp = behavior['timestamp']
+            if isinstance(timestamp, str):
+                hour = datetime.fromisoformat(timestamp.replace('Z', '+00:00')).hour
+            else:
+                # It's already a datetime object
+                hour = timestamp.hour
             hour_counts[hour] = hour_counts.get(hour, 0) + 1
         
         # Return top 3 peak hours
