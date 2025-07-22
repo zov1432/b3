@@ -669,9 +669,32 @@ async def get_social_proof(poll_id: str):
     await db.social_proof.insert_one(social_proof.dict())
     return social_proof
 
+@api_router.post("/notifications/generate")
+async def generate_smart_notifications(current_user: UserResponse = Depends(get_current_user)):
+    """Generate AI-powered notifications for current user"""
+    # Get user profile and behavior
+    profile_data = await db.user_profiles.find_one({"id": current_user.id})
+    if not profile_data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    profile = UserProfile(**profile_data)
+    behaviors = await db.user_behavior.find({"user_id": current_user.id}).sort("timestamp", -1).limit(30).to_list(30)
+    
+    # Generate smart notifications
+    notifications = addiction_engine.generate_smart_notifications(profile, behaviors)
+    
+    # Save notifications
+    for notification in notifications:
+        await db.push_notifications.insert_one(notification.dict())
+    
+    return {
+        "generated_notifications": len(notifications),
+        "notifications": notifications
+    }
+
 @api_router.post("/notifications/generate/{user_id}")
-async def generate_smart_notifications(user_id: str):
-    """Generate AI-powered notifications for user"""
+async def generate_smart_notifications_admin(user_id: str):
+    """Generate AI-powered notifications for user (admin endpoint)"""
     # Get user profile and behavior
     profile_data = await db.user_profiles.find_one({"id": user_id})
     if not profile_data:
