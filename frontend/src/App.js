@@ -197,7 +197,6 @@ function AppContent() {
           jackpotData={jackpotData}
           onClose={() => setShowJackpot(false)}
         />
-      </BrowserRouter>
     </div>
   );
 }
