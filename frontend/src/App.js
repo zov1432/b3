@@ -106,22 +106,21 @@ function AppContent() {
 
   return (
     <div className="App relative">
-      <BrowserRouter>
-        {/* Progress Bar - Always visible except in TikTok mode */}
-        {!isTikTokMode && userProfile && (
-          <div className="fixed top-4 left-4 right-4 z-[9990] pointer-events-none">
-            <div className="max-w-md mx-auto pointer-events-auto">
-              <ProgressBar
-                level={level}
-                xp={xp}
-                xpToNext={getXpToNextLevel()}
-                progress={getXpProgress()}
-                streak={streak}
-                className="backdrop-blur-md"
-              />
-            </div>
+      {/* Progress Bar - Always visible except in TikTok mode */}
+      {!isTikTokMode && userProfile && (
+        <div className="fixed top-4 left-4 right-4 z-[9990] pointer-events-none">
+          <div className="max-w-md mx-auto pointer-events-auto">
+            <ProgressBar
+              level={level}
+              xp={xp}
+              xpToNext={getXpToNextLevel()}
+              progress={getXpProgress()}
+              streak={streak}
+              className="backdrop-blur-md"
+            />
           </div>
-        )}
+        </div>
+      )}
 
         {/* FOMO Alert - Show when not in TikTok mode and not hidden */}
         {!isTikTokMode && !fomoHidden && (
