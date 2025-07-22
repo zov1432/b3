@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,10 +7,19 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Dict, Optional
 import uuid
-from datetime import datetime
+from datetime import datetime, date, timedelta
+import random
+import asyncio
 
+# Import addiction system
+from models import (
+    UserProfile, UserBehavior, AddictionMetrics, Achievement, UserStreak,
+    RewardEvent, FOMOContent, PushNotification, SocialProof, DopamineHit,
+    NotificationType, AchievementType
+)
+from addiction_engine import addiction_engine
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -20,11 +30,10 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
-app = FastAPI()
+app = FastAPI(title="Ultra-Addictive Polling App", description="More addictive than TikTok")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
-
 
 # Define Models
 class StatusCheck(BaseModel):
@@ -34,6 +43,19 @@ class StatusCheck(BaseModel):
 
 class StatusCheckCreate(BaseModel):
     client_name: str
+
+# Vote Action Model
+class VoteAction(BaseModel):
+    user_id: str
+    poll_id: str
+    option_id: str
+    session_data: Optional[Dict] = None
+
+# User Action Model  
+class UserAction(BaseModel):
+    user_id: str
+    action_type: str  # vote, create, share, like, view
+    context: Optional[Dict] = None
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
