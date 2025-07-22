@@ -48,14 +48,6 @@ function AppContent() {
 
   const handleCreatePoll = async (pollData) => {
     const newPoll = createPoll(pollData);
-    
-    // Track poll creation for addiction system
-    await useAddiction().trackAction('create', {
-      poll_id: newPoll.id,
-      has_music: !!pollData.selectedMusic,
-      timestamp: new Date().toISOString()
-    });
-    
     console.log('Nueva votación creada:', newPoll);
     
     toast({
