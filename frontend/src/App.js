@@ -6,10 +6,15 @@ import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/ExplorePage';
 import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
+import MessagesPage from './pages/MessagesPage';
+import AuthPage from './pages/AuthPage';
 import { Toaster } from './components/ui/toaster';
 import { createPoll } from './services/mockData';
 import { useToast } from './hooks/use-toast';
 import { TikTokProvider, useTikTok } from './contexts/TikTokContext';
+
+// Import Authentication
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Import Addiction System
 import { AddictionProvider, useAddiction } from './contexts/AddictionContext';
@@ -25,6 +30,7 @@ import {
 function AppContent() {
   const { toast } = useToast();
   const { isTikTokMode } = useTikTok();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const {
     showRewardPopup,
     rewardData,
@@ -60,6 +66,23 @@ function AppContent() {
     // Navigate to the FOMO content
     window.location.href = `/poll/${fomoItem.poll_id}`;
   };
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg">Cargando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show auth page if not authenticated
+  if (!isAuthenticated) {
+    return <AuthPage />;
+  }
 
   return (
     <div className="App relative">
@@ -99,6 +122,7 @@ function AppContent() {
           {/* Main pages */}
           <Route path="/feed" element={<FeedPage />} />
           <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/messages" element={<MessagesPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           
@@ -150,11 +174,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AddictionProvider>
-      <TikTokProvider>
-        <AppContent />
-      </TikTokProvider>
-    </AddictionProvider>
+    <AuthProvider>
+      <AddictionProvider>
+        <TikTokProvider>
+          <AppContent />
+        </TikTokProvider>
+      </AddictionProvider>
+    </AuthProvider>
   );
 }
 
