@@ -101,7 +101,7 @@ class VoteAction(BaseModel):
 
 # User Action Model  
 class UserAction(BaseModel):
-    user_id: str
+    user_id: Optional[str] = None  # Will be set from authenticated user
     action_type: str  # vote, create, share, like, view
     context: Optional[Dict] = None
 
