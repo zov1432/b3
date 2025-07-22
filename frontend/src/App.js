@@ -29,8 +29,12 @@ import {
 
 function AppContent() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { isTikTokMode } = useTikTok();
   const { isAuthenticated, loading: authLoading } = useAuth();
+  const [fomoHidden, setFomoHidden] = useState(
+    sessionStorage.getItem('fomoHidden') === 'true'
+  );
   const {
     showRewardPopup,
     rewardData,
