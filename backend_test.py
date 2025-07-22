@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Backend API Testing Script
-Tests all backend endpoints to ensure they're working correctly.
+Backend API Testing Script - Ultra-Addictive Polling System
+Tests all backend endpoints including the new addiction algorithm system.
 """
 
 import requests
 import json
 import sys
-from datetime import datetime
+import time
+import random
+from datetime import datetime, timedelta
 
 # Get backend URL from frontend .env file
 def get_backend_url():
@@ -30,7 +32,7 @@ def test_health_check(base_url):
         print(f"Status Code: {response.status_code}")
         print(f"Response: {response.json()}")
         
-        if response.status_code == 200 and response.json().get("message") == "Hello World":
+        if response.status_code == 200 and "Ultra-Addictive Polling API" in response.json().get("message", ""):
             print("✅ Health check endpoint working correctly")
             return True
         else:
