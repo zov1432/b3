@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { addictionAPI, behaviorTracker } from '../services/addictionApi';
+import { useAuth } from './AuthContext';
 
 const AddictionContext = createContext();
 
@@ -12,6 +13,8 @@ export const useAddiction = () => {
 };
 
 export const AddictionProvider = ({ children }) => {
+  const { isAuthenticated, user, apiRequest } = useAuth();
+  
   // User Profile State
   const [userProfile, setUserProfile] = useState(null);
   const [userAchievements, setUserAchievements] = useState([]);
@@ -40,64 +43,83 @@ export const AddictionProvider = ({ children }) => {
   const [showJackpot, setShowJackpot] = useState(false);
   const [jackpotData, setJackpotData] = useState(null);
 
-  // Initialize user
+  // Initialize user when authenticated
   useEffect(() => {
-    initializeUser();
-    loadFOMOContent();
-    loadLeaderboard();
-    
-    // Load user data every 60 seconds
-    const dataInterval = setInterval(() => {
-      if (userProfile) {
-        refreshUserData();
-      }
-    }, 60000);
-
-    return () => clearInterval(dataInterval);
-  }, []);
-
-  const initializeUser = async () => {
-    let userId = localStorage.getItem('userId');
-    if (!userId) {
-      // Generate anonymous user
-      userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      localStorage.setItem('userId', userId);
-      
-      try {
-        const profile = await addictionAPI.createUserProfile(userId);
-        setUserProfile(profile);
-        setLevel(profile.level);
-        setXp(profile.xp);
-        setStreak(profile.current_streak);
-      } catch (error) {
-        console.error('Failed to create user profile:', error);
-      }
+    if (isAuthenticated && user) {
+      initializeAuthenticatedUser();
     } else {
-      try {
-        const profile = await addictionAPI.getUserProfile(userId);
-        setUserProfile(profile);
-        setLevel(profile.level);
-        setXp(profile.xp);
-        setStreak(profile.current_streak);
-        
-        if (profile.addiction_metrics) {
-          setAddictionScore(profile.addiction_metrics.addiction_score);
-        }
-      } catch (error) {
-        console.error('Failed to load user profile:', error);
-      }
+      // Reset state when not authenticated
+      resetAddictionState();
     }
+  }, [isAuthenticated, user]);
+
+  // Auto-refresh data every 60 seconds when authenticated
+  useEffect(() => {
+    if (isAuthenticated && userProfile) {
+      const dataInterval = setInterval(() => {
+        refreshUserData();
+      }, 60000);
+
+      return () => clearInterval(dataInterval);
+    }
+  }, [isAuthenticated, userProfile]);
+
+  const resetAddictionState = () => {
+    setUserProfile(null);
+    setUserAchievements([]);
+    setUserStreaks([]);
+    setAddictionScore(0);
+    setLevel(1);
+    setXp(0);
+    setStreak(0);
+    setFomoContent([]);
+    setLeaderboard([]);
+    setSocialProofData({});
+    setDopamineHits(0);
+  };
+
+  const initializeAuthenticatedUser = async () => {
+    if (!isAuthenticated || !user) return;
     
-    // Load achievements and streaks
-    loadUserAchievements();
-    loadUserStreaks();
+    try {
+      // Get or create user profile
+      let profile = await apiRequest('/api/user/profile');
+      
+      if (!profile) {
+        // Create profile if it doesn't exist
+        profile = await apiRequest('/api/user/profile', {
+          method: 'POST',
+          body: JSON.stringify({ username: user.username })
+        });
+      }
+      
+      setUserProfile(profile);
+      setLevel(profile.level);
+      setXp(profile.xp);
+      setStreak(profile.current_streak);
+      
+      if (profile.addiction_metrics) {
+        setAddictionScore(profile.addiction_metrics.addiction_score);
+      }
+      
+      // Load achievements, streaks, FOMO content, and leaderboard
+      await Promise.all([
+        loadUserAchievements(),
+        loadUserStreaks(),
+        loadFOMOContent(),
+        loadLeaderboard()
+      ]);
+      
+    } catch (error) {
+      console.error('Failed to initialize authenticated user:', error);
+    }
   };
 
   const refreshUserData = async () => {
-    if (!userProfile) return;
+    if (!isAuthenticated || !user) return;
     
     try {
-      const profile = await addictionAPI.getUserProfile(userProfile.id);
+      const profile = await apiRequest('/api/user/profile');
       setUserProfile(profile);
       setLevel(profile.level);
       setXp(profile.xp);
@@ -112,10 +134,10 @@ export const AddictionProvider = ({ children }) => {
   };
 
   const loadUserAchievements = async () => {
-    if (!userProfile) return;
+    if (!isAuthenticated) return;
     
     try {
-      const achievements = await addictionAPI.getUserAchievements(userProfile.id);
+      const achievements = await apiRequest('/api/user/achievements');
       setUserAchievements(achievements);
     } catch (error) {
       console.error('Failed to load achievements:', error);
@@ -123,10 +145,10 @@ export const AddictionProvider = ({ children }) => {
   };
 
   const loadUserStreaks = async () => {
-    if (!userProfile) return;
+    if (!isAuthenticated) return;
     
     try {
-      const streaks = await addictionAPI.getUserStreaks(userProfile.id);
+      const streaks = await apiRequest('/api/user/streaks');
       setUserStreaks(streaks);
     } catch (error) {
       console.error('Failed to load streaks:', error);
@@ -135,7 +157,7 @@ export const AddictionProvider = ({ children }) => {
 
   const loadFOMOContent = async () => {
     try {
-      const content = await addictionAPI.getFOMOContent();
+      const content = await apiRequest('/api/fomo/content');
       setFomoContent(content);
     } catch (error) {
       console.error('Failed to load FOMO content:', error);
@@ -144,7 +166,7 @@ export const AddictionProvider = ({ children }) => {
 
   const loadLeaderboard = async () => {
     try {
-      const board = await addictionAPI.getLeaderboard();
+      const board = await apiRequest('/api/leaderboard');
       setLeaderboard(board);
     } catch (error) {
       console.error('Failed to load leaderboard:', error);
@@ -153,7 +175,7 @@ export const AddictionProvider = ({ children }) => {
 
   const getSocialProof = async (pollId) => {
     try {
-      const proof = await addictionAPI.getSocialProof(pollId);
+      const proof = await apiRequest(`/api/social-proof/${pollId}`);
       setSocialProofData(prev => ({
         ...prev,
         [pollId]: proof
@@ -167,7 +189,10 @@ export const AddictionProvider = ({ children }) => {
 
   // Action tracking with dopamine hits
   const trackAction = async (actionType, context = {}) => {
-    if (!userProfile) return;
+    if (!isAuthenticated || !user) {
+      console.log('Not authenticated, skipping action tracking');
+      return;
+    }
 
     try {
       // Track with behavior tracker
@@ -190,7 +215,13 @@ export const AddictionProvider = ({ children }) => {
       }
 
       // Track action and get rewards
-      const result = await addictionAPI.trackUserAction(userProfile.id, actionType, context);
+      const result = await apiRequest('/api/user/action', {
+        method: 'POST',
+        body: JSON.stringify({
+          action_type: actionType,
+          context: context
+        })
+      });
       
       if (result.success) {
         // Update user profile
@@ -242,10 +273,12 @@ export const AddictionProvider = ({ children }) => {
   };
 
   const triggerJackpot = async () => {
-    if (!userProfile) return;
+    if (!isAuthenticated || !user) return;
     
     try {
-      const jackpot = await addictionAPI.triggerJackpot(userProfile.id);
+      const jackpot = await apiRequest('/api/user/jackpot', {
+        method: 'POST'
+      });
       setJackpotData(jackpot);
       setShowJackpot(true);
       
@@ -313,7 +346,10 @@ export const AddictionProvider = ({ children }) => {
     setShowRewardPopup,
     setShowLevelUp,
     setShowAchievement,
-    setShowJackpot
+    setShowJackpot,
+    
+    // Authentication aware
+    isAuthenticated
   };
 
   return (
