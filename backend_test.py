@@ -52,23 +52,26 @@ def test_user_registration(base_url):
     """Test user registration endpoint"""
     print("\n=== Testing User Registration ===")
     
+    # Generate unique emails with timestamp
+    timestamp = int(time.time())
+    
     # Test data for multiple users
     users_data = [
         {
-            "email": "maria.gonzalez@example.com",
-            "username": "maria_g",
+            "email": f"maria.gonzalez.{timestamp}@example.com",
+            "username": f"maria_g_{timestamp}",
             "display_name": "María González",
             "password": "securepass123"
         },
         {
-            "email": "carlos.rodriguez@example.com", 
-            "username": "carlos_r",
+            "email": f"carlos.rodriguez.{timestamp}@example.com", 
+            "username": f"carlos_r_{timestamp}",
             "display_name": "Carlos Rodríguez",
             "password": "mypassword456"
         },
         {
-            "email": "ana.martinez@example.com",
-            "username": "ana_m",
+            "email": f"ana.martinez.{timestamp}@example.com",
+            "username": f"ana_m_{timestamp}",
             "display_name": "Ana Martínez", 
             "password": "strongpass789"
         }
@@ -106,35 +109,36 @@ def test_user_registration(base_url):
         except Exception as e:
             print(f"❌ Registration error for {user_data['username']}: {e}")
     
-    # Test duplicate email registration
-    print(f"\nTesting duplicate email registration...")
-    try:
-        duplicate_data = users_data[0].copy()
-        duplicate_data['username'] = 'different_username'
-        response = requests.post(f"{base_url}/auth/register", json=duplicate_data, timeout=10)
-        
-        if response.status_code == 400:
-            print("✅ Duplicate email properly rejected")
-        else:
-            print(f"❌ Duplicate email should be rejected, got status: {response.status_code}")
+    # Test duplicate email registration (use first user's email)
+    if users_data:
+        print(f"\nTesting duplicate email registration...")
+        try:
+            duplicate_data = users_data[0].copy()
+            duplicate_data['username'] = f'different_username_{timestamp}'
+            response = requests.post(f"{base_url}/auth/register", json=duplicate_data, timeout=10)
             
-    except Exception as e:
-        print(f"❌ Duplicate email test error: {e}")
-    
-    # Test duplicate username registration
-    print(f"\nTesting duplicate username registration...")
-    try:
-        duplicate_data = users_data[0].copy()
-        duplicate_data['email'] = 'different@example.com'
-        response = requests.post(f"{base_url}/auth/register", json=duplicate_data, timeout=10)
+            if response.status_code == 400:
+                print("✅ Duplicate email properly rejected")
+            else:
+                print(f"❌ Duplicate email should be rejected, got status: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Duplicate email test error: {e}")
         
-        if response.status_code == 400:
-            print("✅ Duplicate username properly rejected")
-        else:
-            print(f"❌ Duplicate username should be rejected, got status: {response.status_code}")
+        # Test duplicate username registration
+        print(f"\nTesting duplicate username registration...")
+        try:
+            duplicate_data = users_data[0].copy()
+            duplicate_data['email'] = f'different.{timestamp}@example.com'
+            response = requests.post(f"{base_url}/auth/register", json=duplicate_data, timeout=10)
             
-    except Exception as e:
-        print(f"❌ Duplicate username test error: {e}")
+            if response.status_code == 400:
+                print("✅ Duplicate username properly rejected")
+            else:
+                print(f"❌ Duplicate username should be rejected, got status: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Duplicate username test error: {e}")
     
     return success_count >= 2  # At least 2 users should register successfully
 
@@ -148,12 +152,22 @@ def test_user_login(base_url):
     
     success_count = 0
     
-    # Test login for first user
+    # Test login for first user (get credentials from test_users)
     user = test_users[0]
-    login_data = {
-        "email": "maria.gonzalez@example.com",
-        "password": "securepass123"
-    }
+    # Extract timestamp from username to build email
+    username_parts = user['username'].split('_')
+    if len(username_parts) >= 3:
+        timestamp = username_parts[-1]
+        login_data = {
+            "email": f"maria.gonzalez.{timestamp}@example.com",
+            "password": "securepass123"
+        }
+    else:
+        # Fallback for older format
+        login_data = {
+            "email": user['email'],
+            "password": "securepass123"
+        }
     
     print(f"Testing login for: {user['username']}")
     try:
@@ -179,10 +193,8 @@ def test_user_login(base_url):
     # Test invalid credentials
     print(f"\nTesting invalid credentials...")
     try:
-        invalid_data = {
-            "email": "maria.gonzalez@example.com",
-            "password": "wrongpassword"
-        }
+        invalid_data = login_data.copy()
+        invalid_data['password'] = "wrongpassword"
         response = requests.post(f"{base_url}/auth/login", json=invalid_data, timeout=10)
         
         if response.status_code == 401:
