@@ -120,10 +120,16 @@ const FOMOAlert = ({
             </div>
 
             <button
-              onClick={onClose}
-              className="text-white/80 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClose && onClose();
+              }}
+              className="text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
+              style={{ pointerEvents: 'auto' }}
+              type="button"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
