@@ -62,11 +62,11 @@ const BottomNavigation = ({ onCreatePoll }) => {
           </CreatePollModal>
 
           <NavigationItem
-            to="/notifications"
-            icon={Bell}
-            label="Actividad"
+            to="/messages"
+            icon={MessageCircle}
+            label="Mensajes"
           />
-          
+
           <NavigationItem
             to="/profile"
             icon={User}
