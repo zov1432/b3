@@ -813,9 +813,61 @@ async def get_addiction_analytics(user_id: str):
     return analytics
 
 # Special endpoint to trigger massive dopamine hit (use sparingly!)
+@api_router.post("/user/jackpot")
+async def trigger_my_jackpot(current_user: UserResponse = Depends(get_current_user)):
+    """Trigger rare jackpot reward for maximum addiction for current user"""
+    profile_data = await db.user_profiles.find_one({"id": current_user.id})
+    if not profile_data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    profile = UserProfile(**profile_data)
+    
+    # Massive XP bonus
+    jackpot_xp = random.randint(500, 2000)
+    profile.xp += jackpot_xp
+    
+    # Multiple rare rewards
+    rare_rewards = ["diamond_badge", "platinum_crown", "legendary_avatar", "exclusive_emoji_pack"]
+    selected_rewards = random.sample(rare_rewards, k=min(3, len(rare_rewards)))
+    
+    # Add special achievement
+    jackpot_achievement = Achievement(
+        name="💎 JACKPOT WINNER 💎",
+        description="Won the ultra-rare jackpot!",
+        icon="💎",
+        type=AchievementType.SPECIAL,
+        requirement={},
+        xp_reward=jackpot_xp,
+        rarity="legendary"
+    )
+    
+    profile.achievements.append(jackpot_achievement.id)
+    await db.user_profiles.replace_one({"id": current_user.id}, profile.dict())
+    
+    # Create massive dopamine hit
+    dopamine_hit = addiction_engine.trigger_dopamine_hit(
+        current_user.id, "rare_reward",
+        {
+            "jackpot": True,
+            "xp_bonus": jackpot_xp,
+            "rare_rewards": selected_rewards,
+            "achievement": jackpot_achievement.name
+        }
+    )
+    await db.dopamine_hits.insert_one(dopamine_hit.dict())
+    
+    return {
+        "JACKPOT": True,
+        "xp_bonus": jackpot_xp,
+        "rare_rewards": selected_rewards,
+        "achievement": jackpot_achievement,
+        "new_level": int((profile.xp / 100) ** 0.5) + 1,
+        "message": "🎉 ¡JACKPOT! ¡Has ganado el premio más raro de la app! 🎉"
+    }
+
 @api_router.post("/user/{user_id}/jackpot")
 async def trigger_jackpot(user_id: str):
-    """Trigger rare jackpot reward for maximum addiction"""
+    """Trigger rare jackpot reward for maximum addiction (admin endpoint)"""
     profile_data = await db.user_profiles.find_one({"id": user_id})
     if not profile_data:
         raise HTTPException(status_code=404, detail="User not found")
