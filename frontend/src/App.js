@@ -186,6 +186,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Demo route - no auth required */}
+        <Route path="/demo" element={<ExploreDemo />} />
+        
         {/* Test page accessible without auth */}
         <Route path="/test-fomo" element={<TestFOMO />} />
         
