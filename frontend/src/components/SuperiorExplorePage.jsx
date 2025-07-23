@@ -11,7 +11,7 @@ import { cn } from '../lib/utils';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
 import { useTikTok } from '../contexts/TikTokContext';
-import AdvancedPollCard from './AdvancedExplorePage';
+import AdvancedPollCard from './AdvancedPollCard';
 
 // Categorías dinámicas mejoradas
 const CATEGORIES = [
