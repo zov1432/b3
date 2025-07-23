@@ -326,21 +326,21 @@ const SuperiorExplorePage = () => {
 
   if (filteredPolls.length === 0) {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
         <motion.div 
-          className="text-center text-white"
+          className="text-center text-white max-w-sm w-full"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
         >
           <motion.div
-            className="w-24 h-24 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center"
+            className="w-20 h-20 mx-auto mb-6 bg-white/10 rounded-full flex items-center justify-center"
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           >
-            <Search className="w-12 h-12" />
+            <Search className="w-10 h-10" />
           </motion.div>
-          <h3 className="text-2xl font-bold mb-2">No se encontraron encuestas</h3>
-          <p className="text-white/70">Intenta con otros filtros o términos de búsqueda</p>
+          <h3 className="text-xl font-bold mb-3">No se encontraron encuestas</h3>
+          <p className="text-white/70 text-sm leading-relaxed">Intenta con otros filtros o términos de búsqueda</p>
         </motion.div>
       </div>
     );
@@ -359,21 +359,21 @@ const SuperiorExplorePage = () => {
         onSearchChange={setSearchTerm}
       />
 
-      {/* Contenedor principal con scroll vertical */}
+      {/* Contenedor principal con scroll vertical - OPTIMIZADO MÓVIL */}
       <motion.div
         ref={containerRef}
-        className="w-full h-full"
+        className="w-full h-full touch-pan-y"
         drag="y"
         dragConstraints={dragConstraints}
-        dragElastic={0.1}
+        dragElastic={0.05}
         onDragEnd={handleDragEnd}
         animate={{ 
-          y: -activeIndex * window.innerHeight 
+          y: -activeIndex * (window.innerHeight || 812)
         }}
         transition={{ 
           type: "spring", 
-          stiffness: 300, 
-          damping: 30 
+          stiffness: 400, 
+          damping: 35 
         }}
       >
         {filteredPolls.map((poll, index) => (
@@ -392,11 +392,11 @@ const SuperiorExplorePage = () => {
         ))}
       </motion.div>
 
-      {/* Botón de salida mejorado */}
+      {/* Botón de salida mejorado - MÓVIL */}
       <motion.button
-        className="fixed top-4 right-4 z-50 bg-black/40 backdrop-blur-md text-white p-3 rounded-full shadow-2xl"
-        whileTap={{ scale: 0.9 }}
-        whileHover={{ scale: 1.1 }}
+        className="fixed top-safe-4 right-4 z-50 bg-black/50 backdrop-blur-md text-white p-3 rounded-full shadow-2xl active:scale-95 transition-transform"
+        whileTap={{ scale: 0.88 }}
+        whileHover={{ scale: 1.05 }}
         onClick={() => window.history.back()}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -405,9 +405,9 @@ const SuperiorExplorePage = () => {
         <Grid3X3 className="w-5 h-5" />
       </motion.button>
 
-      {/* Indicador de progreso global */}
+      {/* Indicador de progreso global - MÓVIL */}
       <motion.div 
-        className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm font-medium z-50"
+        className="fixed bottom-safe-4 left-1/2 transform -translate-x-1/2 bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm font-medium z-40 border border-white/10"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5 }}
@@ -415,7 +415,7 @@ const SuperiorExplorePage = () => {
         {activeIndex + 1} de {filteredPolls.length}
       </motion.div>
 
-      {/* CSS para scroll suave */}
+      {/* CSS para móviles */}
       <style jsx>{`
         .scrollbar-hide {
           -ms-overflow-style: none;
@@ -425,8 +425,44 @@ const SuperiorExplorePage = () => {
           display: none;
         }
         
-        .pt-safe {
-          padding-top: max(1rem, env(safe-area-inset-top));
+        .pt-safe-mobile {
+          padding-top: max(12px, env(safe-area-inset-top));
+        }
+        
+        .top-safe-4 {
+          top: max(1rem, calc(1rem + env(safe-area-inset-top)));
+        }
+        
+        .bottom-safe-4 {
+          bottom: max(1rem, calc(1rem + env(safe-area-inset-bottom)));
+        }
+        
+        .touch-pan-y {
+          touch-action: pan-y;
+        }
+        
+        /* Optimizaciones para móvil */
+        @media (max-width: 480px) {
+          .xs\\:inline {
+            display: inline;
+          }
+        }
+        
+        /* Mejorar el toque en móviles */
+        .touch-manipulation {
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Prevenir zoom en inputs */
+        input[type="text"] {
+          font-size: 16px;
+        }
+        
+        @media (max-width: 375px) {
+          input[type="text"] {
+            font-size: 16px;
+          }
         }
       `}</style>
     </div>
