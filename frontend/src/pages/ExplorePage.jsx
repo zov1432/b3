@@ -1,60 +1,269 @@
-import React, { useState } from 'react';
-import { Card, CardContent } from '../components/ui/card';
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card, CardContent, CardHeader } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import PollCard from '../components/PollCard';
 import TikTokScrollView from '../components/TikTokScrollView';
-import { Search, TrendingUp, Filter, Users, Crown, Flame, Grid3X3, Play } from 'lucide-react';
+import { 
+  Search, TrendingUp, Filter, Users, Crown, Flame, Grid3X3, Play, 
+  Star, Zap, Eye, Heart, MessageCircle, Share, ChevronDown,
+  BarChart3, Sparkles, Target, Globe, Clock, Activity,
+  ArrowUp, ArrowDown, Shuffle, SortDesc
+} from 'lucide-react';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
 import { useTikTok } from '../contexts/TikTokContext';
 import { cn } from '../lib/utils';
 
-const TrendingCard = ({ icon: Icon, title, subtitle, trending, color = "blue" }) => (
-  <Card className="hover:shadow-md transition-all duration-300 cursor-pointer group">
-    <CardContent className="p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center transition-all",
-            color === "blue" && "bg-blue-100 text-blue-600 group-hover:bg-blue-200",
-            color === "green" && "bg-green-100 text-green-600 group-hover:bg-green-200",
-            color === "purple" && "bg-purple-100 text-purple-600 group-hover:bg-purple-200",
-            color === "red" && "bg-red-100 text-red-600 group-hover:bg-red-200"
-          )}>
-            <Icon className="w-5 h-5" />
+// Enhanced Trending Card with Live Stats
+const TrendingCard = ({ 
+  icon: Icon, 
+  title, 
+  subtitle, 
+  trending, 
+  color = "blue", 
+  engagement = 0,
+  growth = 0,
+  liveUsers = 0
+}) => (
+  <motion.div
+    whileHover={{ y: -4, scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    className="cursor-pointer"
+  >
+    <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-white to-gray-50">
+      <CardContent className="p-0">
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-lg",
+                color === "blue" && "bg-gradient-to-br from-blue-500 to-cyan-500",
+                color === "green" && "bg-gradient-to-br from-green-500 to-emerald-500",
+                color === "purple" && "bg-gradient-to-br from-purple-500 to-pink-500",
+                color === "red" && "bg-gradient-to-br from-red-500 to-orange-500",
+                color === "gold" && "bg-gradient-to-br from-yellow-500 to-orange-500"
+              )}>
+                <Icon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900 text-lg">{title}</h4>
+                <p className="text-sm text-gray-600 flex items-center gap-2">
+                  {subtitle}
+                  {trending && (
+                    <span className="flex items-center gap-1 text-red-500">
+                      <Flame className="w-3 h-3" />
+                      <span className="text-xs font-semibold">HOT</span>
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+            
+            <div className="text-right space-y-1">
+              <Badge 
+                variant={trending ? "destructive" : "secondary"} 
+                className={cn(
+                  "font-bold text-xs",
+                  trending && "animate-pulse shadow-lg"
+                )}
+              >
+                {growth >= 0 ? `+${growth}%` : `${growth}%`}
+              </Badge>
+              <div className="text-xs text-gray-500">
+                {liveUsers > 0 && (
+                  <span className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    {liveUsers} activos
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
-          <div>
-            <h4 className="font-semibold text-gray-900">{title}</h4>
-            <p className="text-sm text-gray-600">{subtitle}</p>
+
+          {/* Live Engagement Bar */}
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+            <motion.div 
+              className={cn(
+                "h-2 rounded-full",
+                color === "blue" && "bg-gradient-to-r from-blue-500 to-cyan-500",
+                color === "green" && "bg-gradient-to-r from-green-500 to-emerald-500",
+                color === "purple" && "bg-gradient-to-r from-purple-500 to-pink-500",
+                color === "red" && "bg-gradient-to-r from-red-500 to-orange-500",
+                color === "gold" && "bg-gradient-to-r from-yellow-500 to-orange-500"
+              )}
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min(engagement, 100)}%` }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+            />
+          </div>
+          
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>Engagement: {engagement}%</span>
+            <span className="flex items-center gap-1">
+              {growth >= 0 ? <ArrowUp className="w-3 h-3 text-green-500" /> : <ArrowDown className="w-3 h-3 text-red-500" />}
+              Crecimiento
+            </span>
           </div>
         </div>
-        <Badge variant={trending ? "default" : "secondary"} className={cn(
-          trending && "bg-red-600 hover:bg-red-700 animate-pulse"
-        )}>
-          {trending ? "Trending" : "Popular"}
-        </Badge>
-      </div>
-    </CardContent>
-  </Card>
+      </CardContent>
+    </Card>
+  </motion.div>
 );
 
-const CategoryButton = ({ category, isActive, onClick }) => (
-  <Button
-    variant={isActive ? "default" : "outline"}
-    size="sm"
-    onClick={() => onClick(category)}
+// Smart Filter Chip
+const FilterChip = ({ label, isActive, onClick, count = 0, icon: Icon }) => (
+  <motion.button
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    onClick={onClick}
     className={cn(
-      "transition-all duration-300",
+      "flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 shadow-sm border",
       isActive 
-        ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" 
-        : "hover:bg-gray-50"
+        ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg border-transparent" 
+        : "bg-white text-gray-700 hover:bg-gray-50 border-gray-200 hover:border-gray-300"
     )}
   >
-    {category}
-  </Button>
+    {Icon && <Icon className="w-4 h-4" />}
+    <span>{label}</span>
+    {count > 0 && (
+      <Badge 
+        variant={isActive ? "secondary" : "default"}
+        className={cn(
+          "text-xs px-2",
+          isActive ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
+        )}
+      >
+        {count}
+      </Badge>
+    )}
+  </motion.button>
 );
+
+// Live Stats Dashboard
+const LiveStatsDashboard = ({ polls }) => {
+  const [liveStats, setLiveStats] = useState({
+    totalVotes: 0,
+    activeUsers: 0,
+    trending: 0,
+    newToday: 0
+  });
+
+  useEffect(() => {
+    const stats = {
+      totalVotes: polls.reduce((sum, poll) => sum + poll.totalVotes, 0),
+      activeUsers: Math.floor(Math.random() * 500) + 200,
+      trending: polls.filter(p => p.totalVotes > 50).length,
+      newToday: Math.floor(polls.length * 0.3)
+    };
+    setLiveStats(stats);
+  }, [polls]);
+
+  const statItems = [
+    { 
+      label: "Votos Totales", 
+      value: liveStats.totalVotes.toLocaleString(), 
+      icon: BarChart3, 
+      color: "blue",
+      change: "+12.3%"
+    },
+    { 
+      label: "Usuarios Activos", 
+      value: liveStats.activeUsers.toLocaleString(), 
+      icon: Users, 
+      color: "green",
+      change: "+8.7%"
+    },
+    { 
+      label: "Trending Ahora", 
+      value: liveStats.trending, 
+      icon: TrendingUp, 
+      color: "purple",
+      change: "+15.2%"
+    },
+    { 
+      label: "Nuevas Hoy", 
+      value: liveStats.newToday, 
+      icon: Sparkles, 
+      color: "gold",
+      change: "+22.1%"
+    }
+  ];
+
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {statItems.map((stat, index) => (
+        <motion.div
+          key={stat.label}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+        >
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-gray-50 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center shadow-md",
+                  stat.color === "blue" && "bg-gradient-to-br from-blue-500 to-cyan-500",
+                  stat.color === "green" && "bg-gradient-to-br from-green-500 to-emerald-500",
+                  stat.color === "purple" && "bg-gradient-to-br from-purple-500 to-pink-500",
+                  stat.color === "gold" && "bg-gradient-to-br from-yellow-500 to-orange-500"
+                )}>
+                  <stat.icon className="w-5 h-5 text-white" />
+                </div>
+                <Badge variant="secondary" className="text-xs text-green-600 bg-green-50">
+                  {stat.change}
+                </Badge>
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
+              <div className="text-sm text-gray-600">{stat.label}</div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+// Enhanced Poll Grid with Smart Layout
+const SmartPollGrid = ({ polls, onVote, onLike, onShare, onComment }) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      {polls.map((poll, index) => (
+        <motion.div
+          key={poll.id}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            delay: index * 0.05,
+            duration: 0.5,
+            ease: "easeOut"
+          }}
+          whileHover={{ y: -8 }}
+          className="group"
+        >
+          <div className="relative">
+            <PollCard
+              poll={poll}
+              onVote={onVote}
+              onLike={onLike}
+              onShare={onShare}
+              onComment={onComment}
+            />
+            {/* Floating engagement indicator */}
+            <div className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                {poll.totalVotes > 100 ? "🔥 HOT" : poll.totalVotes > 50 ? "📈 RISING" : "✨ NEW"}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 const ExplorePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
