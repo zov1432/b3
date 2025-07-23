@@ -23,7 +23,6 @@ import {
   RewardPopup, 
   LevelUpAnimation, 
   AchievementToast, 
-  ProgressBar,
   FOMOAlert,
   JackpotExplosion 
 } from './components/AddictionUI';
