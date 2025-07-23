@@ -65,7 +65,7 @@ const ParticleEffect = ({ x, y, type, show, onComplete }) => {
   );
 };
 
-// Componente de reacción rápida
+// Componente de reacción rápida - OPTIMIZADO MÓVIL
 const QuickReaction = ({ icon: Icon, label, count, isActive, onClick, position = "right" }) => {
   const [showPulse, setShowPulse] = useState(false);
 
@@ -78,12 +78,12 @@ const QuickReaction = ({ icon: Icon, label, count, isActive, onClick, position =
   return (
     <motion.button
       className={cn(
-        "flex flex-col items-center gap-1 p-3 rounded-full backdrop-blur-md transition-all duration-200",
+        "flex flex-col items-center gap-1 p-3 rounded-full backdrop-blur-md transition-all duration-200 touch-manipulation min-h-[60px] min-w-[60px] active:scale-90",
         isActive 
-          ? "bg-white/30 text-white shadow-lg" 
-          : "bg-black/20 text-white/80 hover:bg-white/20 hover:text-white"
+          ? "bg-white/40 text-white shadow-lg" 
+          : "bg-black/30 text-white/90 hover:bg-white/25 hover:text-white active:bg-white/35"
       )}
-      whileTap={{ scale: 0.9 }}
+      whileTap={{ scale: 0.85 }}
       whileHover={{ scale: 1.05 }}
       onClick={handleClick}
       animate={showPulse ? { 
@@ -95,10 +95,10 @@ const QuickReaction = ({ icon: Icon, label, count, isActive, onClick, position =
       transition={{ duration: 0.3 }}
     >
       <Icon className={cn(
-        "w-7 h-7 transition-all",
+        "w-6 h-6 transition-all flex-shrink-0",
         isActive && "fill-current scale-110"
       )} />
-      <span className="text-xs font-bold">{count > 999 ? `${(count/1000).toFixed(1)}K` : count}</span>
+      <span className="text-xs font-bold leading-none">{count > 999 ? `${(count/1000).toFixed(1)}K` : count}</span>
     </motion.button>
   );
 };
