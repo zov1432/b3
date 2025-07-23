@@ -40,7 +40,7 @@ const ProfilePage = () => {
   const [polls, setPolls] = useState(mockPolls);
   const { toast } = useToast();
   const { user: authUser, logout } = useAuth();
-  const { userProfile, level, xp, streak, userAchievements } = useAddiction();
+  const { userProfile, level, xp, streak, userAchievements, getXpToNextLevel, getXpProgress } = useAddiction();
 
   const handleLogout = () => {
     logout();
