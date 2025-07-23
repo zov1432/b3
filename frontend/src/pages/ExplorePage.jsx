@@ -268,78 +268,104 @@ const SmartPollGrid = ({ polls, onVote, onLike, onShare, onComment }) => {
 const ExplorePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todo');
+  const [sortBy, setSortBy] = useState('trending');
   const [polls, setPolls] = useState(mockPolls);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'tiktok'
+  const [viewMode, setViewMode] = useState('grid');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const { enterTikTokMode, exitTikTokMode } = useTikTok();
   const { toast } = useToast();
 
-  // Handle TikTok mode toggle
-  const handleTikTokMode = () => {
-    if (viewMode === 'grid') {
-      setViewMode('tiktok');
-      enterTikTokMode();
-    } else {
-      setViewMode('grid');
-      exitTikTokMode();
-    }
-  };
+  // Enhanced categories with icons and counts
+  const categories = [
+    { name: 'Todo', icon: Globe, count: polls.length },
+    { name: 'Trending', icon: TrendingUp, count: polls.filter(p => p.totalVotes > 50).length },
+    { name: 'Moda', icon: Star, count: Math.floor(polls.length * 0.3) },
+    { name: 'Comida', icon: Heart, count: Math.floor(polls.length * 0.2) },
+    { name: 'Entretenimiento', icon: Sparkles, count: Math.floor(polls.length * 0.25) },
+    { name: 'Deportes', icon: Target, count: Math.floor(polls.length * 0.15) }
+  ];
 
-  const handleExitTikTok = () => {
-    setViewMode('grid');
-    exitTikTokMode();
-  };
-
-  const categories = ['Todo', 'Trending', 'Moda', 'Comida', 'Entretenimiento', 'Deportes'];
-
+  // Enhanced trending topics with live data
   const trendingTopics = [
     { 
       icon: Flame, 
       title: 'Outfits de verano 2025', 
-      subtitle: '1.2M votaciones', 
+      subtitle: '1.2M votaciones activas', 
       trending: true, 
-      color: 'red' 
+      color: 'red',
+      engagement: 87,
+      growth: 24,
+      liveUsers: 432
     },
     { 
       icon: Crown, 
       title: 'Mejor comida asiática', 
-      subtitle: '856K votaciones', 
+      subtitle: '856K participantes', 
       trending: true, 
-      color: 'purple' 
+      color: 'gold',
+      engagement: 92,
+      growth: 18,
+      liveUsers: 287
     },
     { 
       icon: TrendingUp, 
-      title: 'Bailes de TikTok', 
-      subtitle: '642K votaciones', 
+      title: 'Bailes virales 2025', 
+      subtitle: '642K views', 
       trending: false, 
-      color: 'blue' 
+      color: 'purple',
+      engagement: 74,
+      growth: 12,
+      liveUsers: 156
     },
     { 
-      icon: Users, 
-      title: 'Memes del año', 
-      subtitle: '423K votaciones', 
-      trending: false, 
-      color: 'green' 
+      icon: Sparkles, 
+      title: 'Tech del futuro', 
+      subtitle: '523K debates', 
+      trending: true, 
+      color: 'blue',
+      engagement: 85,
+      growth: 31,
+      liveUsers: 203
     }
   ];
 
-  // Filter polls based on search and category
-  const filteredPolls = polls.filter(poll => {
-    const matchesSearch = poll.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         poll.author.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    if (activeCategory === 'Todo') return matchesSearch;
-    if (activeCategory === 'Trending') return matchesSearch && poll.totalVotes > 50;
-    
-    // Simple category matching (in real app, polls would have category tags)
-    const categoryMatches = {
-      'Moda': poll.title.toLowerCase().includes('outfit') || poll.title.toLowerCase().includes('ganó'),
-      'Comida': poll.title.toLowerCase().includes('receta') || poll.title.toLowerCase().includes('comida'),
-      'Entretenimiento': poll.title.toLowerCase().includes('baile') || poll.title.toLowerCase().includes('tiktok'),
-      'Deportes': false // No sports polls in mock data
-    };
-    
-    return matchesSearch && (categoryMatches[activeCategory] || false);
-  });
+  // Smart filtering and sorting
+  const filteredAndSortedPolls = useMemo(() => {
+    let filtered = polls.filter(poll => {
+      const matchesSearch = poll.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           poll.author.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      if (activeCategory === 'Todo') return matchesSearch;
+      if (activeCategory === 'Trending') return matchesSearch && poll.totalVotes > 50;
+      
+      const categoryMatches = {
+        'Moda': poll.title.toLowerCase().includes('outfit') || poll.title.toLowerCase().includes('ganó'),
+        'Comida': poll.title.toLowerCase().includes('receta') || poll.title.toLowerCase().includes('comida'),
+        'Entretenimiento': poll.title.toLowerCase().includes('baile') || poll.title.toLowerCase().includes('tiktok'),
+        'Deportes': poll.title.toLowerCase().includes('deporte') || poll.title.toLowerCase().includes('futbol')
+      };
+      
+      return matchesSearch && (categoryMatches[activeCategory] || false);
+    });
+
+    // Smart sorting
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'trending':
+          return (b.totalVotes + b.comments * 2) - (a.totalVotes + a.comments * 2);
+        case 'newest':
+          return new Date(b.createdAt || Date.now()) - new Date(a.createdAt || Date.now());
+        case 'mostVoted':
+          return b.totalVotes - a.totalVotes;
+        case 'engagement':
+          return (b.totalVotes + b.comments + (b.userLiked ? 1 : 0)) - (a.totalVotes + a.comments + (a.userLiked ? 1 : 0));
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [polls, searchTerm, activeCategory, sortBy]);
 
   const handleVote = (pollId, optionId) => {
     const success = voteOnPoll(pollId, optionId);
