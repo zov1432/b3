@@ -260,67 +260,71 @@ const AdvancedPollCard = ({
         />
       </div>
 
-      {/* Header mejorado */}
+      {/* Header mejorado - MÓVIL */}
       <motion.div 
-        className="absolute top-0 left-0 right-0 z-30 p-4 pt-safe"
+        className="absolute top-0 left-0 right-0 z-30 p-4 pt-safe-mobile"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Avatar className="ring-2 ring-white/50 w-12 h-12">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <Avatar className="ring-2 ring-white/50 w-12 h-12 flex-shrink-0">
               <AvatarImage src={poll.author.avatar || "https://github.com/shadcn.png"} />
               <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white font-bold">
                 {poll.author.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <div>
-              <h3 className="font-bold text-white text-base">{poll.author}</h3>
-              <p className="text-sm text-white/70">{poll.timeAgo}</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-bold text-white text-base truncate">{poll.author}</h3>
+              <p className="text-sm text-white/70 truncate">{poll.timeAgo}</p>
             </div>
             <motion.button
-              className="ml-2 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold"
-              whileTap={{ scale: 0.95 }}
+              className="ml-2 bg-red-600 text-white px-3 py-1.5 rounded-full text-sm font-bold flex-shrink-0 active:scale-95 transition-transform touch-manipulation"
+              whileTap={{ scale: 0.92 }}
             >
               Seguir
             </motion.button>
           </div>
           
           <motion.button
-            className="p-2 bg-black/20 backdrop-blur-md rounded-full"
-            whileTap={{ scale: 0.9 }}
+            className="p-2.5 bg-black/30 backdrop-blur-md rounded-full ml-3 flex-shrink-0 active:bg-black/50 transition-colors touch-manipulation"
+            whileTap={{ scale: 0.88 }}
           >
             <MoreHorizontal className="w-5 h-5 text-white" />
           </motion.button>
         </div>
       </motion.div>
 
-      {/* Contenido principal - Grid mejorado */}
-      <div className="flex-1 flex items-center justify-center p-4 pt-24 pb-32">
-        <div className="w-full max-w-lg">
-          {/* Título con efectos */}
+      {/* Contenido principal - Grid mejorado MÓVIL */}
+      <div className="flex-1 flex items-center justify-center p-4 pt-24 pb-40">
+        <div className="w-full max-w-sm">
+          {/* Título con efectos - MÓVIL */}
           <motion.div 
             className="text-center mb-6"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="text-2xl font-bold text-white leading-tight mb-2">
+            <h2 className="text-xl font-bold text-white leading-tight mb-3 px-2">
               {poll.title}
             </h2>
-            <div className="flex items-center justify-center gap-2 text-white/80">
-              <Eye className="w-4 h-4" />
-              <span className="text-sm">{formatNumber(poll.totalVotes)} votos</span>
+            <div className="flex items-center justify-center gap-3 text-white/80">
+              <div className="flex items-center gap-1">
+                <Eye className="w-4 h-4" />
+                <span className="text-sm">{formatNumber(poll.totalVotes)}</span>
+              </div>
               <div className="w-1 h-1 bg-white/50 rounded-full" />
-              <TrendingUp className="w-4 h-4 text-green-400" />
-              <span className="text-sm text-green-400">Trending</span>
+              <div className="flex items-center gap-1">
+                <TrendingUp className="w-4 h-4 text-green-400" />
+                <span className="text-sm text-green-400">Trending</span>
+              </div>
             </div>
           </motion.div>
 
-          {/* Grid de opciones con efectos 3D */}
+          {/* Grid de opciones con efectos 3D - OPTIMIZADO MÓVIL */}
           <motion.div 
-            className="grid grid-cols-2 gap-4"
+            className="grid grid-cols-2 gap-3"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -333,9 +337,9 @@ const AdvancedPollCard = ({
               return (
                 <motion.div
                   key={option.id}
-                  className="relative aspect-square cursor-pointer group"
-                  whileHover={{ scale: 1.05, rotateX: 5 }}
-                  whileTap={{ scale: 0.95 }}
+                  className="relative aspect-square cursor-pointer group touch-manipulation"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => handleVote(option.id)}
                   style={{ 
                     transformStyle: 'preserve-3d',
@@ -383,9 +387,9 @@ const AdvancedPollCard = ({
                     transition={{ duration: 0.5, repeat: isSelected ? Infinity : 0 }}
                   />
 
-                  {/* Indicador de porcentaje */}
+                  {/* Indicador de porcentaje - MÓVIL */}
                   <motion.div 
-                    className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white px-2 py-1 rounded-full text-sm font-bold"
+                    className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm text-white px-2 py-1 rounded-full text-sm font-bold"
                     initial={{ scale: 0 }}
                     animate={{ scale: poll.totalVotes > 0 ? 1 : 0 }}
                     transition={{ delay: 0.5 + optionIndex * 0.1 }}
@@ -393,9 +397,9 @@ const AdvancedPollCard = ({
                     {percentage}%
                   </motion.div>
 
-                  {/* Avatar del usuario */}
-                  <div className="absolute top-3 left-3">
-                    <Avatar className="w-8 h-8 ring-2 ring-white/50">
+                  {/* Avatar del usuario - MÓVIL */}
+                  <div className="absolute top-2 left-2">
+                    <Avatar className="w-7 h-7 ring-2 ring-white/50">
                       <AvatarImage src={option.user?.avatar} />
                       <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-xs font-bold">
                         {option.user?.displayName?.charAt(0) || option.id.toUpperCase()}
@@ -403,29 +407,29 @@ const AdvancedPollCard = ({
                     </Avatar>
                   </div>
 
-                  {/* Badge de ganador */}
+                  {/* Badge de ganador - MÓVIL */}
                   {isWinner && poll.totalVotes > 0 && (
                     <motion.div 
-                      className="absolute bottom-3 left-3 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1"
+                      className="absolute bottom-2 left-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1"
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
                       transition={{ type: "spring", delay: 1 }}
                     >
                       <Crown className="w-3 h-3" />
-                      Ganador
+                      <span className="hidden xs:inline">Ganador</span>
                     </motion.div>
                   )}
 
-                  {/* Texto de la opción */}
-                  <div className="absolute bottom-3 right-3 left-3 text-center">
-                    <p className="text-white font-bold text-sm bg-black/50 backdrop-blur-sm px-3 py-2 rounded-lg">
+                  {/* Texto de la opción - MÓVIL */}
+                  <div className="absolute bottom-2 right-2 left-2 text-center">
+                    <p className="text-white font-bold text-xs bg-black/70 backdrop-blur-sm px-2 py-1.5 rounded-lg line-clamp-2 leading-tight">
                       {option.text}
                     </p>
                   </div>
 
-                  {/* Efecto de hover */}
+                  {/* Efecto de hover/touch */}
                   <motion.div 
-                    className="absolute inset-0 bg-white/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    className="absolute inset-0 bg-white/10 rounded-2xl opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-200"
                   />
                 </motion.div>
               );
@@ -434,10 +438,10 @@ const AdvancedPollCard = ({
         </div>
       </div>
 
-      {/* Acciones laterales mejoradas */}
+      {/* Acciones laterales mejoradas - MÓVIL */}
       <AnimatePresence>
         <motion.div 
-          className="absolute right-4 bottom-32 flex flex-col gap-3 z-40"
+          className="absolute right-3 bottom-40 flex flex-col gap-2 z-40"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.6 }}
@@ -476,17 +480,17 @@ const AdvancedPollCard = ({
         </motion.div>
       </AnimatePresence>
 
-      {/* Player de música mejorado */}
+      {/* Player de música mejorado - MÓVIL */}
       {poll.music && (
         <motion.div 
-          className="absolute bottom-20 left-4 bg-black/30 backdrop-blur-md rounded-full p-3 flex items-center gap-3 max-w-xs"
+          className="absolute bottom-24 left-4 bg-black/40 backdrop-blur-md rounded-full p-2.5 flex items-center gap-3 max-w-[calc(100%-120px)] border border-white/10"
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.7 }}
         >
           <motion.button
-            className="w-8 h-8 bg-white rounded-full flex items-center justify-center"
-            whileTap={{ scale: 0.9 }}
+            className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform touch-manipulation"
+            whileTap={{ scale: 0.85 }}
             onClick={() => setIsPlaying(!isPlaying)}
           >
             {isPlaying ? (
@@ -505,12 +509,12 @@ const AdvancedPollCard = ({
             </p>
           </div>
           
-          {/* Visualizador de ondas */}
-          <div className="flex items-center gap-0.5">
+          {/* Visualizador de ondas - MÓVIL */}
+          <div className="flex items-center gap-0.5 flex-shrink-0">
             {[...Array(4)].map((_, i) => (
               <motion.div
                 key={i}
-                className="w-1 bg-white rounded-full"
+                className="w-0.5 bg-white rounded-full"
                 animate={isPlaying ? {
                   height: [4, 16, 8, 20, 6, 14],
                 } : { height: 4 }}
@@ -525,16 +529,16 @@ const AdvancedPollCard = ({
         </motion.div>
       )}
 
-      {/* Indicador de progreso lateral */}
-      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 z-30">
+      {/* Indicador de progreso lateral - MÓVIL */}
+      <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex flex-col gap-1.5 z-30">
         {Array.from({ length: total }, (_, i) => (
           <motion.div
             key={i}
             className={cn(
               "rounded-full transition-all duration-300",
               i === index
-                ? "bg-white w-2 h-8 shadow-lg"
-                : "bg-white/40 w-1.5 h-6"
+                ? "bg-white w-1.5 h-6 shadow-lg"
+                : "bg-white/40 w-1 h-4"
             )}
             whileHover={{ scale: 1.2 }}
           />
@@ -552,24 +556,49 @@ const AdvancedPollCard = ({
         )}
       </AnimatePresence>
 
-      {/* Hints de navegación */}
+      {/* Hints de navegación - MÓVIL */}
       {index === 0 && (
         <motion.div 
-          className="absolute bottom-40 left-1/2 transform -translate-x-1/2 text-center text-white/80"
+          className="absolute bottom-48 left-1/2 transform -translate-x-1/2 text-center text-white/80 px-4 max-w-xs"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2, duration: 1 }}
         >
           <motion.div
-            animate={{ y: [0, -10, 0] }}
+            animate={{ y: [0, -8, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <ChevronUp className="w-8 h-8 mx-auto mb-2" />
+            <ChevronUp className="w-6 h-6 mx-auto mb-2" />
           </motion.div>
-          <p className="text-sm font-medium">Desliza para explorar</p>
-          <p className="text-xs mt-1">← Swipe para me gusta | Swipe para guardar →</p>
+          <p className="text-sm font-medium mb-1">Desliza para explorar</p>
+          <p className="text-xs leading-relaxed">← Swipe para me gusta | Swipe para guardar →</p>
         </motion.div>
       )}
+      
+      {/* CSS específico para móviles */}
+      <style jsx>{`
+        .pt-safe-mobile {
+          padding-top: max(16px, env(safe-area-inset-top));
+        }
+        
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        
+        .touch-manipulation {
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        @media (max-width: 375px) {
+          .xs\\:inline {
+            display: inline;
+          }
+        }
+      `}</style>
     </motion.div>
   );
 };
