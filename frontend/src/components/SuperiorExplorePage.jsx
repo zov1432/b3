@@ -30,7 +30,7 @@ const VIEW_MODES = [
   { id: 'following', name: 'Siguiendo', icon: Heart },
 ];
 
-// Componente de filtros flotantes inteligentes
+// Componente de filtros flotantes inteligentes - OPTIMIZADO PARA MÓVIL
 const SmartFilters = ({ 
   categories, 
   activeCategory, 
@@ -45,56 +45,56 @@ const SmartFilters = ({
 
   return (
     <motion.div 
-      className="absolute top-0 left-0 right-0 z-50 p-4 pt-safe"
+      className="absolute top-0 left-0 right-0 z-50 p-3 pt-safe-mobile bg-gradient-to-b from-black/60 to-transparent"
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, type: "spring" }}
     >
-      {/* Header principal */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
+      {/* Header principal - OPTIMIZADO MÓVIL */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-1 flex-1 mr-2">
           {VIEW_MODES.map((mode) => (
             <motion.button
               key={mode.id}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all",
+                "flex items-center gap-1.5 px-3 py-2 rounded-full font-bold transition-all text-sm flex-shrink-0",
                 viewMode === mode.id
-                  ? "bg-white text-black shadow-lg"
-                  : "text-white/80 hover:text-white hover:bg-white/10"
+                  ? "bg-white text-black shadow-lg scale-105"
+                  : "text-white/90 hover:text-white hover:bg-white/15 active:scale-95"
               )}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.92 }}
               onClick={() => onViewModeChange(mode.id)}
             >
               <mode.icon className="w-4 h-4" />
-              <span>{mode.name}</span>
+              <span className="hidden xs:inline">{mode.name}</span>
             </motion.button>
           ))}
         </div>
 
         <div className="flex items-center gap-2">
           <motion.button
-            className="p-2 bg-black/20 backdrop-blur-md rounded-full text-white"
-            whileTap={{ scale: 0.9 }}
+            className="p-2.5 bg-black/30 backdrop-blur-md rounded-full text-white active:bg-black/50 transition-colors"
+            whileTap={{ scale: 0.88 }}
             onClick={() => setShowSearch(!showSearch)}
           >
-            <Search className="w-5 h-5" />
+            <Search className="w-4 h-4" />
           </motion.button>
           
           <motion.button
-            className="p-2 bg-black/20 backdrop-blur-md rounded-full text-white"
-            whileTap={{ scale: 0.9 }}
+            className="p-2.5 bg-black/30 backdrop-blur-md rounded-full text-white active:bg-black/50 transition-colors"
+            whileTap={{ scale: 0.88 }}
             onClick={() => setShowFilters(!showFilters)}
           >
-            <Filter className="w-5 h-5" />
+            <Filter className="w-4 h-4" />
           </motion.button>
         </div>
       </div>
 
-      {/* Barra de búsqueda expandible */}
+      {/* Barra de búsqueda expandible - MÓVIL */}
       <AnimatePresence>
         {showSearch && (
           <motion.div
-            className="mb-4"
+            className="mb-3"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -103,23 +103,23 @@ const SmartFilters = ({
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Buscar encuestas, usuarios, temas..."
+                placeholder="Buscar encuestas, usuarios..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full bg-black/30 backdrop-blur-md border-white/20 text-white placeholder-white/60 rounded-full px-4 py-3"
+                className="w-full bg-black/40 backdrop-blur-md border-white/30 text-white placeholder-white/70 rounded-full px-4 py-3 text-base focus:ring-2 focus:ring-white/30 focus:border-white/50"
               />
-              <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
+              <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/70" />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Categorías horizontales */}
+      {/* Categorías horizontales - OPTIMIZADO MÓVIL */}
       <motion.div 
-        className="flex items-center gap-2 overflow-x-auto scrollbar-hide"
+        className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1"
         animate={{ 
-          height: showFilters ? "auto" : 60,
-          opacity: showFilters ? 1 : 0.8 
+          height: showFilters ? "auto" : 50,
+          opacity: showFilters ? 1 : 0.9 
         }}
       >
         {categories.map((category, index) => {
@@ -130,30 +130,30 @@ const SmartFilters = ({
             <motion.button
               key={category.id}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 flex-shrink-0 transition-all font-medium",
+                "flex items-center gap-2 px-3 py-2 rounded-full border border-white/20 flex-shrink-0 transition-all font-medium text-sm touch-manipulation",
                 isActive
                   ? "bg-white text-black shadow-lg scale-105"
-                  : "bg-black/30 backdrop-blur-md text-white hover:bg-white/20 hover:scale-105"
+                  : "bg-black/40 backdrop-blur-md text-white hover:bg-white/25 active:scale-95"
               )}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.92 }}
               onClick={() => onCategoryChange(category.id)}
-              initial={{ x: -100, opacity: 0 }}
+              initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: index * 0.05 }}
             >
-              <Icon className="w-4 h-4" />
-              <span className="text-sm">{category.name}</span>
+              <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="whitespace-nowrap">{category.name}</span>
               
               {category.trending && (
                 <motion.div
-                  className="w-2 h-2 bg-red-500 rounded-full"
+                  className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 1, repeat: Infinity }}
                 />
               )}
               
               {category.count && (
-                <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold">
+                <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold flex-shrink-0 min-w-[20px] text-center">
                   {category.count}
                 </span>
               )}
@@ -162,31 +162,31 @@ const SmartFilters = ({
         })}
       </motion.div>
 
-      {/* Filtros adicionales */}
+      {/* Filtros adicionales - MÓVIL */}
       <AnimatePresence>
         {showFilters && (
           <motion.div
-            className="mt-3 flex items-center gap-2 overflow-x-auto scrollbar-hide"
+            className="mt-2 flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
           >
             {[
               { label: 'Más votados', icon: TrendingUp },
-              { label: 'Recientes', icon: Sparkles },
-              { label: 'Mis intereses', icon: Heart },
-              { label: 'Virales', icon: Flame },
+              { label: 'Recent', icon: Sparkles },
+              { label: 'Mis gustos', icon: Heart },
+              { label: 'Viral', icon: Flame },
             ].map((filter, index) => (
               <motion.button
                 key={filter.label}
-                className="flex items-center gap-2 px-3 py-1.5 bg-black/20 backdrop-blur-md text-white/80 rounded-full text-sm border border-white/10 flex-shrink-0 hover:bg-white/10 hover:text-white transition-all"
-                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-black/30 backdrop-blur-md text-white/90 rounded-full text-sm border border-white/15 flex-shrink-0 hover:bg-white/15 hover:text-white transition-all active:scale-95 touch-manipulation"
+                whileTap={{ scale: 0.92 }}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <filter.icon className="w-3 h-3" />
-                <span>{filter.label}</span>
+                <filter.icon className="w-3 h-3 flex-shrink-0" />
+                <span className="whitespace-nowrap">{filter.label}</span>
               </motion.button>
             ))}
           </motion.div>
