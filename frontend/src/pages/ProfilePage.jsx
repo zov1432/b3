@@ -225,6 +225,20 @@ const ProfilePage = () => {
           />
         </div>
 
+        {/* Progress Bar - Gamification Stats */}
+        {userProfile && (
+          <div className="mb-6">
+            <ProgressBar
+              level={level}
+              xp={xp}
+              xpToNext={getXpToNextLevel()}
+              progress={getXpProgress()}
+              streak={streak}
+              className="shadow-lg"
+            />
+          </div>
+        )}
+
         {/* Content Tabs */}
         <Tabs defaultValue="polls" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
