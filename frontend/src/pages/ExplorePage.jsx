@@ -367,6 +367,22 @@ const ExplorePage = () => {
     return filtered;
   }, [polls, searchTerm, activeCategory, sortBy]);
 
+  // Handlers remain the same
+  const handleTikTokMode = () => {
+    if (viewMode === 'grid') {
+      setViewMode('tiktok');
+      enterTikTokMode();
+    } else {
+      setViewMode('grid');
+      exitTikTokMode();
+    }
+  };
+
+  const handleExitTikTok = () => {
+    setViewMode('grid');
+    exitTikTokMode();
+  };
+
   const handleVote = (pollId, optionId) => {
     const success = voteOnPoll(pollId, optionId);
     if (success) {
