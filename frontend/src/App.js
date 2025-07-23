@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-route
 import BottomNavigation from './components/BottomNavigation';
 import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/ExplorePage';
+import ExploreDemo from './pages/ExploreDemo';
 import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import MessagesPage from './pages/MessagesPage';
