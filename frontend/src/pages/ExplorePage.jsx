@@ -1,8 +1,8 @@
 import React from 'react';
-import RevolutionaryExplorePage from '../components/RevolutionaryExplorePage';
+import VotingRevolutionPage from '../components/VotingRevolutionPage';
 
 const ExplorePage = () => {
-  return <RevolutionaryExplorePage />;
+  return <VotingRevolutionPage />;
 };
 
 export default ExplorePage;
