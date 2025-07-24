@@ -1,8 +1,8 @@
 import React from 'react';
-import SuperiorExplorePage from '../components/SuperiorExplorePage';
+import RevolutionaryExplorePage from '../components/RevolutionaryExplorePage';
 
 const ExplorePage = () => {
-  return <SuperiorExplorePage />;
+  return <RevolutionaryExplorePage />;
 };
 
 export default ExplorePage;
