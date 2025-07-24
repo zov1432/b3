@@ -28,6 +28,37 @@ import {
   JackpotExplosion 
 } from './components/AddictionUI';
 
+import React, { useState } from "react";
+import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import BottomNavigation from './components/BottomNavigation';
+import NeuralNavigation from './components/NeuralNavigation';
+import FeedPage from './pages/FeedPage';
+import ExplorePage from './pages/ExplorePage';
+import ExploreDemo from './pages/ExploreDemo';
+import ProfilePage from './pages/ProfilePage';
+import NotificationsPage from './pages/NotificationsPage';
+import MessagesPage from './pages/MessagesPage';
+import AuthPage from './pages/AuthPage';
+import TestFOMO from './TestFOMO';
+import { Toaster } from './components/ui/toaster';
+import { createPoll } from './services/mockData';
+import { useToast } from './hooks/use-toast';
+import { TikTokProvider, useTikTok } from './contexts/TikTokContext';
+
+// Import Authentication
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+
+// Import Addiction System
+import { AddictionProvider, useAddiction } from './contexts/AddictionContext';
+import { 
+  RewardPopup, 
+  LevelUpAnimation, 
+  AchievementToast, 
+  FOMOAlert,
+  JackpotExplosion 
+} from './components/AddictionUI';
+
 function AppContent() {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -141,9 +172,9 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/feed" replace />} />
         </Routes>
 
-        {/* Bottom Navigation - Hidden in TikTok mode */}
+        {/* Revolutionary Neural Navigation - Only show when not in TikTok mode */}
         {!isTikTokMode && (
-          <BottomNavigation onCreatePoll={handleCreatePoll} />
+          <NeuralNavigation onCreatePoll={handleCreatePoll} />
         )}
 
         {/* Toast notifications */}
