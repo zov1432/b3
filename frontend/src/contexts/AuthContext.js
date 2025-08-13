@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      console.log('Attempting login with:', { email });
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
@@ -72,10 +73,12 @@ export const AuthProvider = ({ children }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('Login failed:', errorData);
         throw new Error(errorData.detail || 'Login failed');
       }
 
       const data = await response.json();
+      console.log('Login successful:', { user: data.user?.email, hasToken: !!data.access_token });
       
       // Save auth data
       localStorage.setItem('authToken', data.access_token);
