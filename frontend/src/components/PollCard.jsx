@@ -239,7 +239,7 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
   );
 };
 
-const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false }) => {
+const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen = false }) => {
   const { trackAction, getSocialProof } = useAddiction();
   const [socialProof, setSocialProof] = useState(null);
   const navigate = useNavigate();
