@@ -221,6 +221,7 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
 const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false }) => {
   const { trackAction, getSocialProof } = useAddiction();
   const [socialProof, setSocialProof] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Load social proof data
