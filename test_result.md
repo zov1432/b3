@@ -501,6 +501,18 @@ frontend:
           agent: "testing"
           comment: "✅ MUSIC PLAYER REPOSITIONING SUCCESSFULLY VERIFIED: Comprehensive testing confirms the music player has been correctly repositioned as requested. VERIFIED CHANGES: 1) ✅ POSITION CHANGE: Music player successfully removed from bottom-left corner and now positioned in bottom area with social buttons, 2) ✅ LAYOUT STRUCTURE: Perfect layout with social buttons (like, comment, share) on left side and music player on right side using justify-between, 3) ✅ SIZE CONSISTENCY: Music player (66px height) has similar height to social buttons (48px height) with only 18px difference - acceptable tolerance, 4) ✅ FUNCTIONALITY PRESERVED: Play/pause controls work perfectly, waveform animation displays correctly, music info shows 'Style & Fashion' by Fashion Beats, 5) ✅ RESPONSIVE DESIGN: Layout maintains proper structure on mobile (430x932) with music player and social buttons correctly positioned, 6) ✅ COMPACT DESIGN: Music player is now compact and optimized for the new layout while maintaining all functionality. The repositioning is successful and meets all user requirements."
 
+  - task: "Reposicionamiento de iconos de perfil en vista 2×2"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/TikTokScrollView.jsx, /app/frontend/src/components/AdvancedPollCard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Implementado reposicionamiento de iconos de perfil para las dos tarjetas superiores en vista de cuadrícula 2×2. CAMBIOS: 1) TikTokScrollView: Modificado UserButton para usar posición 'bottom-4 right-4' para optionIndex < 2, 2) AdvancedPollCard: Aplicado mismo cambio con posición 'bottom-4 left-4' para optionIndex < 2, 3) Implementada lógica condicional basada en optionIndex para determinar posición de iconos, 4) Funcionalidad completa preservada incluyendo hover effects y tooltips. Pendiente testing."
+
   - task: "Eliminación de funcionalidades PWA y descarga móvil"
     implemented: true
     working: true
