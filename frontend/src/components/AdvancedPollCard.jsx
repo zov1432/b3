@@ -414,24 +414,6 @@ const AdvancedPollCard = ({
                 </motion.div>
               </div>
 
-              {/* Estadísticas de la opción - OVERLAY INFERIOR */}
-              <div className="absolute bottom-4 left-4 right-4 z-20">
-                <div className="bg-black/70 backdrop-blur-md rounded-2xl p-3 border border-white/20">
-                  <div className="flex items-center justify-between text-white">
-                    <div className="flex items-center gap-2">
-                      <Heart className="w-4 h-4" />
-                      <span className="text-sm font-medium">{formatNumber(option.votes)} votos</span>
-                    </div>
-                    {option.user?.followers && (
-                      <div className="flex items-center gap-1">
-                        <User className="w-4 h-4" />
-                        <span className="text-sm">{option.user.followers}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               {/* Indicador de selección - OVERLAY COMPLETO */}
               {isSelected && (
                 <motion.div 
