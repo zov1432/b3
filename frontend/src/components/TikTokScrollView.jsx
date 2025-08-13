@@ -101,8 +101,8 @@ const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserCli
 );
 
 const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, index, total }) => {
-  const [selectedUser, setSelectedUser] = useState(null);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const navigate = useNavigate();
 
   const handleVote = (optionId) => {
     if (!poll.userVote) {
@@ -111,7 +111,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
   };
 
   const handleUserClick = (user) => {
-    setSelectedUser(user);
+    navigate(`/profile/${user.username}`);
   };
 
   const handleMusicToggle = (playing) => {
