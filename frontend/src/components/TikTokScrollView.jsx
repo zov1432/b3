@@ -276,16 +276,30 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                 </div>
               )}
 
-              {/* Option text - Better positioning and readability */}
-              <div className="absolute bottom-6 left-4 right-4 z-20">
-                <div className={cn(
-                  "text-white font-bold text-lg leading-tight text-center",
-                  "bg-black/70 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl",
-                  "border border-white/20"
-                )}>
-                  {option.text}
+              {/* Option text - Position depends on whether it's top or bottom card */}
+              {optionIndex < 2 ? (
+                // Top cards (0, 1) - Description at bottom
+                <div className="absolute bottom-6 left-4 right-4 z-20">
+                  <div className={cn(
+                    "text-white font-bold text-lg leading-tight text-center",
+                    "bg-black/70 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl",
+                    "border border-white/20"
+                  )}>
+                    {option.text}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                // Bottom cards (2, 3) - Description at top
+                <div className="absolute top-20 left-4 right-4 z-20">
+                  <div className={cn(
+                    "text-white font-bold text-lg leading-tight text-center",
+                    "bg-black/70 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl",
+                    "border border-white/20"
+                  )}>
+                    {option.text}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
