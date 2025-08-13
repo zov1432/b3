@@ -281,8 +281,11 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                 </div>
               )}
 
-              {/* Combined Profile + Title Layout - All 4 cards */}
-              <div className="absolute bottom-6 left-4 right-4 z-20">
+              {/* Combined Profile + Title Layout - Conditional positioning */}
+              <div className={cn(
+                "absolute left-4 right-4 z-20",
+                optionIndex < 2 ? "bottom-6" : "top-6"
+              )}>
                 <div className={cn(
                   "flex items-center px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
                   "bg-black/70"
