@@ -111,14 +111,26 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
            style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Avatar className="ring-2 ring-white/30 w-12 h-12">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
-                {((poll.author || 'U') + '').charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            {/* PROPIETARIO - Diseño distintivo con borde dorado y badge */}
+            <div className="relative">
+              <Avatar className="ring-3 ring-yellow-400 shadow-lg shadow-yellow-400/50 w-12 h-12 relative">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback className="bg-gradient-to-br from-yellow-500 to-orange-600 text-white font-bold">
+                  {((poll.author || 'U') + '').charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              {/* Badge de propietario */}
+              <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full p-1 shadow-lg">
+                <Crown className="w-3 h-3 text-yellow-900 fill-current" />
+              </div>
+            </div>
             <div>
-              <h3 className="font-semibold text-white text-base">{poll.author}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-white text-base">{poll.author}</h3>
+                <span className="bg-yellow-400/20 text-yellow-300 text-xs px-2 py-0.5 rounded-full font-medium border border-yellow-400/30">
+                  Autor
+                </span>
+              </div>
               <p className="text-sm text-white/70">{poll.timeAgo}</p>
             </div>
           </div>
