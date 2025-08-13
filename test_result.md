@@ -231,7 +231,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Layout horizontal: perfil izquierda + título derecha en vista 2×2"
+    - "Navegación a perfiles de usuario mediante clicks en círculos de avatar"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
