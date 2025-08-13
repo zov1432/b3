@@ -629,17 +629,33 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
               </motion.div>
             </div>
 
-            <motion.div whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleShare}
-                className="flex items-center gap-2 text-gray-600 hover:text-green-600 hover:scale-105 transition-transform"
-              >
-                <Share className="w-5 h-5" />
-                <span className="font-medium">{formatNumber(poll.shares)}</span>
-              </Button>
-            </motion.div>
+            <div className="flex items-center gap-2">
+              <motion.div whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleShare}
+                  className="flex items-center gap-2 text-gray-600 hover:text-green-600 hover:scale-105 transition-transform"
+                >
+                  <Share className="w-5 h-5" />
+                  <span className="font-medium">{formatNumber(poll.shares)}</span>
+                </Button>
+              </motion.div>
+
+              {onSave && (
+                <motion.div whileTap={{ scale: 0.95 }}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSave}
+                    className="flex items-center gap-2 text-gray-600 hover:text-blue-600 hover:scale-105 transition-transform"
+                  >
+                    <Bookmark className="w-5 h-5" />
+                    <span className="font-medium">Guardar</span>
+                  </Button>
+                </motion.div>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
