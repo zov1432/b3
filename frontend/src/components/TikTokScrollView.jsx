@@ -52,8 +52,11 @@ const UserProfile = ({ user, onClose }) => (
 );
 
 // Componente UserButton clickeable
-const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserClick }) => (
-  <div className="absolute top-4 right-4 flex flex-col items-center gap-2 z-20">
+const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserClick, optionIndex }) => (
+  <div className={cn(
+    "absolute flex flex-col items-center gap-2 z-20",
+    optionIndex < 2 ? "bottom-4 right-4" : "top-4 right-4"
+  )}>
     {/* Avatar del usuario - clickeable */}
     <button
       onClick={(e) => {
