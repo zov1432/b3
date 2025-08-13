@@ -35,7 +35,7 @@ const NotificationItem = ({ type, user, message, time, poll, isNew = false }) =>
           <div className="flex-shrink-0">
             <Avatar className="w-10 h-10">
               <AvatarImage src={`https://github.com/${user}.png`} alt={user} />
-              <AvatarFallback>{user.charAt(0).toUpperCase()}</AvatarFallback>
+              <AvatarFallback>{(user || 'U').charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
           </div>
           
