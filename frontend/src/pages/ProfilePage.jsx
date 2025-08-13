@@ -104,6 +104,13 @@ const ProfilePage = () => {
     }
   }, [userId, navigate, toast]);
 
+  // Initialize saved polls (mock data)
+  useEffect(() => {
+    // In real app, this would be fetched from backend
+    const mockSavedPolls = polls.filter((poll, index) => index % 3 === 0); // Every 3rd poll as example
+    setSavedPolls(mockSavedPolls);
+  }, [polls]);
+
   const handleLogout = () => {
     logout();
     toast({
