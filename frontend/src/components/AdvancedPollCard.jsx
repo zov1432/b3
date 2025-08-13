@@ -343,7 +343,7 @@ const AdvancedPollCard = ({
               <div className={cn(
                 "absolute z-20",
                 optionIndex < 2 ? "bottom-4 left-4" : "top-4 left-4"
-              )}>
+              )} style={{ display: 'none' }}>
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -375,27 +375,42 @@ const AdvancedPollCard = ({
                 </motion.div>
               )}
 
-              {/* Nombre del usuario - OVERLAY */}
-              <div className="absolute top-16 left-4 z-20">
+              {/* Combined Profile + Title Layout - All 4 cards */}
+              <div className="absolute bottom-4 left-4 right-4 z-20">
                 <motion.div
-                  className="bg-black/70 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-sm font-semibold border border-white/20"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  {option.user?.displayName || `Opción ${option.id.toUpperCase()}`}
-                </motion.div>
-              </div>
-
-              {/* Texto de la opción - OVERLAY CENTRAL */}
-              <div className="absolute inset-0 flex items-center justify-center z-20 p-6">
-                <motion.div
-                  className="text-center"
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
+                    "bg-black/70"
+                  )}
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.3 + optionIndex * 0.1 }}
                 >
-                  <h3 className="text-white font-bold text-xl md:text-2xl leading-tight bg-black/70 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 shadow-2xl max-w-xs">
-                    {option.text}
-                  </h3>
+                  {/* Profile Avatar - Left side */}
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="group relative transition-transform duration-200 flex-shrink-0"
+                  >
+                    <Avatar className="w-10 h-10 ring-2 ring-white/70 shadow-lg cursor-pointer">
+                      <AvatarImage src={option.user?.avatar} />
+                      <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-bold">
+                        {option.user?.displayName?.charAt(0) || option.id.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    {option.user?.verified && (
+                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
+                        <CheckCircle className="w-3 h-3 text-blue-500 fill-current" />
+                      </div>
+                    )}
+                  </motion.button>
+                  
+                  {/* Title - Right side */}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white font-bold text-base leading-tight">
+                      {option.text}
+                    </div>
+                  </div>
                 </motion.div>
               </div>
 
