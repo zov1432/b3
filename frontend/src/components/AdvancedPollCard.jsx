@@ -170,6 +170,7 @@ const AdvancedPollCard = ({
   const [showQuickActions, setShowQuickActions] = useState(false);
   
   const cardRef = useRef(null);
+  const navigate = useNavigate();
   const y = useMotionValue(0);
   const opacity = useTransform(y, [-100, 0, 100], [0.8, 1, 0.8]);
   const scale = useTransform(y, [-100, 0, 100], [0.95, 1, 0.95]);
