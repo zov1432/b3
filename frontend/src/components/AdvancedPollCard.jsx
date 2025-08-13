@@ -451,11 +451,7 @@ const AdvancedPollCard = ({
             className="p-3 bg-black/40 backdrop-blur-md rounded-full ml-3 flex-shrink-0 active:bg-black/60 transition-colors touch-manipulation shadow-lg flex items-center justify-center"
             whileTap={{ scale: 0.88 }}
           >
-            <img 
-              src="https://customer-assets.emergentagent.com/job_perfil-doble/artifacts/59vt1o0f_Screenshot_2025-08-09-01-39-16-39_99c04817c0de5652397fc8b56c3b3817.jpg"
-              alt="Logo"
-              className="w-5 h-5 object-contain filter invert"
-            />
+            <CustomLogo size={20} className="text-white" />
           </motion.div>
         </div>
 
