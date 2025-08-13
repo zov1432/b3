@@ -39,9 +39,69 @@ const StatCard = ({ icon: Icon, label, value, color = "blue" }) => (
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("polls");
   const [polls, setPolls] = useState(mockPolls);
+  const [viewedUser, setViewedUser] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user: authUser, logout } = useAuth();
   const { userProfile, level, xp, streak, userAchievements, getXpToNextLevel, getXpProgress } = useAddiction();
+  const { userId } = useParams();
+  const navigate = useNavigate();
+
+  // Create a simple user database from poll options
+  const allUsers = mockPolls.flatMap(poll => 
+    poll.options.map(option => ({
+      id: option.user.username, // Use username as ID
+      username: option.user.username,
+      displayName: option.user.displayName,
+      avatar: option.user.avatar,
+      verified: option.user.verified,
+      followers: parseInt(option.user.followers.replace('K', '000')) || Math.floor(Math.random() * 50000) + 10000,
+      following: Math.floor(Math.random() * 1000) + 100,
+      totalVotes: Math.floor(Math.random() * 200) + 50,
+      pollsCreated: Math.floor(Math.random() * 50) + 5,
+      bio: `✨ Creador de contenido | 🎯 ${option.user.displayName} | 📍 Madrid`,
+      location: 'Madrid, España',
+      joinDate: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toLocaleDateString('es-ES', { 
+        year: 'numeric', 
+        month: 'long' 
+      }),
+    }))
+  );
+
+  // Remove duplicates by username
+  const uniqueUsers = allUsers.filter((user, index, self) => 
+    index === self.findIndex((u) => u.username === user.username)
+  );
+
+  // Function to get user by ID/username
+  const getUserById = (id) => {
+    return uniqueUsers.find(user => user.username === id || user.id === id);
+  };
+
+  // Load user data when userId changes
+  useEffect(() => {
+    if (userId) {
+      setLoading(true);
+      // Simulate API call
+      setTimeout(() => {
+        const user = getUserById(userId);
+        if (user) {
+          setViewedUser(user);
+        } else {
+          toast({
+            title: "Usuario no encontrado",
+            description: "El perfil que buscas no existe",
+            variant: "destructive"
+          });
+          navigate('/profile');
+        }
+        setLoading(false);
+      }, 500);
+    } else {
+      setViewedUser(null);
+      setLoading(false);
+    }
+  }, [userId, navigate, toast]);
 
   const handleLogout = () => {
     logout();
@@ -49,6 +109,10 @@ const ProfilePage = () => {
       title: "Sesión cerrada",
       description: "Has cerrado sesión exitosamente",
     });
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   // Use authenticated user data
