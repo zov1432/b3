@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import PollCard from '../components/PollCard';
-import { Button } from '../components/ui/button';
-import { TrendingUp, Vote, Users } from 'lucide-react';
-import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
+import TikTokScrollView from '../components/TikTokScrollView';
+import { mockPolls } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
+import { useAddiction } from '../contexts/AddictionContext';
+import { useTikTok } from '../contexts/TikTokContext';
 
 const FeedPage = () => {
   const [polls, setPolls] = useState(mockPolls);
