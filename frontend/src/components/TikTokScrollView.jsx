@@ -250,7 +250,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                     )}>
                       <AvatarImage src={option.user.avatar} />
                       <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-sm">
-                        {option.user.displayName.charAt(0)}
+                        {((option.user.displayName || option.user.username || 'U') + '').charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     
