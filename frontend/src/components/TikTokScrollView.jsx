@@ -92,27 +92,6 @@ const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserCli
     </button>
     
     {/* Nombre de usuario */}
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        onUserClick(user);
-      }}
-      className="bg-black/80 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm hover:bg-black/90 transition-all duration-200 hover:scale-105"
-    >
-      {user.displayName}
-    </button>
-    
-    {/* Porcentaje */}
-    <div className={cn(
-      "px-3 py-1.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm",
-      isSelected 
-        ? "bg-blue-600/90 text-white" 
-        : isWinner
-          ? "bg-green-600/90 text-white"
-          : "bg-black/80 text-white"
-    )}>
-      {percentage}%
-    </div>
   </div>
 );
 
