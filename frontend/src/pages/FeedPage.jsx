@@ -9,35 +9,77 @@ const FeedPage = () => {
   const [polls, setPolls] = useState(mockPolls);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { triggerAction } = useAddiction();
+  const { enterTikTokMode, exitTikTokMode } = useTikTok();
 
+  // Activar modo TikTok al montar el componente
   useEffect(() => {
+    enterTikTokMode();
     // Simular carga inicial
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
-  }, []);
+    
+    // Limpiar al desmontar
+    return () => {
+      exitTikTokMode();
+    };
+  }, [enterTikTokMode, exitTikTokMode]);
 
-  const handleVote = (pollId, optionId) => {
-    const success = voteOnPoll(pollId, optionId);
-    if (success) {
-      setPolls([...mockPolls]);
-      toast({
-        title: "¡Voto registrado!",
-        description: "Tu voto ha sido contabilizado exitosamente",
-      });
-    }
-  };
-
-  const handleLike = (pollId) => {
-    const liked = toggleLike(pollId);
-    setPolls([...mockPolls]);
+  const handleVote = async (pollId, optionId) => {
+    setPolls(prev => prev.map(poll => {
+      if (poll.id === pollId && !poll.userVote) {
+        return {
+          ...poll,
+          userVote: optionId,
+          options: poll.options.map(opt => ({
+            ...opt,
+            votes: opt.id === optionId ? opt.votes + 1 : opt.votes
+          })),
+          totalVotes: poll.totalVotes + 1
+        };
+      }
+      return poll;
+    }));
+    
+    await triggerAction('vote');
     toast({
-      title: liked ? "¡Te gusta!" : "Like removido",
-      description: liked ? "Has dado like a esta votación" : "Ya no te gusta esta votación",
+      title: "¡Voto registrado!",
+      description: "Tu voto ha sido contabilizado exitosamente",
     });
   };
 
-  const handleShare = (pollId) => {
+  const handleLike = async (pollId) => {
+    setPolls(prev => prev.map(poll => {
+      if (poll.id === pollId) {
+        return {
+          ...poll,
+          userLiked: !poll.userLiked,
+          likes: poll.userLiked ? poll.likes - 1 : poll.likes + 1
+        };
+      }
+      return poll;
+    }));
+    
+    await triggerAction('like');
+    toast({
+      title: poll.userLiked ? "Like removido" : "¡Te gusta!",
+      description: poll.userLiked ? "Ya no te gusta esta votación" : "Has dado like a esta votación",
+    });
+  };
+
+  const handleShare = async (pollId) => {
+    setPolls(prev => prev.map(poll => {
+      if (poll.id === pollId) {
+        return {
+          ...poll,
+          shares: poll.shares + 1
+        };
+      }
+      return poll;
+    }));
+    
+    await triggerAction('share');
     navigator.clipboard.writeText(`${window.location.origin}/poll/${pollId}`);
     toast({
       title: "¡Enlace copiado!",
@@ -45,11 +87,18 @@ const FeedPage = () => {
     });
   };
 
-  const handleComment = (pollId) => {
+  const handleComment = async (pollId) => {
+    await triggerAction('create');
     toast({
       title: "Comentarios",
       description: "Funcionalidad de comentarios próximamente",
     });
+  };
+
+  const handleExitTikTok = () => {
+    // No hacer nada, ya que queremos mantener siempre el modo TikTok en el feed
+    // Opcional: podrías navegar a otra página si quisieras
+    return;
   };
 
   if (isLoading) {
