@@ -50,8 +50,11 @@ const FeedPage = () => {
   };
 
   const handleLike = async (pollId) => {
+    let currentPoll = null;
+    
     setPolls(prev => prev.map(poll => {
       if (poll.id === pollId) {
+        currentPoll = poll;
         return {
           ...poll,
           userLiked: !poll.userLiked,
@@ -63,8 +66,8 @@ const FeedPage = () => {
     
     await triggerAction('like');
     toast({
-      title: poll.userLiked ? "Like removido" : "¡Te gusta!",
-      description: poll.userLiked ? "Ya no te gusta esta votación" : "Has dado like a esta votación",
+      title: currentPoll?.userLiked ? "Like removido" : "¡Te gusta!",
+      description: currentPoll?.userLiked ? "Ya no te gusta esta votación" : "Has dado like a esta votación",
     });
   };
 
