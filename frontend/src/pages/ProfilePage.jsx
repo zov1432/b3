@@ -454,6 +454,7 @@ const ProfilePage = () => {
                       onLike={handleLike}
                       onShare={handleShare}
                       onComment={handleComment}
+                      onSave={handleSave}
                     />
                   </div>
                 ))}
