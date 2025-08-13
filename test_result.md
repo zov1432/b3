@@ -231,7 +231,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Reposicionamiento de iconos de perfil en vista 2×2"
+    - "Layout horizontal: perfil izquierda + título derecha en vista 2×2"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
