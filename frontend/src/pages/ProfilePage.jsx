@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Badge } from '../components/ui/badge';
 import PollCard from '../components/PollCard';
 import { ProgressBar } from '../components/AddictionUI';
-import { Settings, MapPin, Calendar, Users, Vote, Trophy, Heart, LogOut, ArrowLeft } from 'lucide-react';
+import { Settings, MapPin, Calendar, Users, Vote, Trophy, Heart, LogOut, ArrowLeft, AtSign, Bookmark } from 'lucide-react';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
