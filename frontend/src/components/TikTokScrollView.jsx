@@ -149,13 +149,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
            maxHeight: '100vh',
            maxHeight: '100dvh'
          }}>
-      {/* User Profile Modal */}
-      {selectedUser && (
-        <UserProfile 
-          user={selectedUser} 
-          onClose={() => setSelectedUser(null)} 
-        />
-      )}
+
 
       {/* Header - Fixed at top with safe area */}
       <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/80 to-transparent px-4 pt-safe-4 pb-8"
