@@ -115,8 +115,9 @@ const ProfilePage = () => {
     navigate(-1);
   };
 
-  // Use authenticated user data
-  const displayUser = {
+  // Determine which user to display
+  const isOwnProfile = !userId || userId === authUser?.username;
+  const displayUser = isOwnProfile ? {
     id: authUser?.id || '1',
     username: authUser?.username || 'usuario_actual',
     displayName: authUser?.display_name || 'Mi Perfil',
@@ -134,7 +135,19 @@ const ProfilePage = () => {
     pollsCreated: userProfile?.total_polls_created || 23,
     totalPolls: mockPolls.length,
     verified: authUser?.is_verified || false
-  };
+  } : viewedUser || {};
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Cargando perfil...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Filter user's polls (in real app, this would be filtered by user ID)
   const userPolls = polls.filter(poll => poll.author === 'Noviago' || poll.id === '1');
