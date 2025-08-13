@@ -194,12 +194,21 @@ const ProfilePage = () => {
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Perfil</h1>
+            <div className="flex items-center gap-3">
+              {!isOwnProfile && (
+                <Button variant="ghost" size="sm" onClick={handleBack} className="hover:bg-gray-100">
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+              )}
+              <h1 className="text-xl font-bold text-gray-900">
+                {isOwnProfile ? 'Mi Perfil' : `@${displayUser.username}`}
+              </h1>
             </div>
-            <Button variant="ghost" size="sm" className="hover:bg-gray-100">
-              <Settings className="w-5 h-5" />
-            </Button>
+            {isOwnProfile && (
+              <Button variant="ghost" size="sm" className="hover:bg-gray-100">
+                <Settings className="w-5 h-5" />
+              </Button>
+            )}
           </div>
         </div>
       </header>
