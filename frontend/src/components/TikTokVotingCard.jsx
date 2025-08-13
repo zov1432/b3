@@ -247,7 +247,7 @@ const TikTokVotingCard = ({
                     <Avatar className="w-6 h-6 ring-1 ring-white/50">
                       <AvatarImage src={option.user?.avatar} />
                       <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold text-xs">
-                        {option.user?.displayName?.charAt(0) || optionNumber}
+                        {((option.user?.displayName || option.user?.username || optionNumber || 'U') + '').charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </div>
