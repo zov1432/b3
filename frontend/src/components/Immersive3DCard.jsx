@@ -180,7 +180,7 @@ const Immersive3DCard = ({
               <Avatar className="w-12 h-12 border-2 border-white/20">
                 <AvatarImage src={poll.author.avatar} />
                 <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
-                  {poll.author.name.charAt(0)}
+                  {((poll.author.name || poll.author.username || 'U') + '').charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </motion.div>
