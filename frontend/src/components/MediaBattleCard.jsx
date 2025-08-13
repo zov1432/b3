@@ -610,7 +610,7 @@ const BattleOptionCard = ({
           <Avatar className="w-12 h-12 ring-3 ring-white/50">
             <AvatarImage src={option.user?.avatar} />
             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold">
-              {option.user?.displayName?.charAt(0)}
+              {((option.user?.displayName || option.user?.username || 'U') + '').charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div>
