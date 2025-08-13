@@ -41,6 +41,7 @@ const ProfilePage = () => {
   const [polls, setPolls] = useState(mockPolls);
   const [viewedUser, setViewedUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [savedPolls, setSavedPolls] = useState([]);
   const { toast } = useToast();
   const { user: authUser, logout } = useAuth();
   const { userProfile, level, xp, streak, userAchievements, getXpToNextLevel, getXpProgress } = useAddiction();
