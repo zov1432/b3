@@ -284,7 +284,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
               {/* Combined Profile + Title Layout - All 4 cards */}
               <div className="absolute bottom-6 left-4 right-4 z-20">
                 <div className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
+                  "flex items-center justify-between px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
                   "bg-black/70"
                 )}>
                   {/* Profile Avatar - Left side */}
@@ -325,8 +325,8 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                   </button>
                   
                   {/* Title - Right side */}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-white font-bold text-base leading-tight">
+                  <div className="flex-shrink-0">
+                    <div className="text-white font-bold text-base leading-tight text-right">
                       {option.text}
                     </div>
                   </div>
