@@ -120,7 +120,7 @@ const ProfilePage = () => {
   const displayUser = isOwnProfile ? {
     id: authUser?.id || '1',
     username: authUser?.username || 'usuario_actual',
-    displayName: authUser?.display_name || 'Mi Perfil',
+    displayName: authUser?.display_name || authUser?.username || 'Mi Perfil',
     email: authUser?.email || 'user@example.com',
     bio: '🎯 Creando votaciones épicas | 📊 Fan de las estadísticas | 🚀 Siempre innovando',
     location: 'Madrid, España',
@@ -135,7 +135,11 @@ const ProfilePage = () => {
     pollsCreated: userProfile?.total_polls_created || 23,
     totalPolls: mockPolls.length,
     verified: authUser?.is_verified || false
-  } : viewedUser || {};
+  } : viewedUser || {
+    displayName: 'Usuario',
+    username: 'usuario',
+    bio: 'Perfil de usuario'
+  };
 
   // Show loading state
   if (loading) {
