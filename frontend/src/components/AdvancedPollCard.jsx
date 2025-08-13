@@ -379,7 +379,7 @@ const AdvancedPollCard = ({
               <div className="absolute bottom-4 left-4 right-4 z-20">
                 <motion.div
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
+                    "flex items-center justify-between px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
                     "bg-black/70"
                   )}
                   initial={{ scale: 0.8, opacity: 0 }}
@@ -406,8 +406,8 @@ const AdvancedPollCard = ({
                   </motion.button>
                   
                   {/* Title - Right side */}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-white font-bold text-base leading-tight">
+                  <div className="flex-shrink-0">
+                    <div className="text-white font-bold text-base leading-tight text-right">
                       {option.text}
                     </div>
                   </div>
