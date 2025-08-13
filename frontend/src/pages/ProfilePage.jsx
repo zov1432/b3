@@ -182,6 +182,45 @@ const ProfilePage = () => {
   // Filter user's polls (in real app, this would be filtered by user ID)
   const userPolls = polls.filter(poll => poll.author === 'Noviago' || poll.id === '1');
   const likedPolls = polls.filter(poll => poll.userLiked);
+  
+  // Mock mentions - polls where user is mentioned in options
+  const mentionedPolls = polls.filter(poll => 
+    poll.options.some(option => 
+      option.user?.username === displayUser.username || 
+      option.user?.displayName === displayUser.displayName
+    )
+  );
+  
+  // Mock saved polls - implement saved functionality (for now using random subset)
+  const [savedPolls, setSavedPolls] = useState([]);
+  
+  // Initialize saved polls (mock data)
+  useEffect(() => {
+    // In real app, this would be fetched from backend
+    const mockSavedPolls = polls.filter((poll, index) => index % 3 === 0); // Every 3rd poll as example
+    setSavedPolls(mockSavedPolls);
+  }, [polls]);
+  
+  // Function to toggle save status
+  const handleSave = (pollId) => {
+    const isSaved = savedPolls.some(poll => poll.id === pollId);
+    if (isSaved) {
+      setSavedPolls(savedPolls.filter(poll => poll.id !== pollId));
+      toast({
+        title: "Publicación eliminada",
+        description: "La publicación ha sido removida de guardados",
+      });
+    } else {
+      const pollToSave = polls.find(poll => poll.id === pollId);
+      if (pollToSave) {
+        setSavedPolls([...savedPolls, pollToSave]);
+        toast({
+          title: "¡Publicación guardada!",
+          description: "La publicación ha sido guardada exitosamente",
+        });
+      }
+    }
+  };
 
   const handleVote = (pollId, optionId) => {
     const success = voteOnPoll(pollId, optionId);
