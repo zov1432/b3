@@ -574,6 +574,7 @@ const ProfilePage = () => {
                           onLike={handleLike}
                           onShare={handleShare}
                           onComment={handleComment}
+                          onSave={handleSave}
                         />
                         {/* Saved badge with remove option */}
                         <div className="absolute top-2 right-2 flex items-center gap-1">
