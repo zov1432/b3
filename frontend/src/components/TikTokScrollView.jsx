@@ -8,51 +8,6 @@ import { ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Cr
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
-// Componente UserProfile para mostrar información del usuario
-const UserProfile = ({ user, onClose }) => (
-  <div className="fixed inset-0 z-60 bg-black/90 flex items-center justify-center p-4"
-       onClick={onClose}>
-    <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4"
-         onClick={(e) => e.stopPropagation()}>
-      <div className="text-center">
-        <Avatar className="w-24 h-24 mx-auto mb-4 ring-4 ring-blue-500">
-          <AvatarImage src={user.avatar} />
-          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-2xl font-bold">
-            {user.displayName.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-        
-        <div className="mb-4">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <h2 className="text-xl font-bold text-gray-900">{user.displayName}</h2>
-            {user.verified && (
-              <CheckCircle className="w-5 h-5 text-blue-500 fill-current" />
-            )}
-          </div>
-          <p className="text-gray-500">@{user.username}</p>
-        </div>
-        
-        <div className="bg-gray-50 rounded-xl p-4 mb-4">
-          <div className="flex items-center justify-center gap-2">
-            <User className="w-4 h-4 text-gray-600" />
-            <span className="text-lg font-semibold text-gray-900">{user.followers}</span>
-            <span className="text-gray-600">seguidores</span>
-          </div>
-        </div>
-        
-        <div className="flex gap-3">
-          <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
-            Seguir
-          </Button>
-          <Button variant="outline" className="flex-1">
-            Ver perfil
-          </Button>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
 // Componente UserButton clickeable
 const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserClick, optionIndex }) => (
   <div className={cn(
