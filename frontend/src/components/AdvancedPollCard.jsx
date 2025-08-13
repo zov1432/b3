@@ -436,12 +436,22 @@ const AdvancedPollCard = ({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <Avatar className="ring-3 ring-white/70 w-12 h-12 flex-shrink-0 shadow-lg">
-              <AvatarImage src={poll.author.avatar || "https://github.com/shadcn.png"} />
-              <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white font-bold">
-                {poll.author.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
+            <button
+              className="group relative transition-transform duration-200 hover:scale-105"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Create a simple username from author name
+                const username = poll.author.toLowerCase().replace(/\s+/g, '_');
+                navigate(`/profile/${username}`);
+              }}
+            >
+              <Avatar className="ring-3 ring-white/70 w-12 h-12 flex-shrink-0 shadow-lg cursor-pointer">
+                <AvatarImage src={poll.author.avatar || "https://github.com/shadcn.png"} />
+                <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white font-bold">
+                  {poll.author.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </button>
             <div className="min-w-0 flex-1">
               <h3 className="font-bold text-white text-base truncate">{poll.author}</h3>
               <p className="text-sm text-white/80 truncate">{poll.timeAgo}</p>
