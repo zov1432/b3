@@ -291,20 +291,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
         })}
       </div>
 
-      {/* Music Player - Positioned at bottom left */}
-      {poll.music && (
-        <div className="absolute bottom-20 left-4 z-30 max-w-xs"
-             style={{ 
-               bottom: 'max(5rem, calc(5rem + env(safe-area-inset-bottom)))',
-               left: 'max(1rem, env(safe-area-inset-left))'
-             }}>
-          <MusicPlayer
-            music={poll.music}
-            isVisible={isActive}
-            onTogglePlay={handleMusicToggle}
-          />
-        </div>
-      )}
+
 
       {/* Bottom info and actions - Enhanced with safe area */}
       <div className="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/90 via-black/70 to-transparent px-4 pt-8"
