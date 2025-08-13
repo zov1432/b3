@@ -151,6 +151,18 @@ backend:
           comment: "✅ ADDICTION SYSTEM INTEGRATION FULLY TESTED: 1) GET /api/user/profile working perfectly - retrieves authenticated user profile with addiction metrics, creates profile automatically if missing, 2) POST /api/user/action working perfectly - tracks user actions (vote/create/share/like) with authenticated user ID, generates variable rewards (XP 5-30), triggers achievements, handles streak multipliers, creates dopamine hits, 3) GET /api/user/achievements working perfectly - returns user's unlocked achievements, 4) Fixed UserAction model to make user_id optional for authenticated endpoints, 5) Complete integration: user registration automatically creates addiction profile, all addiction endpoints use authenticated user context, rewards and achievements properly tracked per user. Authentication and addiction systems fully integrated and working together."
 
 frontend:
+  - task: "Feed TikTok de Pantalla Completa"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/FeedPage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Convertido FeedPage para usar TikTokScrollView como componente principal. Cambios implementados: 1) Reemplazado grid layout tradicional con TikTokScrollView full-screen, 2) Cada publicación ahora ocupa toda la pantalla con scroll vertical snap-to, 3) Activación automática de modo TikTok al entrar al feed, 4) Mantenidas todas las funcionalidades (vote, like, share, comment) pero en formato inmersivo, 5) Estados de loading y vacío adaptados al diseño dark/full-screen, 6) Integración con sistema de adicción para recompensas. Feed ahora funciona exactamente como TikTok con scroll 1 por 1."
+
   - task: "Contexto de Autenticación"
     implemented: true
     working: false
