@@ -294,7 +294,7 @@ const MediaBattleCard = ({
             <Avatar className="w-12 h-12 ring-3 ring-gradient-to-r from-purple-500 to-pink-500">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold">
-                {poll.author.charAt(0)}
+                {((poll.author || 'U') + '').charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
