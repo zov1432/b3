@@ -3,7 +3,7 @@ import PollCard from './PollCard';
 import MusicPlayer from './MusicPlayer';
 import CustomLogo from './CustomLogo';
 import { cn } from '../lib/utils';
-import { Grid3X3, ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Crown, CheckCircle, User } from 'lucide-react';
+import { ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Crown, CheckCircle, User } from 'lucide-react';
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
