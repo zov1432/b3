@@ -4,7 +4,7 @@ import {
   Heart, MessageCircle, Share, Bookmark, MoreHorizontal, 
   Play, Pause, VolumeX, Volume2, TrendingUp, Zap, 
   Sparkles, Award, Crown, Star, ChevronUp, ChevronDown,
-  Filter, Search, Grid3X3, Shuffle, Target, Eye, User, CheckCircle
+  Filter, Search, Shuffle, Target, Eye, User, CheckCircle
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
