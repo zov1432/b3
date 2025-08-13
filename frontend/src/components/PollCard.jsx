@@ -184,22 +184,32 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
 
       {/* User Avatar and Percentage Overlay */}
       <div className="absolute top-2 right-2 flex flex-col items-center gap-1">
-        <Avatar className={cn(
-          "w-8 h-8 ring-2 transition-all",
-          isSelected 
-            ? "ring-blue-400"
-            : isWinner
-              ? "ring-green-400"
-              : "ring-white/50"
-        )}>
-          <AvatarImage src={option.user?.avatar} />
-          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-xs">
-            {option.user?.displayName?.charAt(0) || option.id.toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        {option.user?.verified && (
-          <CheckCircle className="w-3 h-3 text-blue-500 fill-current -mt-1" />
-        )}
+        <button
+          className="group relative transition-transform duration-200 hover:scale-110"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (option.user?.username) {
+              navigate(`/profile/${option.user.username}`);
+            }
+          }}
+        >
+          <Avatar className={cn(
+            "w-8 h-8 ring-2 transition-all cursor-pointer",
+            isSelected 
+              ? "ring-blue-400"
+              : isWinner
+                ? "ring-green-400"
+                : "ring-white/50"
+          )}>
+            <AvatarImage src={option.user?.avatar} />
+            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-xs">
+              {option.user?.displayName?.charAt(0) || option.id.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          {option.user?.verified && (
+            <CheckCircle className="w-3 h-3 text-blue-500 fill-current -mt-1" />
+          )}
+        </button>
       </div>
 
       {/* Winner Badge */}
