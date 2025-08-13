@@ -174,11 +174,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           </div>
           {/* Logo personalizado en esquina superior derecha */}
           <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_perfil-doble/artifacts/59vt1o0f_Screenshot_2025-08-09-01-39-16-39_99c04817c0de5652397fc8b56c3b3817.jpg"
-              alt="Logo"
-              className="w-6 h-6 object-contain filter invert"
-            />
+            <CustomLogo size={24} className="text-white" />
           </div>
         </div>
         
