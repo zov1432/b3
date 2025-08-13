@@ -270,40 +270,60 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                 onClick={() => handleVote(option.id)}
                 onUserClick={handleUserClick}
                 optionIndex={optionIndex}
+                style={{ display: 'none' }}
               />
 
-              {/* Winner badge - Enhanced */}
-              {isWinner && poll.totalVotes > 0 && (
-                <div className="absolute top-4 left-4 bg-green-600/95 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1.5 shadow-2xl backdrop-blur-sm z-20 animate-pulse">
-                  <Crown className="w-4 h-4" />
-                  Ganador
-                </div>
-              )}
-
-              {/* Option text - Position depends on whether it's top or bottom card */}
-              {optionIndex < 2 ? (
-                // Top cards (0, 1) - Description at bottom
-                <div className="absolute bottom-6 left-4 right-4 z-20">
-                  <div className={cn(
-                    "text-white font-bold text-lg leading-tight text-center",
-                    "bg-black/70 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl",
-                    "border border-white/20"
-                  )}>
-                    {option.text}
+              {/* Combined Profile + Title Layout - All 4 cards */}
+              <div className="absolute bottom-6 left-4 right-4 z-20">
+                <div className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
+                  "bg-black/70"
+                )}>
+                  {/* Profile Avatar - Left side */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleUserClick(option.user);
+                    }}
+                    className="group relative transition-transform duration-200 hover:scale-110 flex-shrink-0"
+                  >
+                    <Avatar className={cn(
+                      "w-10 h-10 transition-all duration-200 ring-2",
+                      isSelected 
+                        ? "ring-blue-400 shadow-lg shadow-blue-500/50" 
+                        : isWinner
+                          ? "ring-green-400 shadow-lg shadow-green-500/50"
+                          : "ring-white/30 shadow-lg"
+                    )}>
+                      <AvatarImage src={option.user.avatar} />
+                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-sm">
+                        {option.user.displayName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    {/* Verificación overlay */}
+                    {option.user.verified && (
+                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
+                        <CheckCircle className="w-3 h-3 text-blue-500 fill-current" />
+                      </div>
+                    )}
+                    
+                    {/* Hover tooltip */}
+                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                      <div className="bg-black/80 text-white text-xs px-2 py-1 rounded backdrop-blur-sm whitespace-nowrap">
+                        @{option.user.username}
+                      </div>
+                    </div>
+                  </button>
+                  
+                  {/* Title - Right side */}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white font-bold text-base leading-tight">
+                      {option.text}
+                    </div>
                   </div>
                 </div>
-              ) : (
-                // Bottom cards (2, 3) - Description at top
-                <div className="absolute top-20 left-4 right-4 z-20">
-                  <div className={cn(
-                    "text-white font-bold text-lg leading-tight text-center",
-                    "bg-black/70 px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl",
-                    "border border-white/20"
-                  )}>
-                    {option.text}
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
           );
         })}
