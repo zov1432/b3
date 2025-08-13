@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
+import CustomLogo from './CustomLogo';
 import { cn } from '../lib/utils';
 
 // Efectos de partículas para interacciones
