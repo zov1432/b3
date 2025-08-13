@@ -375,8 +375,11 @@ const AdvancedPollCard = ({
                 </motion.div>
               )}
 
-              {/* Combined Profile + Title Layout - All 4 cards */}
-              <div className="absolute bottom-4 left-4 right-4 z-20">
+              {/* Combined Profile + Title Layout - Conditional positioning */}
+              <div className={cn(
+                "absolute left-4 right-4 z-20",
+                optionIndex < 2 ? "bottom-4" : "top-6"
+              )}>
                 <motion.div
                   className={cn(
                     "flex items-center px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
