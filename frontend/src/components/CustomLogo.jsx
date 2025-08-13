@@ -3,7 +3,7 @@ import React from 'react';
 const CustomLogo = ({ size = 24, className = "" }) => {
   return (
     <img
-      src="https://customer-assets.emergentagent.com/job_red-circle-edit/artifacts/7zf3s08s_Screenshot_2025-08-09-01-39-33-64_99c04817c0de5652397fc8b56c3b3817.jpg"
+      src="https://customer-assets.emergentagent.com/job_red-circle-edit/artifacts/7rnoyyyr_file_00000000f1a8620ab186d3fbdb296465.png"
       alt="Custom Logo"
       width={size}
       height={size}
