@@ -85,24 +85,6 @@ const MusicPlayer = ({ music, isVisible = true, onTogglePlay, className = '' }) 
     setIsMuted(!isMuted);
   };
 
-  const handleRestart = () => {
-    setCurrentTime(0);
-    if (isPlaying && intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(() => {
-        setCurrentTime(prev => {
-          const newTime = prev + 1;
-          if (newTime >= music.duration) {
-            setIsPlaying(false);
-            clearInterval(intervalRef.current);
-            return 0;
-          }
-          return newTime;
-        });
-      }, 1000);
-    }
-  };
-
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -118,111 +100,76 @@ const MusicPlayer = ({ music, isVisible = true, onTogglePlay, className = '' }) 
 
   return (
     <div className={`
-      bg-black/70 backdrop-blur-md rounded-2xl p-3 shadow-2xl border border-white/20
+      flex items-center gap-2 hover:scale-110 transition-all duration-200 
+      h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm border border-white/20
       ${className}
     `}>
-      {/* Compact header with music info and play button */}
-      <div className="flex items-center gap-3 mb-2">
-        <div className="relative flex-shrink-0">
-          <img 
-            src={music.cover} 
-            alt={music.title}
-            className={`w-10 h-10 rounded-lg object-cover ring-2 ring-white/30 transition-transform duration-300 ${
-              isPlaying ? 'scale-110 ring-white/50' : ''
-            }`}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className={`w-2 h-2 bg-white rounded-full ${
-              isPlaying ? 'animate-pulse' : 'opacity-70'
-            }`} />
-          </div>
-        </div>
-        
-        <div className="flex-1 min-w-0">
-          <p className="text-white font-semibold text-sm truncate">
-            {music.title}
-          </p>
-          <p className="text-white/70 text-xs truncate">
-            {music.artist}
-          </p>
-        </div>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handlePlayPause}
-          className="h-8 w-8 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30 flex-shrink-0"
-        >
-          {isPlaying ? (
-            <Pause className="w-4 h-4" />
-          ) : (
-            <Play className="w-4 h-4" />
-          )}
-        </Button>
-      </div>
-
-      {/* Compact waveform */}
-      <div className="mb-2">
-        <MusicWaveform 
-          waveform={music.waveform} 
-          isPlaying={isPlaying}
-          currentTime={currentTime}
-          duration={music.duration}
+      {/* Music cover - Same size as button icons */}
+      <div className="relative flex-shrink-0">
+        <img 
+          src={music.cover} 
+          alt={music.title}
+          className={`w-7 h-7 rounded-md object-cover ring-1 ring-white/30 transition-transform duration-300 ${
+            isPlaying ? 'scale-110 ring-white/50' : ''
+          }`}
         />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className={`w-1 h-1 bg-white rounded-full ${
+            isPlaying ? 'animate-pulse' : 'opacity-70'
+          }`} />
+        </div>
       </div>
+      
+      {/* Music info - Compact */}
+      <div className="flex-1 min-w-0">
+        <p className="text-white font-bold text-base truncate">
+          {music.title}
+        </p>
+        <div className="flex items-center gap-1">
+          <Music className="w-3 h-3 text-white/70" />
+          <span className="text-white/70 text-xs truncate">{music.artist}</span>
+        </div>
+      </div>
+      
+      {/* Play button - Same style as social buttons */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={handlePlayPause}
+        className="h-7 w-7 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30 flex-shrink-0"
+      >
+        {isPlaying ? (
+          <Pause className="w-4 h-4" />
+        ) : (
+          <Play className="w-4 h-4" />
+        )}
+      </Button>
 
-      {/* Compact controls row */}
-      <div className="flex items-center justify-between text-xs">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleMuteToggle}
-            className="h-6 w-6 p-0 text-white hover:text-white hover:bg-white/20"
-          >
-            {isMuted ? (
-              <VolumeX className="w-3 h-3" />
-            ) : (
-              <Volume2 className="w-3 h-3" />
-            )}
-          </Button>
+      {/* Mini waveform progress */}
+      <div className="flex items-center gap-0.5 h-7 justify-center flex-shrink-0">
+        {music.waveform && music.waveform.slice(0, 8).map((height, index) => {
+          const progress = currentTime / music.duration;
+          const barProgress = index / 8;
+          const isActive = barProgress <= progress;
           
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleRestart}
-            className="h-6 w-6 p-0 text-white hover:text-white hover:bg-white/20"
-          >
-            <RotateCcw className="w-2.5 h-2.5" />
-          </Button>
-        </div>
-
-        <div className="text-center flex-1 mx-2">
-          <div className="text-white/90 text-xs">
-            {formatDuration(currentTime)} / {formatDuration(music.duration)}
-          </div>
-          <div className="w-full bg-white/20 rounded-full h-0.5 mt-1">
-            <div 
-              className="bg-white h-0.5 rounded-full transition-all duration-1000"
-              style={{ width: `${(currentTime / music.duration) * 100}%` }}
+          return (
+            <div
+              key={index}
+              className={`w-0.5 transition-all duration-100 ${
+                isActive && isPlaying 
+                  ? 'bg-white animate-pulse' 
+                  : isActive 
+                    ? 'bg-white/80'
+                    : 'bg-white/40'
+              }`}
+              style={{
+                height: `${height * 8 + 4}px`,
+                animationDelay: `${index * 50}ms`
+              }}
             />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-1 text-white/70 text-xs">
-          <Music className="w-3 h-3" />
-          <span className="hidden sm:inline">{music.category}</span>
-        </div>
+          );
+        })}
       </div>
-
-      {/* Original music indicator - more compact */}
-      {music.isOriginal && (
-        <div className="mt-1 text-center">
-          <span className="bg-green-500/80 text-white text-xs px-2 py-0.5 rounded-full">
-            Original
-          </span>
-        </div>
-      )}
     </div>
   );
 };
