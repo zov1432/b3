@@ -516,6 +516,7 @@ const ProfilePage = () => {
                           onLike={handleLike}
                           onShare={handleShare}
                           onComment={handleComment}
+                          onSave={handleSave}
                         />
                         {/* Mention badge */}
                         <div className="absolute top-2 right-2 bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 shadow-sm">
