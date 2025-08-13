@@ -306,53 +306,86 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           </p>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                onLike(poll.id);
-              }}
-              className={cn(
-                "flex items-center gap-2 hover:scale-110 transition-all duration-200 text-white hover:text-red-400 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm",
-                poll.userLiked && "text-red-500 bg-red-500/20"
-              )}
-            >
-              <Heart className={cn(
-                "w-7 h-7 transition-all duration-200",
-                poll.userLiked && "fill-current scale-110"
-              )} />
-              <span className="font-bold text-base">{formatNumber(poll.likes)}</span>
-            </Button>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                onComment(poll.id);
-              }}
-              className="flex items-center gap-2 text-white hover:text-blue-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm"
-            >
-              <MessageCircle className="w-7 h-7" />
-              <span className="font-bold text-base">{formatNumber(poll.comments)}</span>
-            </Button>
-          </div>
+        <div className="flex items-center justify-between gap-4">
+          {/* Music Player - Left side */}
+          {poll.music && (
+            <div className="flex-1 max-w-xs">
+              <MusicPlayer
+                music={poll.music}
+                isVisible={isActive}
+                onTogglePlay={handleMusicToggle}
+                className="w-full"
+              />
+            </div>
+          )}
+          
+          {/* Social buttons - Right side */}
+          <div className={`flex items-center gap-3 ${poll.music ? 'flex-shrink-0' : 'flex-1 justify-between'}`}>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onLike(poll.id);
+                }}
+                className={cn(
+                  "flex items-center gap-2 hover:scale-110 transition-all duration-200 text-white hover:text-red-400 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm",
+                  poll.userLiked && "text-red-500 bg-red-500/20"
+                )}
+              >
+                <Heart className={cn(
+                  "w-7 h-7 transition-all duration-200",
+                  poll.userLiked && "fill-current scale-110"
+                )} />
+                <span className="font-bold text-base">{formatNumber(poll.likes)}</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onComment(poll.id);
+                }}
+                className="flex items-center gap-2 text-white hover:text-blue-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm"
+              >
+                <MessageCircle className="w-7 h-7" />
+                <span className="font-bold text-base">{formatNumber(poll.comments)}</span>
+              </Button>
+            </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onShare(poll.id);
-            }}
-            className="flex items-center gap-2 text-white hover:text-green-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm"
-          >
-            <Share className="w-7 h-7" />
-            <span className="font-bold text-base">{formatNumber(poll.shares)}</span>
-          </Button>
+            {!poll.music && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onShare(poll.id);
+                }}
+                className="flex items-center gap-2 text-white hover:text-green-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm"
+              >
+                <Share className="w-7 h-7" />
+                <span className="font-bold text-base">{formatNumber(poll.shares)}</span>
+              </Button>
+            )}
+          </div>
+          
+          {/* Share button - When music is present */}
+          {poll.music && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onShare(poll.id);
+              }}
+              className="flex items-center gap-2 text-white hover:text-green-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm flex-shrink-0"
+            >
+              <Share className="w-7 h-7" />
+              <span className="font-bold text-base">{formatNumber(poll.shares)}</span>
+            </Button>
+          )}
         </div>
       </div>
 
