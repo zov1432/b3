@@ -121,9 +121,9 @@ const MusicPlayer = ({ music, isVisible = true, onTogglePlay, className = '' }) 
       bg-black/70 backdrop-blur-md rounded-2xl p-3 shadow-2xl border border-white/20
       ${className}
     `}>
-      {/* Header with music info */}
-      <div className="flex items-center gap-3 mb-3">
-        <div className="relative">
+      {/* Compact header with music info and play button */}
+      <div className="flex items-center gap-3 mb-2">
+        <div className="relative flex-shrink-0">
           <img 
             src={music.cover} 
             alt={music.title}
@@ -147,33 +147,22 @@ const MusicPlayer = ({ music, isVisible = true, onTogglePlay, className = '' }) 
           </p>
         </div>
         
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleMuteToggle}
-            className="h-8 w-8 p-0 text-white hover:text-white hover:bg-white/20"
-          >
-            {isMuted ? (
-              <VolumeX className="w-4 h-4" />
-            ) : (
-              <Volume2 className="w-4 h-4" />
-            )}
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleRestart}
-            className="h-8 w-8 p-0 text-white hover:text-white hover:bg-white/20"
-          >
-            <RotateCcw className="w-3 h-3" />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handlePlayPause}
+          className="h-8 w-8 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30 flex-shrink-0"
+        >
+          {isPlaying ? (
+            <Pause className="w-4 h-4" />
+          ) : (
+            <Play className="w-4 h-4" />
+          )}
+        </Button>
       </div>
 
-      {/* Waveform with progress */}
-      <div className="mb-3">
+      {/* Compact waveform */}
+      <div className="mb-2">
         <MusicWaveform 
           waveform={music.waveform} 
           isPlaying={isPlaying}
@@ -182,28 +171,39 @@ const MusicPlayer = ({ music, isVisible = true, onTogglePlay, className = '' }) 
         />
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-between">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handlePlayPause}
-          className="h-10 w-10 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
-        >
-          {isPlaying ? (
-            <Pause className="w-5 h-5" />
-          ) : (
-            <Play className="w-5 h-5" />
-          )}
-        </Button>
+      {/* Compact controls row */}
+      <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleMuteToggle}
+            className="h-6 w-6 p-0 text-white hover:text-white hover:bg-white/20"
+          >
+            {isMuted ? (
+              <VolumeX className="w-3 h-3" />
+            ) : (
+              <Volume2 className="w-3 h-3" />
+            )}
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleRestart}
+            className="h-6 w-6 p-0 text-white hover:text-white hover:bg-white/20"
+          >
+            <RotateCcw className="w-2.5 h-2.5" />
+          </Button>
+        </div>
 
-        <div className="text-center flex-1 mx-3">
+        <div className="text-center flex-1 mx-2">
           <div className="text-white/90 text-xs">
             {formatDuration(currentTime)} / {formatDuration(music.duration)}
           </div>
-          <div className="w-full bg-white/20 rounded-full h-1 mt-1">
+          <div className="w-full bg-white/20 rounded-full h-0.5 mt-1">
             <div 
-              className="bg-white h-1 rounded-full transition-all duration-1000"
+              className="bg-white h-0.5 rounded-full transition-all duration-1000"
               style={{ width: `${(currentTime / music.duration) * 100}%` }}
             />
           </div>
@@ -211,15 +211,15 @@ const MusicPlayer = ({ music, isVisible = true, onTogglePlay, className = '' }) 
 
         <div className="flex items-center gap-1 text-white/70 text-xs">
           <Music className="w-3 h-3" />
-          <span>{music.category}</span>
+          <span className="hidden sm:inline">{music.category}</span>
         </div>
       </div>
 
-      {/* Original music indicator */}
+      {/* Original music indicator - more compact */}
       {music.isOriginal && (
-        <div className="mt-2 text-center">
-          <span className="bg-green-500/80 text-white text-xs px-2 py-1 rounded-full">
-            Música Original
+        <div className="mt-1 text-center">
+          <span className="bg-green-500/80 text-white text-xs px-2 py-0.5 rounded-full">
+            Original
           </span>
         </div>
       )}
