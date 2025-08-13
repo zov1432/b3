@@ -114,7 +114,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
             <Avatar className="ring-2 ring-white/30 w-12 h-12">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
-                {poll.author.charAt(0)}
+                {((poll.author || 'U') + '').charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
