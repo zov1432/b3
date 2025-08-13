@@ -141,7 +141,7 @@ const SocialProofBadge = ({
                 title={`Usuario reciente: ${voter}`}
               >
                 <span className="text-xs text-white font-bold">
-                  {voter.charAt(0).toUpperCase()}
+                  {((voter || 'U') + '').charAt(0).toUpperCase()}
                 </span>
               </motion.div>
             ))}
