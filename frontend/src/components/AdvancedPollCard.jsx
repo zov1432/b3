@@ -448,7 +448,7 @@ const AdvancedPollCard = ({
               <Avatar className="ring-3 ring-white/70 w-12 h-12 flex-shrink-0 shadow-lg cursor-pointer">
                 <AvatarImage src={poll.author.avatar || "https://github.com/shadcn.png"} />
                 <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white font-bold">
-                  {poll.author.charAt(0)}
+                  {((poll.author || 'U') + '').charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </button>
