@@ -631,18 +631,7 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onExitTik
            width: '100vw',
            width: '100dvw'
          }}>
-      {/* Exit button - Better positioning with safe areas */}
-      <Button
-        onClick={onExitTikTok}
-        className="fixed z-50 bg-black/60 text-white hover:bg-black/80 backdrop-blur-md border-none p-3 h-12 w-12 rounded-full shadow-2xl transition-all duration-200 hover:scale-110"
-        size="sm"
-        style={{
-          top: 'max(1rem, env(safe-area-inset-top))',
-          right: 'max(1rem, env(safe-area-inset-right))'
-        }}
-      >
-        <Grid3X3 className="w-5 h-5" />
-      </Button>
+
 
       {/* Navigation hints - Enhanced design and positioning */}
       <div className="fixed z-40 flex flex-col gap-4 transition-opacity duration-300"
