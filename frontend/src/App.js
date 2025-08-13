@@ -137,6 +137,7 @@ function AppContent() {
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
           
           {/* Catch all - redirect to feed */}
           <Route path="*" element={<Navigate to="/feed" replace />} />
