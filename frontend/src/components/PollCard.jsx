@@ -485,7 +485,7 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false
               <Avatar className="ring-2 ring-blue-500/20">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
-                  {poll.author.charAt(0)}
+                  {((poll.author || 'U') + '').charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div>
