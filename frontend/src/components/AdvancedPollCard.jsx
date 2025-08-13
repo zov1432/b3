@@ -376,6 +376,12 @@ const AdvancedPollCard = ({
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="group relative transition-transform duration-200 flex-shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (option.user?.username) {
+                        navigate(`/profile/${option.user.username}`);
+                      }
+                    }}
                   >
                     <Avatar className="w-10 h-10 ring-2 ring-white/70 shadow-lg cursor-pointer">
                       <AvatarImage src={option.user?.avatar} />
