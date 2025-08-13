@@ -231,6 +231,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Feed TikTok de Pantalla Completa"
     - "Sistema de Autenticación JWT"
     - "Sistema de Mensajería Directa"
     - "Integración Auth con Sistema de Adicción"
