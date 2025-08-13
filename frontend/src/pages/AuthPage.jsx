@@ -42,7 +42,12 @@ const LoginPage = ({ onSwitchToRegister }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4 relative">
+      {/* Logo personalizado en esquina superior derecha */}
+      <div className="absolute top-6 right-6 flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+        <CustomLogo size={28} className="text-white" />
+      </div>
+      
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
