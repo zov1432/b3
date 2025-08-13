@@ -231,15 +231,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Feed TikTok de Pantalla Completa"
-    - "Sistema de Autenticación JWT"
-    - "Sistema de Mensajería Directa"
-    - "Integración Auth con Sistema de Adicción"
-    - "Contexto de Autenticación"
-    - "Páginas de Login y Registro"
-    - "Sistema de Mensajería Frontend"
-    - "Integración Auth en App Principal"
-    - "Navegación con Mensajes"
+    - "Reproductor de música en TikTok ScrollView"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
