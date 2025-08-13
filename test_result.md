@@ -494,7 +494,7 @@ frontend:
     file: "/app/frontend/src/components/MusicPlayer.jsx, /app/frontend/src/components/TikTokScrollView.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
@@ -502,6 +502,9 @@ frontend:
         - working: true
           agent: "testing"
           comment: "✅ MOBILE TESTING COMPLETED: Music player works excellently in TikTok mode across all mobile devices. Verified: 1) Music player appears correctly positioned in TikTok ScrollView, 2) Play/pause controls work, 3) Waveform animation displays properly, 4) Music info shows correctly (Style & Fashion by Fashion Beats), 5) Progress bar and time display work, 6) Volume and restart controls function, 7) Responsive design adapts to all screen sizes including landscape mode."
+        - working: "NA"
+          agent: "main"
+          comment: "🎵 REPOSICIONAMIENTO DEL REPRODUCTOR DE MÚSICA COMPLETADO: Implementado el cambio solicitado por el usuario para mover el reproductor de música al área de los botones de like/comentar. CAMBIOS REALIZADOS: 1) ELIMINADO: Reproductor de su posición original (bottom-left), 2) REPOSICIONADO: Ahora aparece a la izquierda de los botones sociales en el área inferior, 3) LAYOUT REORGANIZADO: Reproductor a la izquierda, botones (like, comentar, share) a la derecha, 4) REPRODUCTOR COMPACTO: Hecho más compacto para optimizar el espacio en el nuevo layout, 5) FUNCIONALIDAD MANTENIDA: Todos los controles y funciones preservadas. Pendiente testing de la nueva posición."
 
   - task: "Eliminación de funcionalidades PWA y descarga móvil"
     implemented: true
