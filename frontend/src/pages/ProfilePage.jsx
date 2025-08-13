@@ -267,18 +267,33 @@ const ProfilePage = () => {
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Editar
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="bg-red-500/20 border-red-500/30 text-white hover:bg-red-500/30"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Salir
-                </Button>
+                {isOwnProfile ? (
+                  <>
+                    <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Editar
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="bg-red-500/20 border-red-500/30 text-white hover:bg-red-500/30"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Salir
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                      <Users className="w-4 h-4 mr-2" />
+                      Seguir
+                    </Button>
+                    <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                      <Heart className="w-4 h-4 mr-2" />
+                      Me gusta
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
