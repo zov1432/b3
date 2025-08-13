@@ -261,13 +261,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Contexto de Autenticación"
-    - "Integración Auth en App Principal"
-  stuck_tasks:
-    - "Contexto de Autenticación"
-    - "Integración Auth en App Principal"
+    - "Feed TikTok de Pantalla Completa"
+    - "Sistema de Mensajería Frontend"
+  stuck_tasks: []
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
