@@ -487,6 +487,117 @@ const ProfilePage = () => {
             )}
           </TabsContent>
 
+          <TabsContent value="mentions" className="space-y-6">
+            {mentionedPolls.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <AtSign className="w-12 h-12 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">No tienes menciones</h3>
+                <p className="text-gray-600 mb-6">Las publicaciones donde seas mencionado aparecerán aquí</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <AtSign className="w-5 h-5 text-purple-600" />
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {mentionedPolls.length} menciones encontradas
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {mentionedPolls.map((poll) => (
+                    <div key={poll.id} className="animate-fade-in">
+                      <div className="relative">
+                        <PollCard
+                          poll={poll}
+                          onVote={handleVote}
+                          onLike={handleLike}
+                          onShare={handleShare}
+                          onComment={handleComment}
+                        />
+                        {/* Mention badge */}
+                        <div className="absolute top-2 right-2 bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 shadow-sm">
+                          <AtSign className="w-3 h-3" />
+                          Mencionado
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="saved" className="space-y-6">
+            {savedPolls.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Bookmark className="w-12 h-12 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">No tienes publicaciones guardadas</h3>
+                <p className="text-gray-600 mb-6">Guarda las votaciones interesantes para verlas más tarde</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Bookmark className="w-5 h-5 text-blue-600" />
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {savedPolls.length} publicaciones guardadas
+                    </h3>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      setSavedPolls([]);
+                      toast({
+                        title: "Guardados limpiados",
+                        description: "Todas las publicaciones guardadas han sido eliminadas",
+                      });
+                    }}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Limpiar todo
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {savedPolls.map((poll) => (
+                    <div key={poll.id} className="animate-fade-in">
+                      <div className="relative group">
+                        <PollCard
+                          poll={poll}
+                          onVote={handleVote}
+                          onLike={handleLike}
+                          onShare={handleShare}
+                          onComment={handleComment}
+                        />
+                        {/* Saved badge with remove option */}
+                        <div className="absolute top-2 right-2 flex items-center gap-1">
+                          <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 shadow-sm">
+                            <Bookmark className="w-3 h-3" />
+                            Guardado
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-8 h-8 p-0 bg-red-100 hover:bg-red-200 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleSave(poll.id);
+                            }}
+                          >
+                            <span className="text-xs">✕</span>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
           <TabsContent value="activity" className="space-y-6">
             <Card>
               <CardHeader>
