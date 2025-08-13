@@ -231,7 +231,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Reproductor de música en TikTok ScrollView"
+    - "Reposicionamiento de iconos de perfil en vista 2×2"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
