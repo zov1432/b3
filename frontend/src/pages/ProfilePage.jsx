@@ -226,7 +226,7 @@ const ProfilePage = () => {
                 <Avatar className="w-24 h-24 ring-4 ring-white/20">
                   <AvatarImage src={displayUser.avatar} alt={displayUser.displayName} />
                   <AvatarFallback className="bg-white/20 text-white text-2xl font-bold">
-                    {(displayUser.displayName || 'U').charAt(0).toUpperCase()}
+                    {((displayUser.displayName || displayUser.username || 'U') + '').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 {displayUser.verified && (
