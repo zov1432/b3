@@ -87,7 +87,7 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
           </motion.div>
         </div>
         
-        {/* User Avatar and Percentage Overlay */}
+        {/* User Avatar Overlay */}
         <div className="absolute top-2 right-2 flex flex-col items-center gap-1">
           <Avatar className={cn(
             "w-8 h-8 ring-2 transition-all",
@@ -105,13 +105,6 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
           {option.user?.verified && (
             <CheckCircle className="w-3 h-3 text-blue-500 fill-current -mt-1" />
           )}
-          <motion.span 
-            className="bg-black/70 text-white px-2 py-0.5 rounded-full text-xs font-bold"
-            animate={{ scale: isSelected ? [1, 1.1, 1] : 1 }}
-            transition={{ duration: 0.5, repeat: isSelected ? Infinity : 0 }}
-          >
-            {percentage}%
-          </motion.span>
         </div>
 
         {/* Winner Badge with animation */}
