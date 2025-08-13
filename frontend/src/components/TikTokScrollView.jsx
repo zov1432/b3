@@ -252,31 +252,40 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                     }}
                     className="group relative transition-transform duration-200 hover:scale-110 flex-shrink-0"
                   >
-                    <Avatar className={cn(
-                      "w-10 h-10 transition-all duration-200 ring-2",
-                      isSelected 
-                        ? "ring-blue-400 shadow-lg shadow-blue-500/50" 
-                        : isWinner
-                          ? "ring-green-400 shadow-lg shadow-green-500/50"
-                          : "ring-white/30 shadow-lg"
-                    )}>
-                      <AvatarImage src={option.user.avatar} />
-                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-sm">
-                        {((option.user.displayName || option.user.username || 'U') + '').charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    {/* MENCIÓN - Diseño distintivo con borde plateado y badge de mención */}
+                    <div className="relative">
+                      <Avatar className={cn(
+                        "w-10 h-10 transition-all duration-200 ring-2",
+                        isSelected 
+                          ? "ring-blue-400 shadow-lg shadow-blue-500/50" 
+                          : isWinner
+                            ? "ring-green-400 shadow-lg shadow-green-500/50"
+                            : "ring-gray-300 shadow-lg shadow-gray-300/30"
+                      )}>
+                        <AvatarImage src={option.user.avatar} />
+                        <AvatarFallback className="bg-gradient-to-br from-gray-400 to-gray-600 text-white font-bold text-sm">
+                          {((option.user.displayName || option.user.username || 'U') + '').charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      {/* Badge de mención */}
+                      <div className="absolute -bottom-0.5 -right-0.5 bg-gray-300 rounded-full p-0.5 shadow-sm">
+                        <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                      </div>
+                    </div>
                     
                     {/* Verificación overlay */}
                     {option.user.verified && (
-                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
-                        <CheckCircle className="w-3 h-3 text-blue-500 fill-current" />
+                      <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-0.5 shadow-lg">
+                        <CheckCircle className="w-3 h-3 text-white fill-current" />
                       </div>
                     )}
                     
-                    {/* Hover tooltip */}
-                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                      <div className="bg-black/80 text-white text-xs px-2 py-1 rounded backdrop-blur-sm whitespace-nowrap">
-                        @{option.user.username}
+                    {/* Hover tooltip mejorado */}
+                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                      <div className="bg-gray-800/90 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm whitespace-nowrap border border-gray-600/30 shadow-lg">
+                        <div className="font-medium">@{option.user.username}</div>
+                        <div className="text-gray-300 text-[10px]">Mención</div>
                       </div>
                     </div>
                   </button>
