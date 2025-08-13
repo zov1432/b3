@@ -249,15 +249,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Feed TikTok de Pantalla Completa"
     - "Contexto de Autenticación"
-    - "Páginas de Login y Registro"
-    - "Sistema de Mensajería Frontend"
     - "Integración Auth en App Principal"
-    - "Navegación con Mensajes"
-  stuck_tasks: []
-  test_all: true
-  test_priority: "high_first"
+  stuck_tasks:
+    - "Contexto de Autenticación"
+    - "Integración Auth en App Principal"
+  test_all: false
+  test_priority: "stuck_first"
 
 agent_communication:
     - agent: "main"
