@@ -320,12 +320,22 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, fullScreen = false
             {/* Header - Compact for full screen */}
             <div className="flex items-center justify-between p-4 pb-3 flex-shrink-0 bg-white/90 backdrop-blur-sm">
               <div className="flex items-center gap-3">
-                <Avatar className="ring-2 ring-blue-500/20 w-10 h-10">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
-                    {poll.author.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+                <button
+                  className="group relative transition-transform duration-200 hover:scale-105"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Create a simple username from author name
+                    const username = poll.author.toLowerCase().replace(/\s+/g, '_');
+                    navigate(`/profile/${username}`);
+                  }}
+                >
+                  <Avatar className="ring-2 ring-blue-500/20 w-10 h-10 cursor-pointer">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
+                      {poll.author.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
                 <div>
                   <h3 className="font-semibold text-gray-900 text-sm">{poll.author}</h3>
                   <p className="text-xs text-gray-500">{poll.timeAgo}</p>
