@@ -269,6 +269,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
                 isWinner={isWinner && poll.totalVotes > 0}
                 onClick={() => handleVote(option.id)}
                 onUserClick={handleUserClick}
+                optionIndex={optionIndex}
               />
 
               {/* Winner badge - Enhanced */}
