@@ -18,17 +18,46 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load auth state from localStorage
+  // Load auth state from localStorage and verify token
   useEffect(() => {
-    const savedToken = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('authUser');
-    
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
-      setIsAuthenticated(true);
-    }
-    setLoading(false);
+    const initializeAuth = async () => {
+      const savedToken = localStorage.getItem('authToken');
+      const savedUser = localStorage.getItem('authUser');
+      
+      if (savedToken && savedUser) {
+        try {
+          // Verify token with backend
+          const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${savedToken}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            // Token is valid
+            setToken(savedToken);
+            setUser(JSON.parse(savedUser));
+            setIsAuthenticated(true);
+          } else {
+            // Token is invalid, clear storage
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('authUser');
+            localStorage.removeItem('userId');
+          }
+        } catch (error) {
+          console.error('Token validation error:', error);
+          // Clear invalid tokens
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('authUser');
+          localStorage.removeItem('userId');
+        }
+      }
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email, password) => {
