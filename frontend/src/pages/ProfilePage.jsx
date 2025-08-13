@@ -192,15 +192,7 @@ const ProfilePage = () => {
     )
   );
   
-  // Mock saved polls - implement saved functionality (for now using random subset)
-  const [savedPolls, setSavedPolls] = useState([]);
-  
-  // Initialize saved polls (mock data)
-  useEffect(() => {
-    // In real app, this would be fetched from backend
-    const mockSavedPolls = polls.filter((poll, index) => index % 3 === 0); // Every 3rd poll as example
-    setSavedPolls(mockSavedPolls);
-  }, [polls]);
+
   
   // Function to toggle save status
   const handleSave = (pollId) => {
