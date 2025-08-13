@@ -340,7 +340,10 @@ const AdvancedPollCard = ({
               </motion.div>
 
               {/* Avatar del usuario - OVERLAY */}
-              <div className="absolute top-4 left-4 z-20">
+              <div className={cn(
+                "absolute z-20",
+                optionIndex < 2 ? "bottom-4 left-4" : "top-4 left-4"
+              )}>
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
