@@ -395,20 +395,69 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
         </div>
       </div>
 
-      {/* Progress indicator - Enhanced design */}
-      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 z-20"
+      {/* Vertical Navigation Bar - Enhanced design */}
+      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-20"
            style={{ right: 'max(1rem, env(safe-area-inset-right))' }}>
-        {Array.from({ length: total }, (_, i) => (
-          <div
-            key={i}
-            className={cn(
-              "rounded-full transition-all duration-500",
-              i === index
-                ? "bg-white shadow-2xl w-2 h-8 ring-2 ring-white/50"
-                : "bg-white/40 w-1.5 h-6"
-            )}
-          />
-        ))}
+        
+        {/* Home/Inicio */}
+        <button
+          onClick={() => navigate('/feed')}
+          className={cn(
+            "rounded-full transition-all duration-300 flex items-center justify-center backdrop-blur-md border border-white/20",
+            "bg-white/10 hover:bg-white/20 hover:scale-110 w-12 h-12 shadow-lg"
+          )}
+          title="Inicio"
+        >
+          <Home className="w-6 h-6 text-white" />
+        </button>
+
+        {/* Explorar */}
+        <button
+          onClick={() => navigate('/explore')}
+          className={cn(
+            "rounded-full transition-all duration-300 flex items-center justify-center backdrop-blur-md border border-white/20",
+            "bg-white/10 hover:bg-white/20 hover:scale-110 w-12 h-12 shadow-lg"
+          )}
+          title="Explorar"
+        >
+          <Search className="w-6 h-6 text-white" />
+        </button>
+
+        {/* Subir/Crear */}
+        <button
+          onClick={() => navigate('/create')}
+          className={cn(
+            "rounded-full transition-all duration-300 flex items-center justify-center backdrop-blur-md border border-white/20",
+            "bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 hover:scale-110 w-12 h-12 shadow-xl"
+          )}
+          title="Crear"
+        >
+          <Plus className="w-6 h-6 text-white font-bold" />
+        </button>
+
+        {/* Mensajes */}
+        <button
+          onClick={() => navigate('/messages')}
+          className={cn(
+            "rounded-full transition-all duration-300 flex items-center justify-center backdrop-blur-md border border-white/20",
+            "bg-white/10 hover:bg-white/20 hover:scale-110 w-12 h-12 shadow-lg"
+          )}
+          title="Mensajes"
+        >
+          <Mail className="w-6 h-6 text-white" />
+        </button>
+
+        {/* Perfil */}
+        <button
+          onClick={() => navigate('/profile')}
+          className={cn(
+            "rounded-full transition-all duration-300 flex items-center justify-center backdrop-blur-md border border-white/20",
+            "bg-white/10 hover:bg-white/20 hover:scale-110 w-12 h-12 shadow-lg"
+          )}
+          title="Perfil"
+        >
+          <User className="w-6 h-6 text-white" />
+        </button>
       </div>
 
       {/* Scroll hints - Enhanced for first card */}
