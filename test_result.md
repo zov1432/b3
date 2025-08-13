@@ -231,9 +231,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Navegación a perfiles de usuario mediante clicks en círculos de avatar"
+    - "Feed TikTok de Pantalla Completa"
+    - "Contexto de Autenticación"
+    - "Páginas de Login y Registro"
+    - "Sistema de Mensajería Frontend"
+    - "Integración Auth en App Principal"
+    - "Navegación con Mensajes"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
 agent_communication:
