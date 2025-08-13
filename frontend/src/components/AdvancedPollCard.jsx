@@ -339,28 +339,7 @@ const AdvancedPollCard = ({
                 {percentage}%
               </motion.div>
 
-              {/* Avatar del usuario - OVERLAY */}
-              <div className={cn(
-                "absolute z-20",
-                optionIndex < 2 ? "bottom-4 left-4" : "top-4 left-4"
-              )} style={{ display: 'none' }}>
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Avatar className="w-12 h-12 ring-3 ring-white/70 shadow-lg cursor-pointer">
-                    <AvatarImage src={option.user?.avatar} />
-                    <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-bold">
-                      {option.user?.displayName?.charAt(0) || option.id.toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  {option.user?.verified && (
-                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
-                      <CheckCircle className="w-4 h-4 text-blue-500 fill-current" />
-                    </div>
-                  )}
-                </motion.div>
-              </div>
+
 
               {/* Badge de ganador - OVERLAY */}
               {isWinner && poll.totalVotes > 0 && (
