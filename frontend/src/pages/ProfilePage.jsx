@@ -327,8 +327,8 @@ const ProfilePage = () => {
           />
         </div>
 
-        {/* Progress Bar - Gamification Stats */}
-        {userProfile && (
+        {/* Progress Bar - Gamification Stats - Only for own profile */}
+        {isOwnProfile && userProfile && (
           <div className="mb-6">
             <ProgressBar
               level={level}
