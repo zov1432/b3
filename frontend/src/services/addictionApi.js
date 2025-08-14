@@ -5,7 +5,7 @@ class AddictionAPI {
   
   // User Profile & Stats
   async createUserProfile(username) {
-    const response = await fetch(`${API_BASE}/user/profile?username=${username}`, {
+    const response = await fetch(`${API_BASE}/api/user/profile?username=${username}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -15,12 +15,12 @@ class AddictionAPI {
   }
 
   async getUserProfile(userId) {
-    const response = await fetch(`${API_BASE}/user/profile/${userId}`);
+    const response = await fetch(`${API_BASE}/api/user/profile/${userId}`);
     return response.json();
   }
 
   async trackUserAction(userId, actionType, context = {}) {
-    const response = await fetch(`${API_BASE}/user/action`, {
+    const response = await fetch(`${API_BASE}/api/user/action`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
