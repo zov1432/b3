@@ -425,7 +425,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
         </button>
 
         {/* Subir/Crear */}
-        <CreatePollModal onCreatePoll={onCreatePoll}>
+        <CreatePollModal onCreatePoll={onCreatePoll || (() => console.log('Create poll'))}>
           <button
             className={cn(
               "rounded-full transition-all duration-300 backdrop-blur-sm border border-pink-300/30",
