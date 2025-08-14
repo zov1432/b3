@@ -257,12 +257,6 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
   const handleSave = async () => {
     if (onSave) {
       onSave(poll.id);
-      
-      // Track save action
-      await trackAction('save', {
-        poll_id: poll.id,
-        timestamp: new Date().toISOString()
-      });
     }
   };
 
