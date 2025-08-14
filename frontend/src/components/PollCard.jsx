@@ -6,6 +6,8 @@ import { Button } from './ui/button';
 import { Heart, MessageCircle, Share, MoreHorizontal, Play, Crown, CheckCircle, Bookmark } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion } from 'framer-motion';
+import { useAddiction } from '../contexts/AddictionContext';
+import SocialProofBadge from './AddictionUI_backup/SocialProofBadge';
 
 const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option, totalVotes, fullScreen = false }) => {
   const [isPlaying, setIsPlaying] = useState(false);
