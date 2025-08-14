@@ -751,6 +751,7 @@ const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onSave, o
             onLike={onLike}
             onShare={onShare}
             onComment={onComment}
+            onSave={onSave}
             onCreatePoll={onCreatePoll}
             isActive={index === activeIndex}
             index={index}
