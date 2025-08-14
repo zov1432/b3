@@ -9,7 +9,6 @@ import { motion } from 'framer-motion';
 
 const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option, totalVotes, fullScreen = false }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const { trackAction } = useAddiction();
   const navigate = useNavigate();
 
   const handleClick = async () => {
