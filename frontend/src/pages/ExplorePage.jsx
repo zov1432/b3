@@ -1,8 +1,8 @@
 import React from 'react';
-import NeuralDiscoverPage from '../components/NeuralDiscoverPage';
+import LiveBattleArena from '../components/LiveBattleArena';
 
 const ExplorePage = () => {
-  return <NeuralDiscoverPage />;
+  return <LiveBattleArena />;
 };
 
 export default ExplorePage;
