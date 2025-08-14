@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PollCard from './PollCard';
 import MusicPlayer from './MusicPlayer';
 import CustomLogo from './CustomLogo';
+import CreatePollModal from './CreatePollModal';
 import { cn } from '../lib/utils';
 import { ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Crown, CheckCircle, User, Home, Search, Plus, Mail } from 'lucide-react';
 import { Button } from './ui/button';
