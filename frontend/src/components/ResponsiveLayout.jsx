@@ -3,10 +3,12 @@ import { useLocation } from 'react-router-dom';
 import DesktopSidebar from './DesktopSidebar';
 import RightSideNavigation from './RightSideNavigation';
 import { useTikTok } from '../contexts/TikTokContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const ResponsiveLayout = ({ children, onCreatePoll }) => {
   const location = useLocation();
   const { isTikTokMode } = useTikTok();
+  const { isAuthenticated } = useAuth();
   
   // Check if we're on a page that should use the TikTok-style layout
   const isFeedPage = location.pathname === '/feed';
@@ -20,7 +22,7 @@ const ResponsiveLayout = ({ children, onCreatePoll }) => {
         {children}
         {/* Right side navigation for mobile TikTok mode */}
         <div className="lg:hidden">
-          <RightSideNavigation onCreatePoll={onCreatePoll} />
+          {isAuthenticated && <RightSideNavigation onCreatePoll={onCreatePoll} />}
         </div>
       </div>
     );
@@ -29,10 +31,10 @@ const ResponsiveLayout = ({ children, onCreatePoll }) => {
   return (
     <div className="min-h-screen bg-gray-50 lg:bg-gray-100">
       {/* Desktop Sidebar - Hidden on mobile */}
-      <DesktopSidebar />
+      {isAuthenticated && <DesktopSidebar />}
       
       {/* Main Content Area */}
-      <div className="lg:ml-60 lg:mr-16">
+      <div className={`${isAuthenticated ? 'lg:ml-60 lg:mr-16' : ''}`}>
         <div className="relative">
           {children}
         </div>
@@ -40,12 +42,12 @@ const ResponsiveLayout = ({ children, onCreatePoll }) => {
       
       {/* Right Side Navigation */}
       <div className="hidden lg:block lg:fixed lg:right-4 lg:top-1/2 lg:transform lg:-translate-y-1/2 lg:z-20">
-        <RightSideNavigation onCreatePoll={onCreatePoll} />
+        {isAuthenticated && <RightSideNavigation onCreatePoll={onCreatePoll} />}
       </div>
       
       {/* Mobile Right Side Navigation - Only when not in TikTok mode */}
       <div className="lg:hidden">
-        {!shouldUseTikTokLayout && (
+        {!shouldUseTikTokLayout && isAuthenticated && (
           <RightSideNavigation onCreatePoll={onCreatePoll} />
         )}
       </div>
