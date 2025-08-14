@@ -346,15 +346,15 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onCreatePoll
                 onLike(poll.id);
               }}
               className={cn(
-                "flex items-center gap-2 hover:scale-110 transition-all duration-200 text-white hover:text-red-400 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm",
+                "flex items-center gap-1 hover:scale-105 transition-all duration-200 text-white hover:text-red-400 h-auto p-2 rounded-lg bg-black/20 backdrop-blur-sm",
                 poll.userLiked && "text-red-500 bg-red-500/20"
               )}
             >
               <Heart className={cn(
-                "w-7 h-7 transition-all duration-200",
+                "w-5 h-5 transition-all duration-200",
                 poll.userLiked && "fill-current scale-110"
               )} />
-              <span className="font-bold text-base">{formatNumber(poll.likes)}</span>
+              <span className="font-medium text-sm">{formatNumber(poll.likes)}</span>
             </Button>
             
             <Button
@@ -364,10 +364,10 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onCreatePoll
                 e.stopPropagation();
                 onComment(poll.id);
               }}
-              className="flex items-center gap-2 text-white hover:text-blue-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm"
+              className="flex items-center gap-1 text-white hover:text-blue-400 hover:scale-105 transition-all duration-200 h-auto p-2 rounded-lg bg-black/20 backdrop-blur-sm"
             >
-              <MessageCircle className="w-7 h-7" />
-              <span className="font-bold text-base">{formatNumber(poll.comments)}</span>
+              <MessageCircle className="w-5 h-5" />
+              <span className="font-medium text-sm">{formatNumber(poll.comments)}</span>
             </Button>
 
             <Button
@@ -377,11 +377,26 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onCreatePoll
                 e.stopPropagation();
                 onShare(poll.id);
               }}
-              className="flex items-center gap-2 text-white hover:text-green-400 hover:scale-110 transition-all duration-200 h-auto p-3 rounded-xl bg-black/20 backdrop-blur-sm"
+              className="flex items-center gap-1 text-white hover:text-green-400 hover:scale-105 transition-all duration-200 h-auto p-2 rounded-lg bg-black/20 backdrop-blur-sm"
             >
-              <Share className="w-7 h-7" />
-              <span className="font-bold text-base">{formatNumber(poll.shares)}</span>
+              <Share className="w-5 h-5" />
+              <span className="font-medium text-sm">{formatNumber(poll.shares)}</span>
             </Button>
+
+            {onSave && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSave(poll.id);
+                }}
+                className="flex items-center gap-1 text-white hover:text-yellow-400 hover:scale-105 transition-all duration-200 h-auto p-2 rounded-lg bg-black/20 backdrop-blur-sm"
+              >
+                <Bookmark className="w-5 h-5" />
+                <span className="font-medium text-sm">Guardar</span>
+              </Button>
+            )}
           </div>
           
           {/* Music Player - Right side, same height as buttons */}
