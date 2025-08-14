@@ -22,44 +22,11 @@ import { TikTokProvider, useTikTok } from './contexts/TikTokContext';
 // Import Authentication
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-// Import Addiction System
-import { AddictionProvider, useAddiction } from './contexts/AddictionContext';
-import { 
-  RewardPopup, 
-  LevelUpAnimation, 
-  AchievementToast, 
-  FOMOAlert,
-  JackpotExplosion 
-} from './components/AddictionUI';
-
 function AppContent() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isTikTokMode } = useTikTok();
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const [fomoHidden, setFomoHidden] = useState(
-    sessionStorage.getItem('fomoHidden') === 'true'
-  );
-  const {
-    showRewardPopup,
-    rewardData,
-    showLevelUp,
-    level,
-    showAchievement,
-    achievementData,
-    showJackpot,
-    jackpotData,
-    fomoContent,
-    setShowRewardPopup,
-    setShowLevelUp,
-    setShowAchievement,
-    setShowJackpot,
-    userProfile,
-    xp,
-    streak,
-    getXpToNextLevel,
-    getXpProgress
-  } = useAddiction();
 
   const handleCreatePoll = async (pollData) => {
     const newPoll = createPoll(pollData);
@@ -69,26 +36,6 @@ function AppContent() {
       title: "¡Votación creada!",
       description: "Tu votación ha sido publicada exitosamente",
     });
-  };
-
-  const handleFOMOAction = (fomoItem) => {
-    // Show participation success message
-    toast({
-      title: "¡Participación exitosa!",
-      description: `Te has unido a "${fomoItem.title}" exitosamente`,
-    });
-    
-    // Hide FOMO after participation
-    setFomoHidden(true);
-    sessionStorage.setItem('fomoHidden', 'true');
-    
-    // Navigate to explore page to see more content
-    navigate('/explore');
-  };
-
-  const handleFOMOClose = () => {
-    setFomoHidden(true);
-    sessionStorage.setItem('fomoHidden', 'true');
   };
 
   // Show loading while checking auth
@@ -110,26 +57,6 @@ function AppContent() {
 
   return (
     <div className="App relative">
-        {/* FOMO Alert - Show when not in TikTok mode and not hidden */}
-        {!isTikTokMode && !fomoHidden && (
-          <FOMOAlert
-            fomoContent={fomoContent && fomoContent.length > 0 ? fomoContent : [
-              {
-                id: "test-fomo",
-                title: "¿Quién ganó el mejor outfit de la semana?",
-                urgency_level: 4,
-                expires_at: new Date(Date.now() + 3.5 * 60 * 60 * 1000).toISOString(),
-                current_participants: 472,
-                max_participants: 1363,
-                is_trending: true,
-                poll_id: "test-poll"
-              }
-            ]}
-            onTakeAction={handleFOMOAction}
-            onClose={handleFOMOClose}
-          />
-        )}
-
         <Routes>
           {/* Redirect root to feed */}
           <Route path="/" element={<Navigate to="/feed" replace />} />
@@ -138,56 +65,23 @@ function AppContent() {
           <Route path="/feed" element={<FeedPage />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/profile/:userId?" element={<ProfilePage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profile/:userId" element={<ProfilePage />} />
-          
-          {/* Catch all - redirect to feed */}
-          <Route path="*" element={<Navigate to="/feed" replace />} />
+
+          {/* Demo & Test Pages - Remove in production */}
+          <Route path="/explore-demo" element={<ExploreDemo />} />
+          <Route path="/battle-demo" element={<LiveBattleDemoPage />} />
+          <Route path="/feed-demo" element={<FeedDemoPage />} />
+          <Route path="/test-fomo" element={<TestFOMO />} />
         </Routes>
 
-        {/* Right Side Navigation - Solo aparece cuando está autenticado */}
+        {/* Bottom Navigation - Hide in TikTok mode */}
+        {!isTikTokMode && isAuthenticated && <BottomNavigation />}
+        
+        {/* Right Side Navigation - Show when authenticated */}
         {isAuthenticated && <RightSideNavigation onCreatePoll={handleCreatePoll} />}
 
-        {/* Revolutionary Neural Navigation - Only show when not in TikTok mode */}
-        {/* ELIMINADO: NeuralNavigation con botón circular morado +
-        {!isTikTokMode && (
-          <NeuralNavigation onCreatePoll={handleCreatePoll} />
-        )}
-        */}
-
-        {/* Toast notifications */}
         <Toaster />
-
-        {/* === ADDICTION UI COMPONENTS === */}
-        
-        {/* Reward Popup */}
-        <RewardPopup
-          show={showRewardPopup}
-          reward={rewardData}
-          onClose={() => setShowRewardPopup(false)}
-        />
-
-        {/* Level Up Animation */}
-        <LevelUpAnimation
-          show={showLevelUp}
-          level={level}
-          onClose={() => setShowLevelUp(false)}
-        />
-
-        {/* Achievement Toast */}
-        <AchievementToast
-          show={showAchievement}
-          achievement={achievementData}
-          onClose={() => setShowAchievement(false)}
-        />
-
-        {/* Jackpot Explosion */}
-        <JackpotExplosion
-          show={showJackpot}
-          jackpotData={jackpotData}
-          onClose={() => setShowJackpot(false)}
-        />
     </div>
   );
 }
@@ -195,30 +89,11 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Demo route - no auth required */}
-        <Route path="/demo" element={<ExploreDemo />} />
-        
-        {/* Feed Demo - no auth required */}
-        <Route path="/feed-demo" element={<FeedDemoPage />} />
-        
-        {/* Live Battles Demo - no auth required */}
-        <Route path="/live-battles-demo" element={<LiveBattleDemoPage />} />
-        
-        {/* Test page accessible without auth */}
-        <Route path="/test-fomo" element={<TestFOMO />} />
-        
-        {/* Main app with providers */}
-        <Route path="/*" element={
-          <AuthProvider>
-            <AddictionProvider>
-              <TikTokProvider>
-                <AppContent />
-              </TikTokProvider>
-            </AddictionProvider>
-          </AuthProvider>
-        } />
-      </Routes>
+      <AuthProvider>
+        <TikTokProvider>
+          <AppContent />
+        </TikTokProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
