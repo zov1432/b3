@@ -7,6 +7,7 @@ import RightSideNavigation from './components/RightSideNavigation';
 import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/ExplorePage';
 import ExploreDemo from './pages/ExploreDemo';
+import LiveBattleDemoPage from './pages/LiveBattleDemoPage';
 import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import MessagesPage from './pages/MessagesPage';
