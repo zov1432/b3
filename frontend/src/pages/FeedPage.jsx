@@ -9,7 +9,7 @@ const FeedPage = () => {
   const [polls, setPolls] = useState(mockPolls);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const { triggerAction } = useAddiction();
+  const { trackAction } = useAddiction();
   const { enterTikTokMode, exitTikTokMode } = useTikTok();
 
   // Activar modo TikTok al montar el componente
