@@ -289,7 +289,7 @@ const RevolutionaryExplorePage = () => {
   
   const handleCreatePoll = async (pollData) => {
     console.log('Creating new poll:', pollData);
-    await triggerAction('create');
+    await trackAction('create');
   };
   
   // Advanced gesture handlers
