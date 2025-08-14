@@ -104,6 +104,21 @@ const FeedPage = () => {
     return;
   };
 
+  const handleCreatePoll = async (pollData) => {
+    const newPoll = createPoll(pollData);
+    
+    // Agregar la nueva votación al inicio de la lista
+    setPolls(prev => [newPoll, ...prev]);
+    
+    // Trigger addiction system
+    await triggerAction('create');
+    
+    toast({
+      title: "¡Votación creada!",
+      description: "Tu votación ha sido publicada exitosamente",
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
