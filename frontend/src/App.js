@@ -75,9 +75,6 @@ function AppContent() {
           <Route path="/test-fomo" element={<TestFOMO />} />
         </Routes>
 
-        {/* Bottom Navigation - Hide in TikTok mode */}
-        {!isTikTokMode && isAuthenticated && <BottomNavigation />}
-        
         {/* Right Side Navigation - Show when authenticated */}
         {isAuthenticated && <RightSideNavigation onCreatePoll={handleCreatePoll} />}
 
