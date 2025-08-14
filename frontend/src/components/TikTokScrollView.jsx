@@ -404,50 +404,60 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           onClick={() => navigate('/feed')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-white/10",
-            "bg-white/80 hover:bg-white hover:scale-110 w-3 h-10 shadow-lg"
+            "bg-white/80 hover:bg-white hover:scale-110 w-12 h-12 shadow-lg flex items-center justify-center"
           )}
           title="Inicio"
-        />
+        >
+          <Home className="w-5 h-5 text-gray-700" />
+        </button>
 
         {/* Explorar */}
         <button
           onClick={() => navigate('/explore')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-white/10",
-            "bg-white/60 hover:bg-white hover:scale-110 w-2.5 h-8 shadow-lg"
+            "bg-white/60 hover:bg-white hover:scale-110 w-10 h-10 shadow-lg flex items-center justify-center"
           )}
           title="Explorar"
-        />
+        >
+          <Search className="w-4 h-4 text-gray-600" />
+        </button>
 
         {/* Subir/Crear */}
         <button
           onClick={() => navigate('/create')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-pink-300/30",
-            "bg-gradient-to-b from-pink-400 to-purple-500 hover:from-pink-300 hover:to-purple-400 hover:scale-110 w-3 h-10 shadow-xl ring-2 ring-pink-300/50"
+            "bg-gradient-to-b from-pink-400 to-purple-500 hover:from-pink-300 hover:to-purple-400 hover:scale-110 w-12 h-12 shadow-xl ring-2 ring-pink-300/50 flex items-center justify-center"
           )}
           title="Crear"
-        />
+        >
+          <Plus className="w-6 h-6 text-white" />
+        </button>
 
         {/* Mensajes */}
         <button
           onClick={() => navigate('/messages')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-white/10",
-            "bg-white/60 hover:bg-white hover:scale-110 w-2.5 h-8 shadow-lg"
+            "bg-white/60 hover:bg-white hover:scale-110 w-10 h-10 shadow-lg flex items-center justify-center"
           )}
           title="Mensajes"
-        />
+        >
+          <MessageCircle className="w-4 h-4 text-gray-600" />
+        </button>
 
         {/* Perfil */}
         <button
           onClick={() => navigate('/profile')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-white/10",
-            "bg-white/60 hover:bg-white hover:scale-110 w-2.5 h-8 shadow-lg"
+            "bg-white/60 hover:bg-white hover:scale-110 w-10 h-10 shadow-lg flex items-center justify-center"
           )}
           title="Perfil"
-        />
+        >
+          <User className="w-4 h-4 text-gray-600" />
+        </button>
       </div>
 
       {/* Scroll hints - Enhanced for first card */}
