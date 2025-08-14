@@ -12,13 +12,6 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
   const navigate = useNavigate();
 
   const handleClick = async () => {
-    // Track view action for addiction system
-    await trackAction('view', {
-      poll_id: option.pollId,
-      option_id: option.id,
-      timestamp: new Date().toISOString()
-    });
-    
     onClick && onClick();
   };
 
