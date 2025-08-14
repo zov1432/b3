@@ -5,7 +5,7 @@ import MusicPlayer from './MusicPlayer';
 import CustomLogo from './CustomLogo';
 import CreatePollModal from './CreatePollModal';
 import { cn } from '../lib/utils';
-import { ChevronUp, ChevronDown, Heart, MessageCircle, Share, MoreHorizontal, Crown, CheckCircle, User, Home, Search, Plus, Mail } from 'lucide-react';
+import { ChevronUp, ChevronDown, Heart, MessageCircle, Share, Bookmark, MoreHorizontal, Crown, CheckCircle, User, Home, Search, Plus, Mail } from 'lucide-react';
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
