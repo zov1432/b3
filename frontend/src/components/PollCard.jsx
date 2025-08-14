@@ -248,12 +248,6 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
 
   const handleLike = async () => {
     onLike(poll.id);
-    
-    // Track like action
-    await trackAction('like', {
-      poll_id: poll.id,
-      timestamp: new Date().toISOString()
-    });
   };
 
   const handleShare = async () => {
