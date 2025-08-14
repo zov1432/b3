@@ -419,7 +419,15 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           title="Explorar"
         />
 
-
+        {/* Subir/Crear */}
+        <button
+          onClick={() => navigate('/create')}
+          className={cn(
+            "rounded-full transition-all duration-300 backdrop-blur-sm border border-pink-300/30",
+            "bg-gradient-to-b from-pink-400 to-purple-500 hover:from-pink-300 hover:to-purple-400 hover:scale-110 w-2 h-8 shadow-xl ring-2 ring-pink-300/50"
+          )}
+          title="Crear"
+        />
 
         {/* Mensajes */}
         <button
