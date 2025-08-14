@@ -91,7 +91,7 @@ const FeedPage = () => {
   };
 
   const handleComment = async (pollId) => {
-    await triggerAction('create');
+    await trackAction('create');
     toast({
       title: "Comentarios",
       description: "Funcionalidad de comentarios próximamente",
