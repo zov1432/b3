@@ -56,30 +56,29 @@ function AppContent() {
   }
 
   return (
-    <div className="App relative">
-        <Routes>
-          {/* Redirect root to feed */}
-          <Route path="/" element={<Navigate to="/feed" replace />} />
-          
-          {/* Main pages */}
-          <Route path="/feed" element={<FeedPage />} />
-          <Route path="/explore" element={<ExplorePage />} />
-          <Route path="/messages" element={<MessagesPage />} />
-          <Route path="/profile/:userId?" element={<ProfilePage />} />
-          <Route path="/notifications" element={<NotificationsPage />} />
+    <ResponsiveLayout onCreatePoll={handleCreatePoll}>
+      <div className="App relative">
+          <Routes>
+            {/* Redirect root to feed */}
+            <Route path="/" element={<Navigate to="/feed" replace />} />
+            
+            {/* Main pages */}
+            <Route path="/feed" element={<FeedPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/profile/:userId?" element={<ProfilePage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
 
-          {/* Demo & Test Pages - Remove in production */}
-          <Route path="/explore-demo" element={<ExploreDemo />} />
-          <Route path="/battle-demo" element={<LiveBattleDemoPage />} />
-          <Route path="/feed-demo" element={<FeedDemoPage />} />
-          <Route path="/test-fomo" element={<TestFOMO />} />
-        </Routes>
+            {/* Demo & Test Pages - Remove in production */}
+            <Route path="/explore-demo" element={<ExploreDemo />} />
+            <Route path="/battle-demo" element={<LiveBattleDemoPage />} />
+            <Route path="/feed-demo" element={<FeedDemoPage />} />
+            <Route path="/test-fomo" element={<TestFOMO />} />
+          </Routes>
 
-        {/* Right Side Navigation - Show when authenticated */}
-        {isAuthenticated && <RightSideNavigation onCreatePoll={handleCreatePoll} />}
-
-        <Toaster />
-    </div>
+          <Toaster />
+      </div>
+    </ResponsiveLayout>
   );
 }
 
