@@ -223,7 +223,7 @@ const RevolutionaryExplorePage = () => {
     }));
     
     // Trigger addiction system
-    await triggerAction('vote');
+    await trackAction('vote');
     
     // Reset explosion after animation
     setTimeout(() => setExplosionActive(false), 2000);
