@@ -318,12 +318,7 @@ const ProfilePage = () => {
                     <Calendar className="w-4 h-4" />
                     <span>Se unió en {displayUser.joinDate}</span>
                   </div>
-                  {streak && streak > 0 && (
-                    <div className="flex items-center gap-1">
-                      <span className="font-bold">🔥 {streak}</span>
-                      <span className="text-white/80">días</span>
-                    </div>
-                  )}
+                  {/* Removed streak display */}
                 </div>
               </div>
 
