@@ -230,15 +230,7 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
 };
 
 const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen = false }) => {
-  const [socialProof, setSocialProof] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Load social proof data
-    getSocialProof(poll.id).then(proof => {
-      setSocialProof(proof);
-    });
-  }, [poll.id, getSocialProof]);
 
   const handleVote = async (optionId) => {
     if (!poll.userVote) {
