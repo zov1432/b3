@@ -14,263 +14,287 @@ import MediaBattleCard from './MediaBattleCard';
 import NeuralNavigation from './NeuralNavigation';
 import { mockPolls } from '../services/mockData';
 
-// Revolutionary header with animated stats
-const VotingStatsHeader = ({ totalPolls, totalVotes, activeUsers }) => {
-  const [counters, setCounters] = useState({
-    polls: 0,
-    votes: 0,
-    users: 0
-  });
+// Revolutionary header with morphing effects
+const RevolutionaryHeader = ({ viewMode, setViewMode }) => {
+  const [currentMode, setCurrentMode] = useState(0);
+  const modes = ['VOTA', 'TOK', 'BATTLE', 'LIVE'];
   
   useEffect(() => {
-    const duration = 2000; // 2 seconds
-    const interval = 50; // Update every 50ms
-    const steps = duration / interval;
+    const interval = setInterval(() => {
+      setCurrentMode(prev => (prev + 1) % modes.length);
+    }, 2000);
     
-    const pollsStep = totalPolls / steps;
-    const votesStep = totalVotes / steps;
-    const usersStep = activeUsers / steps;
-    
-    let currentStep = 0;
-    
-    const timer = setInterval(() => {
-      currentStep++;
-      
-      setCounters({
-        polls: Math.min(Math.floor(pollsStep * currentStep), totalPolls),
-        votes: Math.min(Math.floor(votesStep * currentStep), totalVotes),
-        users: Math.min(Math.floor(usersStep * currentStep), activeUsers)
-      });
-      
-      if (currentStep >= steps) {
-        clearInterval(timer);
-      }
-    }, interval);
-    
-    return () => clearInterval(timer);
-  }, [totalPolls, totalVotes, activeUsers]);
-  
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <motion.div
-      className="relative overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 rounded-3xl p-8 mb-8"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      className="text-center py-16 relative overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
     >
-      {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Background particles */}
+      <div className="absolute inset-0">
         {Array.from({ length: 30 }).map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-white/20 rounded-full"
+            className="absolute w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`
             }}
             animate={{
               y: [0, -20, 0],
-              opacity: [0.2, 0.8, 0.2],
+              opacity: [0.3, 1, 0.3],
               scale: [1, 1.5, 1]
             }}
             transition={{
-              duration: Math.random() * 4 + 3,
+              duration: Math.random() * 3 + 2,
               repeat: Infinity,
               delay: Math.random() * 2
             }}
           />
         ))}
       </div>
-      
-      <div className="relative z-10">
-        <div className="text-center mb-6">
-          <motion.h1 
-            className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 mb-4"
-            animate={{
-              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-            }}
-            style={{
-              backgroundSize: '300% 300%'
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "linear"
-            }}
+
+      {/* Main title */}
+      <motion.h1 
+        className="text-6xl md:text-8xl font-black mb-4 relative z-10"
+        style={{
+          background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffecd2)',
+          backgroundSize: '400% 400%',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}
+        animate={{
+          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={modes[currentMode]}
+            initial={{ rotateY: 90, opacity: 0 }}
+            animate={{ rotateY: 0, opacity: 1 }}
+            exit={{ rotateY: -90, opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-block"
           >
-            VOTA TOK
-          </motion.h1>
-          <motion.p 
-            className="text-xl text-white/90 font-semibold"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            La revolución de las votaciones multimedia
-          </motion.p>
-        </div>
-        
-        {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-6">
+            {modes[currentMode]}
+          </motion.span>
+        </AnimatePresence>
+        {" TOK"}
+      </motion.h1>
+
+      {/* Subtitle with revolution effect */}
+      <motion.p 
+        className="text-xl md:text-2xl text-white/90 mb-8 font-bold"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        🔥 Revolución en Votaciones Multimedia 🔥
+      </motion.p>
+
+      {/* Stats */}
+      <motion.div 
+        className="flex justify-center items-center gap-8 mb-8"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.7 }}
+      >
+        {[
+          { icon: Users, label: 'Usuarios Activos', value: '2.8M', color: 'text-blue-400' },
+          { icon: Trophy, label: 'Batallas Diarias', value: '50K', color: 'text-yellow-400' },
+          { icon: TrendingUp, label: 'Tendencias', value: '∞', color: 'text-green-400' }
+        ].map((stat, index) => (
           <motion.div
-            className="text-center p-4 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
+            key={stat.label}
+            className="text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1 + index * 0.2 }}
           >
             <div className="flex items-center justify-center mb-2">
-              <Trophy className="w-8 h-8 text-yellow-400" />
+              <stat.icon className={cn("w-6 h-6", stat.color)} />
             </div>
-            <div className="text-3xl font-black text-white mb-1">
-              {counters.polls.toLocaleString()}
-            </div>
-            <div className="text-white/80 text-sm font-semibold">
-              Batallas Activas
-            </div>
+            <div className={cn("text-2xl font-black", stat.color)}>{stat.value}</div>
+            <div className="text-white/70 text-sm">{stat.label}</div>
           </motion.div>
-          
-          <motion.div
-            className="text-center p-4 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.4 }}
+        ))}
+      </motion.div>
+
+      {/* View mode selector with advanced effects */}
+      <motion.div 
+        className="flex justify-center gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5 }}
+      >
+        {[
+          { mode: 'battle', label: 'Modo Batalla', icon: Target, color: 'from-red-500 to-pink-600' },
+          { mode: 'feed', label: 'Feed TikTok', icon: Play, color: 'from-blue-500 to-purple-600' },
+          { mode: 'trending', label: 'Tendencias', icon: TrendingUp, color: 'from-green-500 to-teal-600' },
+          { mode: 'live', label: 'Live Arena', icon: Flame, color: 'from-orange-500 to-red-600' }
+        ].map((option) => (
+          <motion.button
+            key={option.mode}
+            className={cn(
+              "relative flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all overflow-hidden",
+              viewMode === option.mode 
+                ? `bg-gradient-to-r ${option.color} text-white shadow-xl scale-110` 
+                : "bg-black/40 backdrop-blur-sm border border-white/20 text-white/80 hover:text-white hover:scale-105"
+            )}
+            onClick={() => setViewMode(option.mode)}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <div className="flex items-center justify-center mb-2">
-              <Target className="w-8 h-8 text-red-400" />
-            </div>
-            <div className="text-3xl font-black text-white mb-1">
-              {counters.votes.toLocaleString()}
-            </div>
-            <div className="text-white/80 text-sm font-semibold">
-              Votos Totales
-            </div>
-          </motion.div>
-          
-          <motion.div
-            className="text-center p-4 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            <div className="flex items-center justify-center mb-2">
-              <Users className="w-8 h-8 text-blue-400" />
-            </div>
-            <div className="text-3xl font-black text-white mb-1">
-              {counters.users.toLocaleString()}
-            </div>
-            <div className="text-white/80 text-sm font-semibold">
-              Usuarios Activos
-            </div>
-          </motion.div>
-        </div>
-      </div>
+            {/* Glow effect for active mode */}
+            {viewMode === option.mode && (
+              <motion.div
+                className={`absolute inset-0 bg-gradient-to-r ${option.color} opacity-30 blur-xl`}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            )}
+            
+            <option.icon className="w-5 h-5 relative z-10" />
+            <span className="relative z-10">{option.label}</span>
+          </motion.button>
+        ))}
+      </motion.div>
     </motion.div>
   );
 };
 
-// Enhanced view mode selector
-const ViewModeSelector = ({ currentMode, onModeChange, className = "" }) => {
-  const modes = [
-    { id: 'feed', label: 'Feed', icon: Grid3X3, description: 'Vista clásica' },
-    { id: 'battle', label: 'Batalla', icon: Target, description: 'Modo épico' },
-    { id: 'trending', label: 'Trending', icon: TrendingUp, description: 'Lo más viral' },
-    { id: 'live', label: 'En Vivo', icon: Zap, description: 'Tiempo real' }
-  ];
-  
+// Estadísticas en tiempo real
+const LiveStats = () => {
+  const [stats, setStats] = useState({
+    activeUsers: 2847392,
+    totalVotes: 89472038,
+    liveBattles: 247,
+    trendsCreated: 1248
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStats(prev => ({
+        activeUsers: prev.activeUsers + Math.floor(Math.random() * 100),
+        totalVotes: prev.totalVotes + Math.floor(Math.random() * 1000),
+        liveBattles: prev.liveBattles + Math.floor(Math.random() * 5) - 2,
+        trendsCreated: prev.trendsCreated + Math.floor(Math.random() * 10)
+      }));
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className={cn("flex items-center gap-2 p-2 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20", className)}>
-      {modes.map((mode) => (
-        <motion.button
-          key={mode.id}
+    <motion.div
+      className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      {[
+        { 
+          label: 'Usuarios Activos', 
+          value: stats.activeUsers.toLocaleString(), 
+          icon: Users, 
+          color: 'from-blue-500 to-cyan-500',
+          gradient: 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20'
+        },
+        { 
+          label: 'Votos Totales', 
+          value: stats.totalVotes.toLocaleString(), 
+          icon: Trophy, 
+          color: 'from-yellow-500 to-orange-500',
+          gradient: 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20'
+        },
+        { 
+          label: 'Batallas Live', 
+          value: stats.liveBattles, 
+          icon: Flame, 
+          color: 'from-red-500 to-pink-500',
+          gradient: 'bg-gradient-to-r from-red-500/20 to-pink-500/20'
+        },
+        { 
+          label: 'Tendencias', 
+          value: stats.trendsCreated, 
+          icon: TrendingUp, 
+          color: 'from-green-500 to-emerald-500',
+          gradient: 'bg-gradient-to-r from-green-500/20 to-emerald-500/20'
+        }
+      ].map((stat, index) => (
+        <motion.div
+          key={stat.label}
           className={cn(
-            "flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm transition-all",
-            currentMode === mode.id
-              ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
-              : "text-white/80 hover:text-white hover:bg-white/10"
+            "relative p-6 rounded-2xl border border-white/10 backdrop-blur-xl",
+            stat.gradient
           )}
-          onClick={() => onModeChange(mode.id)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: index * 0.1 }}
+          whileHover={{ scale: 1.05, y: -5 }}
         >
-          <mode.icon className="w-4 h-4" />
-          <span className="hidden sm:inline">{mode.label}</span>
-        </motion.button>
-      ))}
-    </div>
-  );
-};
-
-// Trending hashtags and categories
-const TrendingSection = ({ className = "" }) => {
-  const trendingTopics = [
-    { tag: '#OutfitBattle', votes: '2.3M', growth: '+12%', color: 'from-pink-500 to-red-500' },
-    { tag: '#FoodFight', votes: '1.8M', growth: '+8%', color: 'from-orange-500 to-yellow-500' },
-    { tag: '#DanceOff', votes: '3.1M', growth: '+15%', color: 'from-purple-500 to-blue-500' },
-    { tag: '#TechReview', votes: '901K', growth: '+5%', color: 'from-green-500 to-teal-500' }
-  ];
-  
-  return (
-    <div className={cn("mb-8", className)}>
-      <motion.h2 
-        className="text-2xl font-bold text-white mb-4 flex items-center gap-2"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-      >
-        <Flame className="w-6 h-6 text-orange-500" />
-        Tendencias Explosivas
-      </motion.h2>
-      
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {trendingTopics.map((topic, index) => (
-          <motion.div
-            key={topic.tag}
-            className={cn(
-              "p-4 rounded-2xl bg-gradient-to-br border border-white/20 cursor-pointer group",
-              topic.color
-            )}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <div className="text-white">
-              <div className="font-bold text-lg mb-1">{topic.tag}</div>
-              <div className="text-white/90 text-sm mb-2">{topic.votes} votos</div>
-              <div className="flex items-center gap-1 text-xs">
-                <TrendingUp className="w-3 h-3" />
-                <span>{topic.growth}</span>
-              </div>
+          <div className="flex items-center justify-between mb-3">
+            <div className={cn("p-2 rounded-xl bg-gradient-to-r", stat.color)}>
+              <stat.icon className="w-6 h-6 text-white" />
             </div>
+            
+            <motion.div
+              className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            >
+              <div className="w-2 h-2 bg-white rounded-full" />
+            </motion.div>
+          </div>
+          
+          <motion.div
+            className={cn("text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r", stat.color)}
+            key={stat.value} // Re-render when value changes
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {stat.value}
           </motion.div>
-        ))}
-      </div>
-    </div>
+          <div className="text-white/70 text-sm font-medium">{stat.label}</div>
+        </motion.div>
+      ))}
+    </motion.div>
   );
 };
 
-// Main Revolutionary Page Component
+// Componente principal
 const VotingRevolutionPage = () => {
   const [polls, setPolls] = useState(mockPolls);
-  const [viewMode, setViewMode] = useState('feed');
-  const [isLoading, setIsLoading] = useState(false);
+  const [viewMode, setViewMode] = useState('battle');
+  const [selectedPoll, setSelectedPoll] = useState(null);
   
   const { isTikTokMode } = useTikTok();
-  const { userProfile, triggerAction } = useAddiction();
+  const { userProfile, trackAction } = useAddiction();
   const containerRef = useRef(null);
   
-  // Scroll animations
-  const { scrollY } = useScroll({ container: containerRef });
-  const headerY = useTransform(scrollY, [0, 300], [0, -50]);
-  const headerOpacity = useTransform(scrollY, [0, 300], [1, 0.8]);
+  // Scroll effects
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
   
-  // Stats calculation
-  const totalVotes = polls.reduce((sum, poll) => sum + poll.totalVotes, 0);
-  const activeUsers = 157843; // Mock data
-  
-  // Enhanced interaction handlers
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.8, 1, 1, 0.8]);
+
+  // Handlers para acciones
   const handleVote = async (pollId, optionId) => {
     setPolls(prev => prev.map(poll => {
-      if (poll.id === pollId) {
+      if (poll.id === pollId && !poll.userVote) {
         return {
           ...poll,
           userVote: optionId,
@@ -284,7 +308,7 @@ const VotingRevolutionPage = () => {
       return poll;
     }));
     
-    await triggerAction('vote');
+    await trackAction('vote');
   };
   
   const handleLike = async (pollId) => {
@@ -299,7 +323,7 @@ const VotingRevolutionPage = () => {
       return poll;
     }));
     
-    await triggerAction('like');
+    await trackAction('like');
   };
   
   const handleShare = async (pollId) => {
@@ -313,98 +337,78 @@ const VotingRevolutionPage = () => {
       return poll;
     }));
     
-    await triggerAction('share');
+    await trackAction('share');
   };
   
   const handleComment = async (pollId) => {
     console.log('Opening comments for poll:', pollId);
-    await triggerAction('create');
+    await trackAction('create');
   };
   
   const handleCreatePoll = async (pollData) => {
     console.log('Creating new poll:', pollData);
-    await triggerAction('create');
+    await trackAction('create');
   };
   
-  if (isTikTokMode) {
-    return null; // TikTok mode is handled elsewhere
-  }
-  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20" />
-        {/* Floating geometric shapes */}
-        {Array.from({ length: 20 }).map((_, i) => (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-blue-900 relative overflow-hidden">
+      {/* Background effects */}
+      <motion.div
+        className="fixed inset-0 z-0"
+        style={{ y: backgroundY, opacity }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 via-black/80 to-blue-900/50" />
+        
+        {/* Animated particles */}
+        {Array.from({ length: 100 }).map((_, i) => (
           <motion.div
             key={i}
-            className="absolute bg-white/5 rounded-full"
+            className="absolute w-1 h-1 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full"
             style={{
-              width: Math.random() * 100 + 50,
-              height: Math.random() * 100 + 50,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`
             }}
             animate={{
               y: [0, -30, 0],
-              x: [0, Math.random() * 20 - 10, 0],
-              rotate: [0, 360]
+              opacity: [0, 1, 0],
+              scale: [0, 1, 0]
             }}
             transition={{
-              duration: Math.random() * 20 + 30,
+              duration: Math.random() * 4 + 3,
               repeat: Infinity,
-              ease: "linear"
+              delay: Math.random() * 5
             }}
           />
         ))}
-      </div>
-      
-      {/* Main Content */}
-      <div 
-        ref={containerRef}
-        className="relative z-10 min-h-screen overflow-y-auto pb-24"
-      >
-        {/* Animated Header */}
-        <motion.div
-          className="sticky top-0 z-20 p-6"
-          style={{ y: headerY, opacity: headerOpacity }}
-        >
-          <VotingStatsHeader 
-            totalPolls={polls.length}
-            totalVotes={totalVotes}
-            activeUsers={activeUsers}
-          />
-          
-          {/* View Mode Selector */}
-          <div className="flex justify-center mb-6">
-            <ViewModeSelector 
-              currentMode={viewMode}
-              onModeChange={setViewMode}
-            />
-          </div>
-          
-          {/* Trending Section */}
-          <TrendingSection />
-        </motion.div>
+      </motion.div>
+
+      {/* Main content */}
+      <div ref={containerRef} className="relative z-10 min-h-screen pb-24">
+        {/* Revolutionary Header */}
+        <RevolutionaryHeader viewMode={viewMode} setViewMode={setViewMode} />
         
-        {/* Content Area */}
+        {/* Live Stats */}
+        <div className="px-6 mb-12">
+          <LiveStats />
+        </div>
+
+        {/* Content based on view mode */}
         <div className="px-6">
           <AnimatePresence mode="wait">
-            {viewMode === 'feed' && (
+            {viewMode === 'battle' && (
               <motion.div
-                key="feed"
-                className="space-y-8"
+                key="battle"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.5, staggerChildren: 0.1 }}
               >
-                {polls.map((poll, index) => (
+                {polls.slice(0, 6).map((poll, index) => (
                   <motion.div
                     key={poll.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.1 }}
                   >
                     <MediaBattleCard
@@ -413,27 +417,26 @@ const VotingRevolutionPage = () => {
                       onLike={handleLike}
                       onShare={handleShare}
                       onComment={handleComment}
-                      viewMode="battle" // Always use battle mode for revolutionary experience
+                      className="h-full"
                     />
                   </motion.div>
                 ))}
               </motion.div>
             )}
             
-            {viewMode === 'battle' && (
+            {viewMode === 'feed' && (
               <motion.div
-                key="battle"
-                className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-                initial={{ opacity: 0, scale: 0.9 }}
+                key="feed"
+                className="max-w-md mx-auto space-y-6"
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5 }}
+                exit={{ opacity: 0, scale: 1.05 }}
               >
-                {polls.map((poll, index) => (
+                {polls.slice(0, 3).map((poll, index) => (
                   <motion.div
                     key={poll.id}
-                    initial={{ opacity: 0, rotateY: index % 2 === 0 ? -30 : 30 }}
-                    animate={{ opacity: 1, rotateY: 0 }}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.2 }}
                   >
                     <MediaBattleCard
@@ -442,7 +445,7 @@ const VotingRevolutionPage = () => {
                       onLike={handleLike}
                       onShare={handleShare}
                       onComment={handleComment}
-                      viewMode="battle"
+                      isFullScreen={true}
                     />
                   </motion.div>
                 ))}
@@ -453,25 +456,36 @@ const VotingRevolutionPage = () => {
               <motion.div
                 key={viewMode}
                 className="text-center py-20"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.2 }}
               >
-                <div className="text-6xl mb-4">🚀</div>
-                <h2 className="text-3xl font-bold text-white mb-4">
-                  {viewMode === 'trending' ? '¡Próximamente Trending!' : '¡Modo En Vivo Próximamente!'}
+                <motion.div
+                  animate={{ rotateY: [0, 360] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="inline-block mb-6"
+                >
+                  {viewMode === 'trending' ? (
+                    <TrendingUp className="w-20 h-20 text-green-400" />
+                  ) : (
+                    <Flame className="w-20 h-20 text-red-400" />
+                  )}
+                </motion.div>
+                
+                <h2 className="text-4xl font-black text-white mb-4">
+                  {viewMode === 'trending' ? 'Tendencias Explosivas' : 'Arena Live'}
                 </h2>
-                <p className="text-white/80 text-lg">
-                  Estamos preparando algo épico para esta sección
+                <p className="text-white/70 text-xl">
+                  {viewMode === 'trending' ? '🚀 Próximamente disponible' : '⚡ Batallas épicas en tiempo real'}
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
+        
+        {/* Neural Navigation */}
+        <NeuralNavigation onCreatePoll={handleCreatePoll} />
       </div>
-      
-      {/* Neural Navigation */}
-      <NeuralNavigation onCreatePoll={handleCreatePoll} />
     </div>
   );
 };

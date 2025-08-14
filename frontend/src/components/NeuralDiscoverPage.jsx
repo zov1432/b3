@@ -770,7 +770,7 @@ const NeuralDiscoverPage = () => {
   
   const { predictions, isAnalyzing } = useTrendingPredictions();
   const suggestedUsers = usePersonalizedUserDiscovery();
-  const { triggerAction } = useAddiction();
+  const { trackAction } = useAddiction();
 
   // Organizar contenido en grid masonry
   useEffect(() => {
@@ -812,19 +812,19 @@ const NeuralDiscoverPage = () => {
   };
 
   const handleVote = async (pollId, optionId) => {
-    await triggerAction('vote');
+    await trackAction('vote');
   };
 
   const handleLike = async (pollId) => {
-    await triggerAction('like');
+    await trackAction('like');
   };
 
   const handleShare = async (pollId) => {
-    await triggerAction('share');
+    await trackAction('share');
   };
 
   const handleComment = async (pollId) => {
-    await triggerAction('create');
+    await trackAction('create');
   };
 
   return (
