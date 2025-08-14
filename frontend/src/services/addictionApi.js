@@ -53,40 +53,40 @@ class AddictionAPI {
 
   // Achievements & Streaks
   async getUserAchievements(userId) {
-    const response = await fetch(`${API_BASE}/user/${userId}/achievements`);
+    const response = await fetch(`${API_BASE}/api/user/${userId}/achievements`);
     return response.json();
   }
 
   async getAllAchievements() {
-    const response = await fetch(`${API_BASE}/achievements`);
+    const response = await fetch(`${API_BASE}/api/achievements`);
     return response.json();
   }
 
   async getUserStreaks(userId) {
-    const response = await fetch(`${API_BASE}/user/${userId}/streaks`);
+    const response = await fetch(`${API_BASE}/api/user/${userId}/streaks`);
     return response.json();
   }
 
   // FOMO & Social Proof
   async getFOMOContent() {
-    const response = await fetch(`${API_BASE}/fomo/content`);
+    const response = await fetch(`${API_BASE}/api/fomo/content`);
     return response.json();
   }
 
   async getSocialProof(pollId) {
-    const response = await fetch(`${API_BASE}/social-proof/${pollId}`);
+    const response = await fetch(`${API_BASE}/api/social-proof/${pollId}`);
     return response.json();
   }
 
   // Leaderboards
   async getLeaderboard() {
-    const response = await fetch(`${API_BASE}/leaderboard`);
+    const response = await fetch(`${API_BASE}/api/leaderboard`);
     return response.json();
   }
 
   // Notifications
   async generateSmartNotifications(userId) {
-    const response = await fetch(`${API_BASE}/notifications/generate/${userId}`, {
+    const response = await fetch(`${API_BASE}/api/notifications/generate/${userId}`, {
       method: 'POST'
     });
     return response.json();
@@ -94,13 +94,13 @@ class AddictionAPI {
 
   // Analytics
   async getAddictionAnalytics(userId) {
-    const response = await fetch(`${API_BASE}/analytics/addiction/${userId}`);
+    const response = await fetch(`${API_BASE}/api/analytics/addiction/${userId}`);
     return response.json();
   }
 
   // Special Effects
   async triggerJackpot(userId) {
-    const response = await fetch(`${API_BASE}/user/${userId}/jackpot`, {
+    const response = await fetch(`${API_BASE}/api/user/${userId}/jackpot`, {
       method: 'POST'
     });
     return response.json();
