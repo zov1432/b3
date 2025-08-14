@@ -5,20 +5,9 @@ from enum import Enum
 import uuid
 
 class NotificationType(str, Enum):
-    STREAK_REMINDER = "streak_reminder"
     NEW_POLL = "new_poll"
     TRENDING = "trending"
-    REWARD = "reward"
-    LEVEL_UP = "level_up"
     COMPETITION = "competition"
-    FOMO = "fomo"
-
-class AchievementType(str, Enum):
-    VOTER = "voter"
-    CREATOR = "creator"
-    SOCIAL = "social"
-    STREAK = "streak"
-    SPECIAL = "special"
 
 # User Behavior Analytics Model
 class UserBehavior(BaseModel):
