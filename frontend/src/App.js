@@ -182,7 +182,6 @@ function AppContent() {
           jackpotData={jackpotData}
           onClose={() => setShowJackpot(false)}
         />
-      </div> {/* Close mr-20 div */}
     </div>
   );
 }
