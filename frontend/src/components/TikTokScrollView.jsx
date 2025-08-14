@@ -56,7 +56,7 @@ const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserCli
   </div>
 );
 
-const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onCreatePoll, isActive, index, total }) => {
+const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCreatePoll, isActive, index, total }) => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const navigate = useNavigate();
 
