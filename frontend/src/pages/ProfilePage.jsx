@@ -136,8 +136,8 @@ const ProfilePage = () => {
     avatar: authUser?.avatar_url || null,
     followers: 1234,
     following: 567,
-    totalVotes: userProfile?.total_votes || 89,
-    pollsCreated: userProfile?.total_polls_created || 23,
+    totalVotes: 89,
+    pollsCreated: 23,
     totalPolls: mockPolls.length,
     verified: authUser?.is_verified || false
   } : viewedUser || {
