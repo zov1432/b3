@@ -371,7 +371,7 @@ def test_messaging_system(base_url):
     return False
 
 def test_addiction_system_integration(base_url):
-    """Test addiction system integration with authentication"""
+    """Test comprehensive addiction system integration with authentication"""
     print("\n=== Testing Addiction System Integration ===")
     
     if not auth_tokens:
@@ -382,7 +382,7 @@ def test_addiction_system_integration(base_url):
     success_count = 0
     
     # Test get user profile (should create automatically)
-    print("Testing get user profile...")
+    print("Testing GET /api/user/profile...")
     try:
         response = requests.get(f"{base_url}/user/profile", headers=headers, timeout=10)
         print(f"Get Profile Status Code: {response.status_code}")
@@ -401,7 +401,7 @@ def test_addiction_system_integration(base_url):
         print(f"❌ Get profile error: {e}")
     
     # Test track user action
-    print("\nTesting track user action...")
+    print("\nTesting POST /api/user/action...")
     try:
         action_data = {
             "action_type": "vote",
@@ -423,8 +423,38 @@ def test_addiction_system_integration(base_url):
     except Exception as e:
         print(f"❌ Track action error: {e}")
     
+    # Test behavior tracking (recently fixed endpoint)
+    print("\nTesting POST /api/user/behavior...")
+    try:
+        behavior_data = {
+            "session_duration": 300,
+            "polls_viewed": 5,
+            "polls_voted": 3,
+            "likes_given": 2,
+            "shares_made": 1,
+            "comments_made": 1,
+            "scroll_depth": 85.5,
+            "time_spent_voting": 45,
+            "rapid_fire_votes": 2,
+            "session_metadata": {"device": "mobile", "browser": "chrome"}
+        }
+        response = requests.post(f"{base_url}/user/behavior", json=behavior_data, headers=headers, timeout=10)
+        print(f"Track Behavior Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ User behavior tracked successfully")
+            print(f"Addiction Score: {data['addiction_score']}")
+            print(f"Engagement Level: {data['engagement_level']}")
+            success_count += 1
+        else:
+            print(f"❌ Track behavior failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Track behavior error: {e}")
+    
     # Test get achievements
-    print("\nTesting get user achievements...")
+    print("\nTesting GET /api/user/achievements...")
     try:
         response = requests.get(f"{base_url}/user/achievements", headers=headers, timeout=10)
         print(f"Get Achievements Status Code: {response.status_code}")
@@ -439,7 +469,57 @@ def test_addiction_system_integration(base_url):
     except Exception as e:
         print(f"❌ Get achievements error: {e}")
     
-    return success_count >= 2
+    # Test get all achievements
+    print("\nTesting GET /api/achievements...")
+    try:
+        response = requests.get(f"{base_url}/achievements", timeout=10)
+        print(f"Get All Achievements Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            achievements = response.json()
+            print(f"✅ All achievements retrieved: {len(achievements)} total achievements")
+            success_count += 1
+        else:
+            print(f"❌ Get all achievements failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get all achievements error: {e}")
+    
+    # Test FOMO content
+    print("\nTesting GET /api/fomo/content...")
+    try:
+        response = requests.get(f"{base_url}/fomo/content", timeout=10)
+        print(f"Get FOMO Content Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            fomo_content = response.json()
+            print(f"✅ FOMO content retrieved: {len(fomo_content)} items")
+            success_count += 1
+        else:
+            print(f"❌ Get FOMO content failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get FOMO content error: {e}")
+    
+    # Test leaderboard
+    print("\nTesting GET /api/leaderboard...")
+    try:
+        response = requests.get(f"{base_url}/leaderboard", timeout=10)
+        print(f"Get Leaderboard Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            leaderboard = response.json()
+            print(f"✅ Leaderboard retrieved: {len(leaderboard)} users")
+            if len(leaderboard) > 0:
+                print(f"Top user: {leaderboard[0]['username']} (Level {leaderboard[0]['level']}, XP: {leaderboard[0]['xp']})")
+            success_count += 1
+        else:
+            print(f"❌ Get leaderboard failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get leaderboard error: {e}")
+    
+    return success_count >= 5
 
 def test_complete_user_flow(base_url):
     """Test complete user flow: register -> login -> profile -> search -> message -> track actions"""
