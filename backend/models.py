@@ -9,36 +9,6 @@ class NotificationType(str, Enum):
     TRENDING = "trending"
     COMPETITION = "competition"
 
-# User Behavior Analytics Model
-class UserBehavior(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_id: str
-    session_duration: int  # seconds
-    polls_viewed: int
-    polls_voted: int
-    polls_created: int
-    likes_given: int
-    shares_made: int
-    scroll_depth: float  # percentage
-    interaction_rate: float
-    peak_hours: List[int]  # hour of day (0-23)
-    device_type: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
-
-# User Addiction Metrics
-class AddictionMetrics(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_id: str
-    addiction_score: float  # 0-100
-    engagement_level: str  # low, medium, high, addicted
-    session_frequency: float  # sessions per day
-    average_session_time: float  # minutes
-    retention_probability: float  # 0-1
-    churn_risk: float  # 0-1
-    dopamine_triggers_hit: int
-    fomo_susceptibility: float
-    last_calculated: datetime = Field(default_factory=datetime.utcnow)
-
 # User Profile - Simplified without levels/achievements
 class UserProfile(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
