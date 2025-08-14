@@ -5,8 +5,6 @@ import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
 import { Heart, MessageCircle, Share, MoreHorizontal, Play, Crown, CheckCircle, Bookmark } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { useAddiction } from '../contexts/AddictionContext';
-import { SocialProofBadge } from './AddictionUI';
 import { motion } from 'framer-motion';
 
 const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option, totalVotes, fullScreen = false }) => {
