@@ -667,8 +667,9 @@ def main():
     messaging_passed = all(results[system] for system in messaging_systems)
     
     integration_passed = results['addiction_integration']
+    auth_requirements_passed = results['auth_requirements']
     
-    overall_success = critical_passed and messaging_passed and integration_passed
+    overall_success = critical_passed and messaging_passed and integration_passed and auth_requirements_passed
     
     print(f"\n🔐 Authentication System: {'✅ WORKING' if critical_passed else '❌ FAILED'}")
     print(f"💬 Messaging System: {'✅ WORKING' if messaging_passed else '❌ FAILED'}")
