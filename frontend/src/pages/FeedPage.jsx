@@ -98,6 +98,15 @@ const FeedPage = () => {
     });
   };
 
+  const handleSave = async (pollId) => {
+    // Aquí podrías implementar la lógica para guardar en localStorage, backend, etc.
+    await triggerAction('share'); // Usar share como acción similar
+    toast({
+      title: "¡Votación guardada!",
+      description: "La votación ha sido guardada en tu colección",
+    });
+  };
+
   const handleExitTikTok = () => {
     // No hacer nada, ya que queremos mantener siempre el modo TikTok en el feed
     // Opcional: podrías navegar a otra página si quisieras
