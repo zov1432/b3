@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TikTokScrollView from '../components/TikTokScrollView';
+import PollCard from '../components/PollCard';
 import { mockPolls, createPoll } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
 import { useAddiction } from '../contexts/AddictionContext';
@@ -10,11 +11,28 @@ const FeedPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { trackAction } = useAddiction();
-  const { enterTikTokMode, exitTikTokMode } = useTikTok();
+  const { enterTikTokMode, exitTikTokMode, isTikTokMode } = useTikTok();
 
-  // Activar modo TikTok al montar el componente
+  // Detect if we're on mobile or desktop
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
   useEffect(() => {
-    enterTikTokMode();
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Activar modo TikTok solo en móvil
+  useEffect(() => {
+    if (isMobile) {
+      enterTikTokMode();
+    } else {
+      exitTikTokMode();
+    }
+    
     // Simular carga inicial
     setTimeout(() => {
       setIsLoading(false);
@@ -22,9 +40,11 @@ const FeedPage = () => {
     
     // Limpiar al desmontar
     return () => {
-      exitTikTokMode();
+      if (isMobile) {
+        exitTikTokMode();
+      }
     };
-  }, [enterTikTokMode, exitTikTokMode]);
+  }, [isMobile, enterTikTokMode, exitTikTokMode]);
 
   const handleVote = async (pollId, optionId) => {
     setPolls(prev => prev.map(poll => {
