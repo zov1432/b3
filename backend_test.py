@@ -430,13 +430,15 @@ def test_addiction_system_integration(base_url):
             "session_duration": 300,
             "polls_viewed": 5,
             "polls_voted": 3,
+            "polls_created": 1,
             "likes_given": 2,
             "shares_made": 1,
             "comments_made": 1,
             "scroll_depth": 85.5,
-            "time_spent_voting": 45,
-            "rapid_fire_votes": 2,
-            "session_metadata": {"device": "mobile", "browser": "chrome"}
+            "interaction_rate": 0.6,
+            "peak_hours": [14, 15, 16],
+            "device_type": "mobile",
+            "session_metadata": {"browser": "chrome", "os": "android"}
         }
         response = requests.post(f"{base_url}/user/behavior", json=behavior_data, headers=headers, timeout=10)
         print(f"Track Behavior Status Code: {response.status_code}")
