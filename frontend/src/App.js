@@ -107,8 +107,6 @@ function AppContent() {
 
   return (
     <div className="App relative">
-      {/* Adjust main content to account for sidebar */}
-      <div className="mr-20"> {/* Base margin for collapsed sidebar */}
         {/* FOMO Alert - Show when not in TikTok mode and not hidden */}
         {!isTikTokMode && !fomoHidden && (
           <FOMOAlert
