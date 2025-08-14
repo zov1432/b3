@@ -179,7 +179,14 @@ export class BehaviorTracker {
   }
 
   async sendBehaviorData() {
-    const currentUserId = localStorage.getItem('userId') || 'anonymous';
+    const currentUserId = localStorage.getItem('authUser');
+    const token = localStorage.getItem('authToken');
+    
+    // Don't send behavior data if user is not authenticated
+    if (!currentUserId || !token) {
+      return;
+    }
+    
     const sessionDuration = Math.floor((Date.now() - this.sessionStart) / 1000);
     const interactionRate = this.totalActions > 0 ? this.interactions / this.totalActions : 0;
 
