@@ -73,7 +73,7 @@ class Achievement(BaseModel):
     name: str
     description: str
     icon: str
-    type: AchievementType
+    type: str
     requirement: Dict[str, Any]  # {"votes": 100} or {"streak": 7}
     xp_reward: int
     rarity: str  # common, rare, epic, legendary
