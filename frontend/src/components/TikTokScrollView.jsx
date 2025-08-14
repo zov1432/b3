@@ -425,16 +425,17 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
         </button>
 
         {/* Subir/Crear */}
-        <button
-          onClick={() => navigate('/create')}
-          className={cn(
-            "rounded-full transition-all duration-300 backdrop-blur-sm border border-pink-300/30",
-            "bg-gradient-to-b from-pink-400 to-purple-500 hover:from-pink-300 hover:to-purple-400 hover:scale-110 w-3 h-10 shadow-xl ring-2 ring-pink-300/50 flex items-center justify-center"
-          )}
-          title="Crear"
-        >
-          <Plus className="w-3 h-3 text-white" />
-        </button>
+        <CreatePollModal onCreatePoll={onCreatePoll}>
+          <button
+            className={cn(
+              "rounded-full transition-all duration-300 backdrop-blur-sm border border-pink-300/30",
+              "bg-gradient-to-b from-pink-400 to-purple-500 hover:from-pink-300 hover:to-purple-400 hover:scale-110 w-3 h-10 shadow-xl ring-2 ring-pink-300/50 flex items-center justify-center"
+            )}
+            title="Crear"
+          >
+            <Plus className="w-3 h-3 text-white" />
+          </button>
+        </CreatePollModal>
 
         {/* Mensajes */}
         <button
