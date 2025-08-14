@@ -551,7 +551,7 @@ const LiveBattleArena = () => {
   // Handlers
   const handleJoinBattle = (battle) => {
     console.log('Joining battle:', battle.title);
-    triggerAction('create');
+    trackAction('create');
   };
 
   const handleEnterRoom = (room) => {
@@ -561,7 +561,7 @@ const LiveBattleArena = () => {
 
   const handleSetReminder = (battle) => {
     console.log('Setting reminder for:', battle.title);
-    triggerAction('like');
+    trackAction('like');
   };
 
   return (
