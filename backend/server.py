@@ -445,7 +445,7 @@ async def create_user_profile(username: str, current_user: UserResponse = Depend
 
 @api_router.get("/user/profile")
 async def get_my_profile(current_user: UserResponse = Depends(get_current_user)):
-    """Get current user profile with real-time addiction metrics"""
+    """Get current user profile"""
     profile_data = await db.user_profiles.find_one({"id": current_user.id})
     if not profile_data:
         # Create profile if it doesn't exist
@@ -454,40 +454,16 @@ async def get_my_profile(current_user: UserResponse = Depends(get_current_user))
         return profile
     
     profile = UserProfile(**profile_data)
-    
-    # Get recent behavior for addiction scoring
-    behaviors = await db.user_behavior.find({"user_id": current_user.id}).sort("timestamp", -1).limit(50).to_list(50)
-    if behaviors:
-        addiction_score = addiction_engine.calculate_addiction_score(behaviors)
-        addiction_metrics = AddictionMetrics(
-            user_id=current_user.id,
-            addiction_score=addiction_score,
-            engagement_level="high" if addiction_score > 70 else "medium" if addiction_score > 40 else "low"
-        )
-        profile.addiction_metrics = addiction_metrics
-    
     return profile
 
 @api_router.get("/user/profile/{user_id}")
 async def get_user_profile(user_id: str):
-    """Get user profile with real-time addiction metrics (public endpoint)"""
+    """Get user profile (public endpoint)"""
     profile_data = await db.user_profiles.find_one({"id": user_id})
     if not profile_data:
         raise HTTPException(status_code=404, detail="User not found")
     
     profile = UserProfile(**profile_data)
-    
-    # Get recent behavior for addiction scoring
-    behaviors = await db.user_behavior.find({"user_id": user_id}).sort("timestamp", -1).limit(50).to_list(50)
-    if behaviors:
-        addiction_score = addiction_engine.calculate_addiction_score(behaviors)
-        addiction_metrics = AddictionMetrics(
-            user_id=user_id,
-            addiction_score=addiction_score,
-            engagement_level="high" if addiction_score > 70 else "medium" if addiction_score > 40 else "low"
-        )
-        profile.addiction_metrics = addiction_metrics
-    
     return profile
 
 @api_router.post("/user/action")
