@@ -396,7 +396,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
       </div>
 
       {/* Vertical Navigation Bar - Maintaining original dots form */}
-      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 z-20"
+      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-20"
            style={{ right: 'max(1rem, env(safe-area-inset-right))' }}>
         
         {/* Home/Inicio */}
@@ -404,7 +404,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           onClick={() => navigate('/feed')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-white/10",
-            "bg-white/80 hover:bg-white hover:scale-110 w-2 h-8 shadow-lg"
+            "bg-white/80 hover:bg-white hover:scale-110 w-3 h-10 shadow-lg"
           )}
           title="Inicio"
         />
@@ -414,7 +414,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           onClick={() => navigate('/explore')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-white/10",
-            "bg-white/60 hover:bg-white hover:scale-110 w-1.5 h-6 shadow-lg"
+            "bg-white/60 hover:bg-white hover:scale-110 w-2.5 h-8 shadow-lg"
           )}
           title="Explorar"
         />
@@ -424,7 +424,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           onClick={() => navigate('/create')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-pink-300/30",
-            "bg-gradient-to-b from-pink-400 to-purple-500 hover:from-pink-300 hover:to-purple-400 hover:scale-110 w-2 h-8 shadow-xl ring-2 ring-pink-300/50"
+            "bg-gradient-to-b from-pink-400 to-purple-500 hover:from-pink-300 hover:to-purple-400 hover:scale-110 w-3 h-10 shadow-xl ring-2 ring-pink-300/50"
           )}
           title="Crear"
         />
@@ -434,7 +434,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           onClick={() => navigate('/messages')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-white/10",
-            "bg-white/60 hover:bg-white hover:scale-110 w-1.5 h-6 shadow-lg"
+            "bg-white/60 hover:bg-white hover:scale-110 w-2.5 h-8 shadow-lg"
           )}
           title="Mensajes"
         />
@@ -444,7 +444,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, isActive, in
           onClick={() => navigate('/profile')}
           className={cn(
             "rounded-full transition-all duration-300 backdrop-blur-sm border border-white/10",
-            "bg-white/60 hover:bg-white hover:scale-110 w-1.5 h-6 shadow-lg"
+            "bg-white/60 hover:bg-white hover:scale-110 w-2.5 h-8 shadow-lg"
           )}
           title="Perfil"
         />
