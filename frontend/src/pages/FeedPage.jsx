@@ -82,7 +82,7 @@ const FeedPage = () => {
       return poll;
     }));
     
-    await triggerAction('share');
+    await trackAction('share');
     navigator.clipboard.writeText(`${window.location.origin}/poll/${pollId}`);
     toast({
       title: "¡Enlace copiado!",
