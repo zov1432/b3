@@ -64,7 +64,7 @@ const FeedPage = () => {
       return poll;
     }));
     
-    await triggerAction('like');
+    await trackAction('like');
     toast({
       title: currentPoll?.userLiked ? "Like removido" : "¡Te gusta!",
       description: currentPoll?.userLiked ? "Ya no te gusta esta votación" : "Has dado like a esta votación",
