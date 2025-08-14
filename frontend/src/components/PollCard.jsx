@@ -313,16 +313,7 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
               </Button>
             </div>
 
-            {/* Social Proof Badge */}
-            {socialProof && (
-              <div className="px-4 pb-2">
-                <SocialProofBadge 
-                  pollId={poll.id}
-                  socialProof={socialProof}
-                  onLoadProof={getSocialProof}
-                />
-              </div>
-            )}
+            {/* Removed Social Proof Badge */}
 
             {/* Poll Title - Compact */}
             <div className="px-4 pb-3 flex-shrink-0 bg-white/90 backdrop-blur-sm">
