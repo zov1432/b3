@@ -521,6 +521,67 @@ def test_addiction_system_integration(base_url):
     
     return success_count >= 5
 
+def test_authentication_requirements(base_url):
+    """Test authentication requirements for protected endpoints"""
+    print("\n=== Testing Authentication Requirements ===")
+    
+    success_count = 0
+    
+    # List of endpoints that should require authentication
+    protected_endpoints = [
+        ("GET", "/user/profile"),
+        ("POST", "/user/action"),
+        ("POST", "/user/behavior"),
+        ("GET", "/user/achievements"),
+        ("GET", "/users/search?q=test"),
+        ("GET", "/conversations"),
+        ("POST", "/messages"),
+        ("GET", "/messages/unread"),
+        ("GET", "/auth/me")
+    ]
+    
+    print("Testing endpoints without authentication...")
+    for method, endpoint in protected_endpoints:
+        try:
+            if method == "GET":
+                response = requests.get(f"{base_url}{endpoint}", timeout=10)
+            elif method == "POST":
+                test_data = {"test": "data"}
+                response = requests.post(f"{base_url}{endpoint}", json=test_data, timeout=10)
+            
+            # Should return 401 or 403 for unauthorized access
+            if response.status_code in [401, 403]:
+                print(f"✅ {method} {endpoint}: Properly protected (Status: {response.status_code})")
+                success_count += 1
+            else:
+                print(f"❌ {method} {endpoint}: Should be protected, got status: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Error testing {method} {endpoint}: {e}")
+    
+    # Test with invalid token
+    print("\nTesting endpoints with invalid token...")
+    invalid_headers = {"Authorization": "Bearer invalid_token_12345"}
+    
+    for method, endpoint in protected_endpoints[:3]:  # Test first 3 endpoints
+        try:
+            if method == "GET":
+                response = requests.get(f"{base_url}{endpoint}", headers=invalid_headers, timeout=10)
+            elif method == "POST":
+                test_data = {"test": "data"}
+                response = requests.post(f"{base_url}{endpoint}", json=test_data, headers=invalid_headers, timeout=10)
+            
+            if response.status_code in [401, 403]:
+                print(f"✅ {method} {endpoint}: Invalid token properly rejected (Status: {response.status_code})")
+                success_count += 1
+            else:
+                print(f"❌ {method} {endpoint}: Should reject invalid token, got status: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Error testing {method} {endpoint} with invalid token: {e}")
+    
+    return success_count >= 8  # At least 8 out of 12 tests should pass
+
 def test_complete_user_flow(base_url):
     """Test complete user flow: register -> login -> profile -> search -> message -> track actions"""
     print("\n=== Testing Complete User Flow ===")
