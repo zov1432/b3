@@ -145,9 +145,6 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/feed" replace />} />
         </Routes>
 
-        {/* Sidebar Navigation - Aparece en todas las páginas */}
-        <SidebarNavigation onCreatePoll={handleCreatePoll} />
-
         {/* Revolutionary Neural Navigation - Only show when not in TikTok mode */}
         {/* ELIMINADO: NeuralNavigation con botón circular morado +
         {!isTikTokMode && (
