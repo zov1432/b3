@@ -25,6 +25,7 @@ class User(BaseModel):
     email: EmailStr
     username: str
     display_name: str
+    hashed_password: str
     avatar_url: Optional[str] = None
     bio: Optional[str] = None
     is_verified: bool = False
