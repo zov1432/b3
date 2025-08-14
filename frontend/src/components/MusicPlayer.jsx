@@ -1,14 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from './ui/button';
-import { 
-  Music, 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX,
-  RotateCcw
-} from 'lucide-react';
-import { formatDuration } from '../services/musicLibrary';
+import React from 'react';
 
 const MusicWaveform = ({ waveform, isPlaying, currentTime = 0, duration = 30 }) => {
   const progress = currentTime / duration;
