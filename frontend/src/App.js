@@ -144,8 +144,8 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/feed" replace />} />
         </Routes>
 
-        {/* Right Side Navigation - Aparece en todas las páginas */}
-        <RightSideNavigation onCreatePoll={handleCreatePoll} />
+        {/* Right Side Navigation - Solo aparece cuando está autenticado */}
+        {isAuthenticated && <RightSideNavigation onCreatePoll={handleCreatePoll} />}
 
         {/* Revolutionary Neural Navigation - Only show when not in TikTok mode */}
         {/* ELIMINADO: NeuralNavigation con botón circular morado +
