@@ -427,6 +427,7 @@ def test_addiction_system_integration(base_url):
     print("\nTesting POST /api/user/behavior...")
     try:
         behavior_data = {
+            "user_id": test_users[0]['id'] if test_users else "test_user_id",
             "session_duration": 300,
             "polls_viewed": 5,
             "polls_voted": 3,
