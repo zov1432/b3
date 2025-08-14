@@ -243,14 +243,6 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
   const handleVote = async (optionId) => {
     if (!poll.userVote) {
       onVote(poll.id, optionId);
-      
-      // Track vote action for addiction system
-      await trackAction('vote', {
-        poll_id: poll.id,
-        option_id: optionId,
-        timestamp: new Date().toISOString(),
-        votes_in_last_minute: 1 // This would be tracked properly in real implementation
-      });
     }
   };
 
