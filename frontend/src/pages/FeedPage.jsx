@@ -177,17 +177,57 @@ const FeedPage = () => {
     );
   }
 
+  // Renderizado móvil (TikTok mode)
+  if (isMobile || isTikTokMode) {
+    return (
+      <TikTokScrollView
+        polls={polls}
+        onVote={handleVote}
+        onLike={handleLike}
+        onShare={handleShare}
+        onComment={handleComment}
+        onSave={handleSave}
+        onExitTikTok={handleExitTikTok}
+        onCreatePoll={handleCreatePoll}
+      />
+    );
+  }
+
+  // Renderizado desktop (Web layout similar a TikTok web)
   return (
-    <TikTokScrollView
-      polls={polls}
-      onVote={handleVote}
-      onLike={handleLike}
-      onShare={handleShare}
-      onComment={handleComment}
-      onSave={handleSave}
-      onExitTikTok={handleExitTikTok}
-      onCreatePoll={handleCreatePoll}
-    />
+    <div className="min-h-screen bg-gray-50 pt-6">
+      <div className="max-w-4xl mx-auto px-4">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Para ti</h1>
+          <p className="text-gray-600">Descubre las votaciones más populares</p>
+        </div>
+
+        {/* Feed Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {polls.map((poll) => (
+            <div key={poll.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+              <PollCard
+                poll={poll}
+                onVote={handleVote}
+                onLike={handleLike}
+                onShare={handleShare}
+                onComment={handleComment}
+                onSave={handleSave}
+                fullScreen={false}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Load More Button */}
+        <div className="text-center mt-12 mb-8">
+          <button className="px-8 py-3 bg-pink-500 text-white rounded-full font-medium hover:bg-pink-600 transition-colors">
+            Cargar más votaciones
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
