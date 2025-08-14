@@ -172,7 +172,7 @@ const RevolutionaryExplorePage = () => {
   const [userEngagement, setUserEngagement] = useState('medium');
   
   const { isTikTokMode } = useTikTok();
-  const { userProfile, triggerAction } = useAddiction();
+  const { userProfile, trackAction } = useAddiction();
   const { triggerHaptic } = useHapticFeedback();
   const containerRef = useRef(null);
   
