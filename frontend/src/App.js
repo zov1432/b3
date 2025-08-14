@@ -3,7 +3,6 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import BottomNavigation from './components/BottomNavigation';
 import NeuralNavigation from './components/NeuralNavigation';
-import SidebarNavigation from './components/SidebarNavigation';
 import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/ExplorePage';
 import ExploreDemo from './pages/ExploreDemo';
