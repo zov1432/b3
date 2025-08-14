@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import NeuralNavigation from './components/NeuralNavigation';
-import RightSideNavigation from './components/RightSideNavigation';
+import ResponsiveLayout from './components/ResponsiveLayout';
 import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/ExplorePage';
 import ExploreDemo from './pages/ExploreDemo';
