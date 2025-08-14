@@ -1,35 +1,5 @@
 import React from 'react';
 
-const MusicWaveform = ({ waveform, isPlaying, currentTime = 0, duration = 30 }) => {
-  const progress = currentTime / duration;
-  
-  return (
-    <div className="flex items-center gap-0.5 h-4 justify-center">
-      {waveform.map((height, index) => {
-        const barProgress = index / waveform.length;
-        const isActive = barProgress <= progress;
-        
-        return (
-          <div
-            key={index}
-            className={`w-0.5 transition-all duration-100 ${
-              isActive && isPlaying 
-                ? 'bg-white animate-pulse' 
-                : isActive 
-                  ? 'bg-white/80'
-                  : 'bg-white/40'
-            }`}
-            style={{
-              height: `${height * 12 + 2}px`,
-              animationDelay: `${index * 30}ms`
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
 const MusicPlayer = ({ music, isVisible = true, onTogglePlay, className = '' }) => {
   if (!music || !isVisible) {
     return null;
