@@ -383,19 +383,7 @@ const ProfilePage = () => {
           />
         </div>
 
-        {/* Progress Bar - Gamification Stats - Only for own profile */}
-        {isOwnProfile && userProfile && (
-          <div className="mb-6">
-            <ProgressBar
-              level={level}
-              xp={xp}
-              xpToNext={getXpToNextLevel()}
-              progress={getXpProgress()}
-              streak={streak}
-              className="shadow-lg"
-            />
-          </div>
-        )}
+        {/* Progress Bar - Removed gamification stats */}
 
         {/* Content Tabs */}
         <Tabs defaultValue="polls" className="space-y-6">
