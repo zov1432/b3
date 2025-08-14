@@ -199,6 +199,9 @@ function App() {
         {/* Demo route - no auth required */}
         <Route path="/demo" element={<ExploreDemo />} />
         
+        {/* Feed Demo - no auth required */}
+        <Route path="/feed-demo" element={<FeedDemoPage />} />
+        
         {/* Live Battles Demo - no auth required */}
         <Route path="/live-battles-demo" element={<LiveBattleDemoPage />} />
         
