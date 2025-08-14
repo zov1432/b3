@@ -162,9 +162,9 @@ backend:
 frontend:
   - task: "Feed TikTok de Pantalla Completa"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/pages/FeedPage.jsx"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -174,6 +174,9 @@ frontend:
         - working: true
           agent: "testing"
           comment: "✅ TIKTOK FEED WORKING PERFECTLY: Comprehensive testing confirms the TikTok-style full-screen feed is working excellently. VERIFIED FUNCTIONALITY: 1) ✅ FULL-SCREEN MODE: TikTok mode activates automatically when entering feed, displays perfect 2x2 grid layout with full-screen black background, 2) ✅ VOTING SYSTEM: Found 12 voting options in 2x2 grid, voting functionality works correctly with visual feedback, 3) ✅ SOCIAL INTERACTIONS: Like, comment, and share buttons are functional and positioned correctly, 4) ✅ SCROLL NAVIGATION: Keyboard navigation (Arrow Up/Down) works perfectly for switching between polls, 5) ✅ USER PROFILES: User avatars are clickable and navigate to individual profiles, 6) ✅ IMMERSIVE DESIGN: Perfect full-screen experience with proper safe area handling, gradient overlays, and responsive design. The TikTok feed provides an excellent user experience matching modern social media standards."
+        - working: false
+          agent: "testing"
+          comment: "🚨 CRITICAL VOTING ERROR CONFIRMED - USER REPORT VALIDATED (2025-08-14): Comprehensive investigation of user-reported voting error reveals critical authentication persistence bug that prevents voting functionality. ISSUE IDENTIFIED: 1) ❌ AUTHENTICATION PERSISTENCE FAILURE: Users can successfully register and initially access TikTok feed with voting interface, but authentication tokens get lost during voting attempts (hasToken: False, hasUser: False), 2) ❌ AUTOMATIC LOGOUT: After attempting to vote, users are automatically redirected back to login page, making voting impossible, 3) ❌ VOTING BLOCKED: While voting interface displays correctly initially, users cannot complete votes due to authentication loss, 4) ✅ REGISTRATION WORKS: New user registration successful with valid JWT token generation, 5) ✅ INITIAL ACCESS: TikTok feed with 2x2 voting grid loads correctly after registration, 6) ❌ SESSION INSTABILITY: Authentication state is lost during user interactions, preventing core voting functionality. ROOT CAUSE: Authentication persistence issue in AuthContext or token validation system. IMPACT: Users cannot vote, making the core functionality of the polling app unusable. This is a production-blocking bug that requires immediate attention."
 
   - task: "Contexto de Autenticación"
     implemented: true
