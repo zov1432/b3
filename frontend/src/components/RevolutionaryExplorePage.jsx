@@ -245,7 +245,7 @@ const RevolutionaryExplorePage = () => {
       return poll;
     }));
     
-    await triggerAction('like');
+    await trackAction('like');
   };
   
   const handleShare = async (pollId, event) => {
