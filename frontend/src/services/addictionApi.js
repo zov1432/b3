@@ -35,10 +35,16 @@ class AddictionAPI {
   }
 
   async trackUserBehavior(behaviorData) {
-    const response = await fetch(`${API_BASE}/user/behavior`, {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+    
+    const response = await fetch(`${API_BASE}/api/user/behavior`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(behaviorData)
     });
