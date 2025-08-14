@@ -656,6 +656,7 @@ def main():
     print(f"User Search: {'✅ PASS' if results['user_search'] else '❌ FAIL'}")
     print(f"Messaging System: {'✅ PASS' if results['messaging'] else '❌ FAIL'}")
     print(f"Addiction Integration: {'✅ PASS' if results['addiction_integration'] else '❌ FAIL'}")
+    print(f"Authentication Requirements: {'✅ PASS' if results['auth_requirements'] else '❌ FAIL'}")
     print(f"Complete User Flow: {'✅ PASS' if results['complete_flow'] else '❌ FAIL'}")
     
     # Critical systems check
