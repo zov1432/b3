@@ -164,6 +164,7 @@ const FeedPage = () => {
       onLike={handleLike}
       onShare={handleShare}
       onComment={handleComment}
+      onSave={handleSave}
       onExitTikTok={handleExitTikTok}
       onCreatePoll={handleCreatePoll}
     />
