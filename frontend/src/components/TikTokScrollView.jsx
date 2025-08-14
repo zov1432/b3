@@ -391,10 +391,9 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                   e.stopPropagation();
                   onSave(poll.id);
                 }}
-                className="flex items-center gap-1 text-white hover:text-yellow-400 hover:scale-105 transition-all duration-200 h-auto p-2 rounded-lg bg-black/20 backdrop-blur-sm"
+                className="flex items-center justify-center text-white hover:text-yellow-400 hover:scale-105 transition-all duration-200 h-auto p-2 rounded-lg bg-black/20 backdrop-blur-sm"
               >
                 <Bookmark className="w-5 h-5" />
-                <span className="font-medium text-sm">Guardar</span>
               </Button>
             )}
           </div>
