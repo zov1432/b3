@@ -545,7 +545,7 @@ const LiveBattleArena = () => {
   
   const { activeBattles, scheduledBattles, battleRooms } = useLiveBattles();
   const { user } = useAuth();
-  const { triggerAction } = useAddiction();
+  const { trackAction } = useAddiction();
   const navigate = useNavigate();
 
   // Handlers
