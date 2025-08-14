@@ -156,6 +156,7 @@ const FeedPage = () => {
       onShare={handleShare}
       onComment={handleComment}
       onExitTikTok={handleExitTikTok}
+      onCreatePoll={handleCreatePoll}
     />
   );
 };
