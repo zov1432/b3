@@ -198,6 +198,9 @@ function App() {
         {/* Demo route - no auth required */}
         <Route path="/demo" element={<ExploreDemo />} />
         
+        {/* Live Battles Demo - no auth required */}
+        <Route path="/live-battles-demo" element={<LiveBattleDemoPage />} />
+        
         {/* Test page accessible without auth */}
         <Route path="/test-fomo" element={<TestFOMO />} />
         
