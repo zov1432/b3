@@ -120,7 +120,7 @@ const FeedPage = () => {
     setPolls(prev => [newPoll, ...prev]);
     
     // Trigger addiction system
-    await triggerAction('create');
+    await trackAction('create');
     
     toast({
       title: "¡Votación creada!",
