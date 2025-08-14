@@ -144,9 +144,11 @@ function AppContent() {
         </Routes>
 
         {/* Revolutionary Neural Navigation - Only show when not in TikTok mode */}
+        {/* ELIMINADO: NeuralNavigation con botón circular morado +
         {!isTikTokMode && (
           <NeuralNavigation onCreatePoll={handleCreatePoll} />
         )}
+        */}
 
         {/* Toast notifications */}
         <Toaster />
