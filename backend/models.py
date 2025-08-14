@@ -39,21 +39,13 @@ class AddictionMetrics(BaseModel):
     fomo_susceptibility: float
     last_calculated: datetime = Field(default_factory=datetime.utcnow)
 
-# User Profile with Addiction Features
+# User Profile - Simplified without levels/achievements
 class UserProfile(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     username: str
-    level: int = 1
-    xp: int = 0
     total_votes: int = 0
     total_polls_created: int = 0
-    current_streak: int = 0
-    longest_streak: int = 0
     last_activity: datetime = Field(default_factory=datetime.utcnow)
-    daily_goal_completed: bool = False
-    achievements: List[str] = []
-    badges: List[str] = []
-    addiction_metrics: Optional[AddictionMetrics] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 # Achievement Model
