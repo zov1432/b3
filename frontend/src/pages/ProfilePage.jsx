@@ -42,7 +42,6 @@ const ProfilePage = () => {
   const [savedPolls, setSavedPolls] = useState([]);
   const { toast } = useToast();
   const { user: authUser, logout } = useAuth();
-  const { userProfile, level, xp, streak, userAchievements, getXpToNextLevel, getXpProgress } = useAddiction();
   const { userId } = useParams();
   const navigate = useNavigate();
 
