@@ -42,7 +42,7 @@ const FeedPage = () => {
       return poll;
     }));
     
-    await triggerAction('vote');
+    await trackAction('vote');
     toast({
       title: "¡Voto registrado!",
       description: "Tu voto ha sido contabilizado exitosamente",
