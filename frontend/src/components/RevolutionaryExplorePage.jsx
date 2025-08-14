@@ -268,7 +268,7 @@ const RevolutionaryExplorePage = () => {
   
   const handleComment = async (pollId) => {
     console.log('Opening comments for poll:', pollId);
-    await triggerAction('create'); // Create comment action
+    await trackAction('create'); // Create comment action
   };
   
   const handleBookmark = (pollId, event) => {
