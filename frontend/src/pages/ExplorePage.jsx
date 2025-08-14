@@ -1,8 +1,8 @@
 import React from 'react';
-import VotingRevolutionPage from '../components/VotingRevolutionPage';
+import NeuralDiscoverPage from '../components/NeuralDiscoverPage';
 
 const ExplorePage = () => {
-  return <VotingRevolutionPage />;
+  return <NeuralDiscoverPage />;
 };
 
 export default ExplorePage;
