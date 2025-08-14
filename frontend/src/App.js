@@ -91,9 +91,11 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <TikTokProvider>
-          <AppContent />
-        </TikTokProvider>
+        <AddictionProvider>
+          <TikTokProvider>
+            <AppContent />
+          </TikTokProvider>
+        </AddictionProvider>
       </AuthProvider>
     </BrowserRouter>
   );
