@@ -304,12 +304,7 @@ const ProfilePage = () => {
                   <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30">
                     @{displayUser.username}
                   </Badge>
-                  {/* Level Badge */}
-                  {level && (
-                    <Badge variant="secondary" className="bg-gold/20 text-yellow-200 hover:bg-gold/30">
-                      Nivel {level}
-                    </Badge>
-                  )}
+                  {/* Removed level badge */}
                 </div>
                 
                 <p className="text-white/90 max-w-md">{displayUser.bio}</p>
