@@ -263,7 +263,7 @@ const RevolutionaryExplorePage = () => {
       return poll;
     }));
     
-    await triggerAction('share');
+    await trackAction('share');
   };
   
   const handleComment = async (pollId) => {
