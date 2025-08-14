@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import BottomNavigation from './components/BottomNavigation';
 import NeuralNavigation from './components/NeuralNavigation';
 import RightSideNavigation from './components/RightSideNavigation';
 import FeedPage from './pages/FeedPage';
