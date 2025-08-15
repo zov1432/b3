@@ -41,8 +41,9 @@ const ProfilePage = () => {
   const [viewedUser, setViewedUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [savedPolls, setSavedPolls] = useState([]);
+  const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
   const { toast } = useToast();
-  const { user: authUser, logout } = useAuth();
+  const { user: authUser, logout, refreshUser } = useAuth();
   const { userId } = useParams();
   const navigate = useNavigate();
 
