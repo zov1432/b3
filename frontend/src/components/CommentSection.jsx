@@ -418,6 +418,19 @@ const CommentSection = ({
         )}
       </div>
       
+      {/* Área de comentario flotante cuando no hay header */}
+      {!showHeader && user && !showNewCommentForm && (
+        <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
+          <Button
+            onClick={() => setShowNewCommentForm(true)}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Escribir comentario
+          </Button>
+        </div>
+      )}
+      
       {/* Aviso para usuarios no autenticados */}
       {!user && (
         <div className="auth-notice p-4 bg-yellow-50 border-t border-yellow-200">
