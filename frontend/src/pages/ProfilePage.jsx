@@ -643,6 +643,22 @@ const ProfilePage = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={editProfileModalOpen}
+        onClose={() => setEditProfileModalOpen(false)}
+        onUpdate={handleProfileUpdate}
+      />
+
+      {/* Comments Modal */}
+      <CommentsModal
+        isOpen={showCommentsModal}
+        onClose={() => setShowCommentsModal(false)}
+        pollId={selectedPollId}
+        pollTitle={selectedPollTitle}
+        pollAuthor={selectedPollAuthor}
+      />
     </div>
   );
 };
