@@ -851,6 +851,9 @@ def main():
     results['auth_requirements'] = test_authentication_requirements(base_url)
     
     print("\n" + "="*60)
+    results['profile_updates'] = test_profile_update_endpoints(base_url)
+    
+    print("\n" + "="*60)
     results['complete_flow'] = test_complete_user_flow(base_url)
     
     # Summary
