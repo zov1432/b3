@@ -123,6 +123,21 @@ backend:
           agent: "testing"
           comment: "✅ COMPREHENSIVE AUTHENTICATION TESTING COMPLETED (2025-08-14): All authentication endpoints verified and working perfectly after behavior tracker API fixes. VERIFIED FUNCTIONALITY: 1) ✅ USER REGISTRATION: POST /api/auth/register creates users with unique email/username validation, secure bcrypt password hashing, JWT token generation (30min expiry), proper duplicate rejection, 2) ✅ USER LOGIN: POST /api/auth/login validates credentials and returns JWT tokens, properly rejects invalid credentials with 401 status, 3) ✅ TOKEN VALIDATION: GET /api/auth/me retrieves authenticated user info correctly, JWT validation properly protects all endpoints with 403/401 status for unauthorized access, 4) ✅ SECURITY VERIFICATION: All protected endpoints properly reject requests without tokens (403 status) and invalid tokens (401 status), authentication requirements working correctly across all addiction and messaging endpoints. Complete authentication system operational and secure."
 
+  - task: "Endpoints de Actualización de Perfil"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py, /app/backend/models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implementados nuevos endpoints de actualización de perfil: 1) PUT /api/auth/profile para actualizar display_name, bio, avatar_url, 2) PUT /api/auth/password para cambiar contraseña con current_password + new_password, 3) PUT /api/auth/settings para actualizar is_public, allow_messages, 4) Modelos UserUpdate, PasswordChange, UserSettings agregados, 5) Validación completa y manejo de errores implementado. Pendiente testing completo."
+        - working: true
+          agent: "testing"
+          comment: "🎯 ENDPOINTS DE ACTUALIZACIÓN DE PERFIL COMPLETAMENTE FUNCIONALES (2025-08-15): Testing exhaustivo de los nuevos endpoints de actualización de perfil completado con éxito total. ✅ RESULTADOS PERFECTOS (10/9 tests passed): 1) ✅ PUT /api/auth/profile: Actualiza display_name, bio, avatar_url correctamente, cambios verificados con GET /api/auth/me, actualizaciones parciales funcionan perfectamente, 2) ✅ PUT /api/auth/password: Cambia contraseña exitosamente con validación de current_password, login con nueva contraseña funciona correctamente, 3) ✅ PUT /api/auth/settings: Actualiza is_public y allow_messages correctamente, cambios verificados y persistidos, 4) ✅ MANEJO DE ERRORES PERFECTO: Contraseña incorrecta rechazada apropiadamente (400), campos vacíos rechazados correctamente (400), validación completa funcionando, 5) ✅ FLUJO COMPLETO VERIFICADO: Registro → Actualizar perfil → Cambiar contraseña → Login con nueva contraseña → Actualizar configuraciones → Verificar cambios. Todos los endpoints críticos para funcionalidades de editar perfil y configuraciones están completamente operacionales."
+
   - task: "Sistema de Mensajería Directa"
     implemented: true
     working: true
