@@ -585,6 +585,211 @@ def test_authentication_requirements(base_url):
     
     return success_count >= 8  # At least 8 out of 12 tests should pass
 
+def test_profile_update_endpoints(base_url):
+    """Test new profile update endpoints: profile, password, settings"""
+    print("\n=== Testing Profile Update Endpoints ===")
+    
+    if not auth_tokens:
+        print("❌ No auth tokens available for profile update tests")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    success_count = 0
+    
+    # Test 1: Update profile information (display_name, bio, avatar_url)
+    print("Testing PUT /api/auth/profile...")
+    try:
+        profile_data = {
+            "display_name": "María González Actualizada",
+            "bio": "Soy una desarrolladora apasionada por la tecnología y las redes sociales.",
+            "avatar_url": "https://example.com/avatar/maria_updated.jpg"
+        }
+        response = requests.put(f"{base_url}/auth/profile", json=profile_data, headers=headers, timeout=10)
+        print(f"Update Profile Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Profile updated successfully")
+            print(f"New Display Name: {data['display_name']}")
+            print(f"New Bio: {data.get('bio', 'N/A')}")
+            print(f"New Avatar URL: {data.get('avatar_url', 'N/A')}")
+            success_count += 1
+            
+            # Verify changes with GET /api/auth/me
+            print("Verifying profile changes with GET /api/auth/me...")
+            verify_response = requests.get(f"{base_url}/auth/me", headers=headers, timeout=10)
+            if verify_response.status_code == 200:
+                verify_data = verify_response.json()
+                if (verify_data['display_name'] == profile_data['display_name'] and
+                    verify_data.get('bio') == profile_data['bio'] and
+                    verify_data.get('avatar_url') == profile_data['avatar_url']):
+                    print("✅ Profile changes verified successfully")
+                    success_count += 1
+                else:
+                    print("❌ Profile changes not reflected in GET /api/auth/me")
+            else:
+                print(f"❌ Failed to verify profile changes: {verify_response.text}")
+        else:
+            print(f"❌ Profile update failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Profile update error: {e}")
+    
+    # Test 2: Update individual profile fields
+    print("\nTesting partial profile updates...")
+    try:
+        # Update only display_name
+        partial_data = {"display_name": "María G. - Solo Nombre"}
+        response = requests.put(f"{base_url}/auth/profile", json=partial_data, headers=headers, timeout=10)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Partial profile update successful: {data['display_name']}")
+            success_count += 1
+        else:
+            print(f"❌ Partial profile update failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Partial profile update error: {e}")
+    
+    # Test 3: Change password
+    print("\nTesting PUT /api/auth/password...")
+    try:
+        # First, get the original password from our test data
+        original_password = "securepass123"
+        new_password = "newsecurepass456"
+        
+        password_data = {
+            "current_password": original_password,
+            "new_password": new_password
+        }
+        response = requests.put(f"{base_url}/auth/password", json=password_data, headers=headers, timeout=10)
+        print(f"Change Password Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Password changed successfully: {data['message']}")
+            success_count += 1
+            
+            # Test 4: Verify login works with new password
+            print("Verifying login with new password...")
+            user = test_users[0]
+            username_parts = user['username'].split('_')
+            if len(username_parts) >= 3:
+                timestamp = username_parts[-1]
+                login_data = {
+                    "email": f"maria.gonzalez.{timestamp}@example.com",
+                    "password": new_password
+                }
+            else:
+                login_data = {
+                    "email": user['email'],
+                    "password": new_password
+                }
+            
+            login_response = requests.post(f"{base_url}/auth/login", json=login_data, timeout=10)
+            if login_response.status_code == 200:
+                login_result = login_response.json()
+                print("✅ Login with new password successful")
+                # Update our token for future tests
+                auth_tokens[0] = login_result['access_token']
+                headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+                success_count += 1
+            else:
+                print(f"❌ Login with new password failed: {login_response.text}")
+        else:
+            print(f"❌ Password change failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Password change error: {e}")
+    
+    # Test 5: Update privacy settings
+    print("\nTesting PUT /api/auth/settings...")
+    try:
+        settings_data = {
+            "is_public": False,
+            "allow_messages": True
+        }
+        response = requests.put(f"{base_url}/auth/settings", json=settings_data, headers=headers, timeout=10)
+        print(f"Update Settings Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Settings updated successfully")
+            print(f"Is Public: {data.get('is_public', 'N/A')}")
+            print(f"Allow Messages: {data.get('allow_messages', 'N/A')}")
+            success_count += 1
+            
+            # Verify settings with GET /api/auth/me
+            print("Verifying settings changes...")
+            verify_response = requests.get(f"{base_url}/auth/me", headers=headers, timeout=10)
+            if verify_response.status_code == 200:
+                verify_data = verify_response.json()
+                if (verify_data.get('is_public') == settings_data['is_public'] and
+                    verify_data.get('allow_messages') == settings_data['allow_messages']):
+                    print("✅ Settings changes verified successfully")
+                    success_count += 1
+                else:
+                    print("❌ Settings changes not reflected in GET /api/auth/me")
+            else:
+                print(f"❌ Failed to verify settings changes: {verify_response.text}")
+        else:
+            print(f"❌ Settings update failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Settings update error: {e}")
+    
+    # Test 6: Error handling - wrong current password
+    print("\nTesting error handling - incorrect current password...")
+    try:
+        wrong_password_data = {
+            "current_password": "wrongpassword123",
+            "new_password": "anothernewpass789"
+        }
+        response = requests.put(f"{base_url}/auth/password", json=wrong_password_data, headers=headers, timeout=10)
+        
+        if response.status_code == 400:
+            print("✅ Incorrect current password properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject incorrect password, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Wrong password test error: {e}")
+    
+    # Test 7: Error handling - empty fields
+    print("\nTesting error handling - empty profile update...")
+    try:
+        empty_data = {}
+        response = requests.put(f"{base_url}/auth/profile", json=empty_data, headers=headers, timeout=10)
+        
+        if response.status_code == 400:
+            print("✅ Empty profile update properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject empty update, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Empty profile test error: {e}")
+    
+    # Test 8: Error handling - empty settings
+    print("\nTesting error handling - empty settings update...")
+    try:
+        empty_settings = {}
+        response = requests.put(f"{base_url}/auth/settings", json=empty_settings, headers=headers, timeout=10)
+        
+        if response.status_code == 400:
+            print("✅ Empty settings update properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject empty settings, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Empty settings test error: {e}")
+    
+    print(f"\nProfile Update Tests Summary: {success_count}/9 tests passed")
+    return success_count >= 7  # At least 7 out of 9 tests should pass
+
 def test_complete_user_flow(base_url):
     """Test complete user flow: register -> login -> profile -> search -> message -> track actions"""
     print("\n=== Testing Complete User Flow ===")
