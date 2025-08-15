@@ -658,6 +658,13 @@ export const mockPolls = [
     id: '3',
     title: '¿Mejor estilo de vida?',
     author: 'LifestyleGuru',
+    authorUser: {
+      username: 'lifestyleguru',
+      displayName: 'Lifestyle Guru',
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
+      verified: true,
+      followers: '2.1M'
+    },
     timeAgo: 'hace 3 días',
     music: {
       id: 'music_3',
