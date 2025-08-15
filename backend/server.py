@@ -164,6 +164,97 @@ async def get_me(current_user: UserResponse = Depends(get_current_user)):
     """Get current user information"""
     return current_user
 
+# =============  USER UPDATE ENDPOINTS =============
+
+@api_router.put("/auth/profile", response_model=UserResponse)
+async def update_profile(
+    user_data: UserUpdate, 
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Update user profile information"""
+    update_fields = {}
+    
+    if user_data.display_name is not None:
+        update_fields["display_name"] = user_data.display_name.strip()
+    if user_data.bio is not None:
+        update_fields["bio"] = user_data.bio.strip()
+    if user_data.avatar_url is not None:
+        update_fields["avatar_url"] = user_data.avatar_url.strip()
+    
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    
+    # Update user in database
+    result = await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": update_fields}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Return updated user
+    updated_user = await db.users.find_one({"id": current_user.id})
+    return UserResponse(**updated_user)
+
+@api_router.put("/auth/password")
+async def change_password(
+    password_data: PasswordChange,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Change user password"""
+    # Get current user with password
+    user_data = await db.users.find_one({"id": current_user.id})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Verify current password
+    if not verify_password(password_data.current_password, user_data["hashed_password"]):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    # Hash new password
+    new_hashed_password = get_password_hash(password_data.new_password)
+    
+    # Update password in database
+    result = await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": {"hashed_password": new_hashed_password}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to update password")
+    
+    return {"message": "Password updated successfully"}
+
+@api_router.put("/auth/settings", response_model=UserResponse)
+async def update_settings(
+    settings_data: UserSettings,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Update user privacy settings"""
+    update_fields = {}
+    
+    if settings_data.is_public is not None:
+        update_fields["is_public"] = settings_data.is_public
+    if settings_data.allow_messages is not None:
+        update_fields["allow_messages"] = settings_data.allow_messages
+    
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="No settings to update")
+    
+    # Update user settings in database
+    result = await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": update_fields}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Return updated user
+    updated_user = await db.users.find_one({"id": current_user.id})
+    return UserResponse(**updated_user)
+
 # =============  USER PROFILE ENDPOINTS =============
 
 @api_router.get("/user/profile")
