@@ -399,6 +399,13 @@ export const mockPolls = [
     id: 'tech_review_1',
     title: '¿Cuál es la mejor review de tecnología?',
     author: 'TechReviewer_Pro',
+    authorUser: {
+      username: 'techreviewer_pro',
+      displayName: 'TechReviewer Pro',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop&crop=face',
+      verified: true,
+      followers: '1.2M'
+    },
     timeAgo: 'hace 3 horas',
     music: {
       id: 'music_tech_1',
