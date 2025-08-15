@@ -289,27 +289,31 @@ const CommentSection = ({
       animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Header */}
-      {showHeader && (
+      {/* Header - siempre mostrar cuando no hay showHeader pero sí usuario autenticado */}
+      {(showHeader || (!showHeader && user)) && (
         <div className="comment-header p-4 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-gray-600" />
-              <span className="font-semibold text-gray-900">
-                Comentarios {comments.length > 0 && `(${comments.length})`}
-              </span>
-            </div>
+            {showHeader && (
+              <div className="flex items-center gap-2">
+                <MessageCircle className="w-5 h-5 text-gray-600" />
+                <span className="font-semibold text-gray-900">
+                  Comentarios {comments.length > 0 && `(${comments.length})`}
+                </span>
+              </div>
+            )}
             
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => loadComments(0, false)}
-                disabled={loading}
-                className="h-8"
-              >
-                <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
-              </Button>
+            <div className={cn("flex items-center gap-2", !showHeader && "ml-auto")}>
+              {showHeader && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => loadComments(0, false)}
+                  disabled={loading}
+                  className="h-8"
+                >
+                  <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
+                </Button>
+              )}
               
               {user && (
                 <Button
@@ -319,6 +323,12 @@ const CommentSection = ({
                 >
                   {showNewCommentForm ? 'Cancelar' : 'Comentar'}
                 </Button>
+              )}
+              
+              {!user && (
+                <div className="text-sm text-gray-500">
+                  Inicia sesión para comentar
+                </div>
               )}
             </div>
           </div>
