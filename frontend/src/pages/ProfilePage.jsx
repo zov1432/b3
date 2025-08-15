@@ -246,6 +246,15 @@ const ProfilePage = () => {
     });
   };
 
+  const handleProfileUpdate = async () => {
+    // Refresh user data after profile update
+    await refreshUser();
+  };
+
+  const handleSettingsClick = () => {
+    navigate('/settings');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 pb-20">
       {/* Header */}
