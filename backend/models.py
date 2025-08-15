@@ -115,3 +115,50 @@ class ConversationResponse(BaseModel):
     last_message_at: Optional[datetime] = None
     unread_count: int = 0
     created_at: datetime
+
+# =============  COMMENT MODELS =============
+
+class Comment(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    poll_id: str  # ID de la encuesta a la que pertenece el comentario
+    user_id: str  # ID del usuario que creó el comentario
+    content: str  # Contenido del comentario
+    parent_comment_id: Optional[str] = None  # ID del comentario padre (para anidamiento)
+    likes: int = 0  # Número de likes en el comentario
+    is_edited: bool = False  # Si el comentario ha sido editado
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    # Metadata adicional
+    metadata: Dict[str, Any] = {}  # Para menciones, hashtags, etc.
+
+class CommentCreate(BaseModel):
+    poll_id: str
+    content: str
+    parent_comment_id: Optional[str] = None
+
+class CommentUpdate(BaseModel):
+    content: str
+
+class CommentResponse(BaseModel):
+    id: str
+    poll_id: str
+    user: UserResponse  # Información completa del usuario
+    content: str
+    parent_comment_id: Optional[str] = None
+    likes: int = 0
+    is_edited: bool = False
+    created_at: datetime
+    updated_at: datetime
+    # Para anidamiento
+    replies: List["CommentResponse"] = []  # Lista de comentarios hijos
+    reply_count: int = 0  # Conteo total de respuestas anidadas
+    user_liked: bool = False  # Si el usuario actual le dio like
+
+class CommentLike(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    comment_id: str
+    user_id: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Necesario para resolver referencia circular
+CommentResponse.model_rebuild()
