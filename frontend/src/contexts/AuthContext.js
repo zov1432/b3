@@ -191,7 +191,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     getAuthHeaders,
-    apiRequest
+    apiRequest,
+    refreshUser
   };
 
   return (
