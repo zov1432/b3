@@ -333,6 +333,18 @@ test_plan:
           agent: "testing"
           comment: "❌ NAVEGACIÓN A PERFILES DE AUTORES FALLIDA - PROBLEMA DE AUTENTICACIÓN CRÍTICO: Testing exhaustivo revela que los usuarios no pueden acceder al feed principal donde están las encuestas y avatares de autores. PROBLEMAS IDENTIFICADOS: 1) ❌ ACCESO BLOQUEADO AL FEED: Los usuarios quedan atrapados en la página de login/registro y no pueden acceder al contenido principal de la aplicación, 2) ❌ REGISTRO FALLIDO: Múltiples intentos de registro con testprofiles2@example.com fallan - los formularios no se procesan correctamente, 3) ❌ LOGIN FALLIDO: Intentos de login con usuarios existentes no funcionan, 4) ❌ NO SE PUEDEN PROBAR AVATARES DE AUTORES: Sin acceso al feed, es imposible localizar y clickear los avatares de autores con coronas doradas, 5) ❌ FUNCIONALIDAD INACCESIBLE: Aunque el código de navegación a perfiles está implementado correctamente en TikTokScrollView.jsx (líneas 118-145 con avatares de autores con ring-yellow-400 y Crown icons), los usuarios no pueden llegar a esta funcionalidad. CAUSA RAÍZ: Sistema de autenticación tiene problemas críticos que impiden el acceso básico a la aplicación. IMPACTO: Los usuarios reportan 'No puedo acceder al perfil del usuario que ha publicado una encuesta' porque no pueden ni siquiera ver las encuestas debido a problemas de autenticación."
 
+  - task: "Página de Explorar con Mensaje Próximamente"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/ExplorePage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implementado mensaje de 'Próximamente' en ExplorePage reemplazando completamente el contenido anterior (LiveBattleArena). CAMBIOS REALIZADOS: 1) DISEÑO COMPLETO: Página con fondo gradiente púrpura-azul-índigo, centrada con max-width, 2) ELEMENTOS VISUALES: Icono de brújula animado con pulse, estrella con bounce, reloj en descripción, 3) CONTENIDO: Título 'Próximamente' con gradiente de texto, subtítulo 'Estamos preparando algo increíble para ti', descripción sobre funcionalidades futuras, 4) ANIMACIONES: Puntos decorativos con bounce escalonado, efectos de backdrop-blur, 5) RESPONSIVE: Diseño adaptativo con padding y centrado. Pendiente testing de navegación y visualización correcta."
+
 agent_communication:
     - agent: "main"
       message: "🚀 FEED TIKTOK DE PANTALLA COMPLETA IMPLEMENTADO: Transformado completamente FeedPage para experiencia inmersiva tipo TikTok. CAMBIOS REALIZADOS: 1) REEMPLAZADO GRID LAYOUT: Eliminado sistema de tarjetas en grid tradicional, ahora usa TikTokScrollView como componente principal, 2) PANTALLA COMPLETA: Cada publicación ocupa toda la pantalla (100vh/100dvh) con fondo negro inmersivo, 3) SCROLL SNAP: Implementado scroll vertical con comportamiento snap-to para navegación 1 por 1, 4) FUNCIONALIDADES PRESERVADAS: Mantenidos vote, like, share, comment pero en formato full-screen, 5) MODO TIKTOK AUTOMÁTICO: Se activa automáticamente al entrar al feed y se desactiva al salir, 6) ESTADOS ADAPTADOS: Loading y estados vacío redesñados para tema dark, 7) INTEGRACIÓN ADICCIÓN: Conectado con sistema de recompensas. RESULTADO: Feed ahora funciona exactamente como TikTok con experiencia de scroll vertical inmersiva."
