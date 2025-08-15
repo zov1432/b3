@@ -69,6 +69,7 @@ function AppContent() {
             <Route path="/messages" element={<MessagesPage />} />
             <Route path="/profile/:userId?" element={<ProfilePage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
 
             {/* Demo & Test Pages - Remove in production */}
             <Route path="/explore-demo" element={<ExploreDemo />} />
