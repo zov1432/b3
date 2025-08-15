@@ -128,11 +128,6 @@ const ProfilePage = () => {
     displayName: authUser?.display_name || authUser?.username || 'Mi Perfil',
     email: authUser?.email || 'user@example.com',
     bio: '🎯 Creando votaciones épicas | 📊 Fan de las estadísticas | 🚀 Siempre innovando',
-    location: 'Madrid, España',
-    joinDate: new Date(authUser?.created_at || Date.now()).toLocaleDateString('es-ES', { 
-      year: 'numeric', 
-      month: 'long' 
-    }),
     avatar: authUser?.avatar_url || null,
     followers: 1234,
     following: 567,
@@ -146,11 +141,6 @@ const ProfilePage = () => {
     displayName: 'Usuario',
     email: 'usuario@example.com',
     bio: 'Perfil de usuario',
-    location: 'Madrid, España',
-    joinDate: new Date().toLocaleDateString('es-ES', { 
-      year: 'numeric', 
-      month: 'long' 
-    }),
     avatar: null,
     followers: 0,
     following: 0,
