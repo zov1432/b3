@@ -8,6 +8,7 @@ import { cn } from '../lib/utils';
 import { motion } from 'framer-motion';
 import { useAddiction } from '../contexts/AddictionContext';
 import SocialProofBadge from './AddictionUI_backup/SocialProofBadge';
+import CommentsModal from './CommentsModal';
 
 const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option, totalVotes, fullScreen = false }) => {
   const [isPlaying, setIsPlaying] = useState(false);
