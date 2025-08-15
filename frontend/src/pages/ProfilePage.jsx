@@ -272,7 +272,7 @@ const ProfilePage = () => {
               </h1>
             </div>
             {isOwnProfile && (
-              <Button variant="ghost" size="sm" className="hover:bg-gray-100">
+              <Button variant="ghost" size="sm" className="hover:bg-gray-100" onClick={handleSettingsClick}>
                 <Settings className="w-5 h-5" />
               </Button>
             )}
