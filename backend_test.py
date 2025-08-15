@@ -1198,6 +1198,9 @@ def main():
     results['profile_updates'] = test_profile_update_endpoints(base_url)
     
     print("\n" + "="*60)
+    results['nested_comments'] = test_nested_comments_system(base_url)
+    
+    print("\n" + "="*60)
     results['complete_flow'] = test_complete_user_flow(base_url)
     
     # Summary
