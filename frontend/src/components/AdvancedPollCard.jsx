@@ -10,6 +10,7 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
 import CustomLogo from './CustomLogo';
+import CommentsModal from './CommentsModal';
 import { cn } from '../lib/utils';
 
 // Efectos de partículas para interacciones
