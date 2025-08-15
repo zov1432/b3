@@ -1229,8 +1229,9 @@ def main():
     integration_passed = results['addiction_integration']
     auth_requirements_passed = results['auth_requirements']
     profile_updates_passed = results['profile_updates']
+    nested_comments_passed = results['nested_comments']
     
-    overall_success = critical_passed and messaging_passed and integration_passed and auth_requirements_passed and profile_updates_passed
+    overall_success = critical_passed and messaging_passed and integration_passed and auth_requirements_passed and profile_updates_passed and nested_comments_passed
     
     print(f"\n🔐 Authentication System: {'✅ WORKING' if critical_passed else '❌ FAILED'}")
     print(f"💬 Messaging System: {'✅ WORKING' if messaging_passed else '❌ FAILED'}")
