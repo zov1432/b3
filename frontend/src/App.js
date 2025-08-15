@@ -11,6 +11,7 @@ import FeedDemoPage from './pages/FeedDemoPage';
 import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import MessagesPage from './pages/MessagesPage';
+import SettingsPage from './pages/SettingsPage';
 import AuthPage from './pages/AuthPage';
 import TestFOMO from './TestFOMO';
 import { Toaster } from './components/ui/toaster';
