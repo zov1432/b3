@@ -1237,6 +1237,7 @@ def main():
     print(f"💬 Messaging System: {'✅ WORKING' if messaging_passed else '❌ FAILED'}")
     print(f"🎯 Addiction Integration: {'✅ WORKING' if integration_passed else '❌ FAILED'}")
     print(f"👤 Profile Update Endpoints: {'✅ WORKING' if profile_updates_passed else '❌ FAILED'}")
+    print(f"💬 Nested Comments System: {'✅ WORKING' if nested_comments_passed else '❌ FAILED'}")
     print(f"\n🚀 Overall System Status: {'✅ ALL SYSTEMS OPERATIONAL' if overall_success else '❌ CRITICAL ISSUES FOUND'}")
     
     if overall_success:
