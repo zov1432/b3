@@ -455,6 +455,324 @@ async def get_unread_count(current_user: UserResponse = Depends(get_current_user
     
     return {"unread_count": total_unread}
 
+# =============  COMMENT ENDPOINTS =============
+
+@api_router.post("/polls/{poll_id}/comments", response_model=CommentResponse)
+async def create_comment(
+    poll_id: str,
+    comment_data: CommentCreate,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Create a new comment on a poll"""
+    # Verificar que el poll_id coincida con el de los datos
+    if comment_data.poll_id != poll_id:
+        raise HTTPException(status_code=400, detail="Poll ID mismatch")
+    
+    # Si es una respuesta, verificar que el comentario padre existe
+    if comment_data.parent_comment_id:
+        parent_comment = await db.comments.find_one({
+            "id": comment_data.parent_comment_id,
+            "poll_id": poll_id
+        })
+        if not parent_comment:
+            raise HTTPException(status_code=404, detail="Parent comment not found")
+    
+    # Crear el comentario
+    comment = Comment(
+        poll_id=poll_id,
+        user_id=current_user.id,
+        content=comment_data.content.strip(),
+        parent_comment_id=comment_data.parent_comment_id
+    )
+    
+    # Insertar en la base de datos
+    await db.comments.insert_one(comment.dict())
+    
+    # Retornar el comentario creado con información del usuario
+    return CommentResponse(
+        **comment.dict(),
+        user=current_user,
+        replies=[],
+        reply_count=0,
+        user_liked=False
+    )
+
+@api_router.get("/polls/{poll_id}/comments")
+async def get_poll_comments(
+    poll_id: str,
+    limit: int = 50,
+    offset: int = 0,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Get comments for a specific poll with nested structure"""
+    
+    # Obtener todos los comentarios del poll
+    comments_cursor = db.comments.find({
+        "poll_id": poll_id
+    }).sort("created_at", 1)  # Orden cronológico
+    
+    all_comments = await comments_cursor.to_list(1000)  # Límite alto para obtener todos
+    
+    if not all_comments:
+        return []
+    
+    # Obtener información de usuarios únicos
+    user_ids = list(set(comment["user_id"] for comment in all_comments))
+    users_cursor = db.users.find({"id": {"$in": user_ids}})
+    users_list = await users_cursor.to_list(len(user_ids))
+    users_dict = {user["id"]: UserResponse(**user) for user in users_list}
+    
+    # Obtener likes del usuario actual para cada comentario
+    comment_ids = [comment["id"] for comment in all_comments]
+    user_likes = await db.comment_likes.find({
+        "comment_id": {"$in": comment_ids},
+        "user_id": current_user.id
+    }).to_list(len(comment_ids))
+    
+    liked_comments = set(like["comment_id"] for like in user_likes)
+    
+    # Crear diccionario de comentarios
+    comments_dict = {}
+    root_comments = []
+    
+    # Construir estructura anidada
+    for comment_data in all_comments:
+        comment_resp = CommentResponse(
+            **comment_data,
+            user=users_dict.get(comment_data["user_id"]),
+            replies=[],
+            reply_count=0,
+            user_liked=comment_data["id"] in liked_comments
+        )
+        
+        comments_dict[comment_data["id"]] = comment_resp
+        
+        if comment_data["parent_comment_id"] is None:
+            root_comments.append(comment_resp)
+    
+    # Construir jerarquía de respuestas
+    for comment_data in all_comments:
+        if comment_data["parent_comment_id"]:
+            parent = comments_dict.get(comment_data["parent_comment_id"])
+            child = comments_dict.get(comment_data["id"])
+            if parent and child:
+                parent.replies.append(child)
+    
+    # Calcular conteos de respuestas anidadas recursivamente
+    def calculate_reply_count(comment):
+        count = len(comment.replies)
+        for reply in comment.replies:
+            count += calculate_reply_count(reply)
+        comment.reply_count = count
+        return count
+    
+    for comment in root_comments:
+        calculate_reply_count(comment)
+    
+    # Aplicar paginación solo a comentarios raíz
+    paginated_comments = root_comments[offset:offset + limit]
+    
+    return paginated_comments
+
+@api_router.put("/comments/{comment_id}", response_model=CommentResponse)
+async def update_comment(
+    comment_id: str,
+    comment_data: CommentUpdate,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Update a comment (only by the comment author)"""
+    
+    # Verificar que el comentario existe y pertenece al usuario
+    comment = await db.comments.find_one({
+        "id": comment_id,
+        "user_id": current_user.id
+    })
+    
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found or not authorized")
+    
+    # Actualizar el comentario
+    update_data = {
+        "content": comment_data.content.strip(),
+        "is_edited": True,
+        "updated_at": datetime.utcnow()
+    }
+    
+    result = await db.comments.update_one(
+        {"id": comment_id},
+        {"$set": update_data}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to update comment")
+    
+    # Obtener el comentario actualizado
+    updated_comment = await db.comments.find_one({"id": comment_id})
+    
+    return CommentResponse(
+        **updated_comment,
+        user=current_user,
+        replies=[],
+        reply_count=0,
+        user_liked=False
+    )
+
+@api_router.delete("/comments/{comment_id}")
+async def delete_comment(
+    comment_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Delete a comment (only by the comment author)"""
+    
+    # Verificar que el comentario existe y pertenece al usuario
+    comment = await db.comments.find_one({
+        "id": comment_id,
+        "user_id": current_user.id
+    })
+    
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found or not authorized")
+    
+    # Eliminar el comentario y todas sus respuestas recursivamente
+    await delete_comment_recursive(comment_id)
+    
+    return {"message": "Comment deleted successfully"}
+
+async def delete_comment_recursive(comment_id: str):
+    """Función auxiliar para eliminar comentarios de forma recursiva"""
+    
+    # Encontrar todos los comentarios hijos
+    child_comments = await db.comments.find({"parent_comment_id": comment_id}).to_list(1000)
+    
+    # Eliminar recursivamente los comentarios hijos
+    for child in child_comments:
+        await delete_comment_recursive(child["id"])
+    
+    # Eliminar likes del comentario
+    await db.comment_likes.delete_many({"comment_id": comment_id})
+    
+    # Eliminar el comentario principal
+    await db.comments.delete_one({"id": comment_id})
+
+@api_router.post("/comments/{comment_id}/like")
+async def toggle_comment_like(
+    comment_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Toggle like on a comment"""
+    
+    # Verificar que el comentario existe
+    comment = await db.comments.find_one({"id": comment_id})
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    
+    # Verificar si ya existe el like
+    existing_like = await db.comment_likes.find_one({
+        "comment_id": comment_id,
+        "user_id": current_user.id
+    })
+    
+    if existing_like:
+        # Quitar like
+        await db.comment_likes.delete_one({
+            "comment_id": comment_id,
+            "user_id": current_user.id
+        })
+        
+        # Decrementar contador de likes
+        await db.comments.update_one(
+            {"id": comment_id},
+            {"$inc": {"likes": -1}}
+        )
+        
+        # Obtener nuevo conteo
+        updated_comment = await db.comments.find_one({"id": comment_id})
+        
+        return {
+            "liked": False,
+            "likes": updated_comment["likes"]
+        }
+    else:
+        # Agregar like
+        like = CommentLike(
+            comment_id=comment_id,
+            user_id=current_user.id
+        )
+        
+        await db.comment_likes.insert_one(like.dict())
+        
+        # Incrementar contador de likes
+        await db.comments.update_one(
+            {"id": comment_id},
+            {"$inc": {"likes": 1}}
+        )
+        
+        # Obtener nuevo conteo
+        updated_comment = await db.comments.find_one({"id": comment_id})
+        
+        return {
+            "liked": True,
+            "likes": updated_comment["likes"]
+        }
+
+@api_router.get("/comments/{comment_id}")
+async def get_comment(
+    comment_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Get a specific comment with its replies"""
+    
+    comment = await db.comments.find_one({"id": comment_id})
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    
+    # Obtener información del usuario
+    user_data = await db.users.find_one({"id": comment["user_id"]})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="Comment author not found")
+    
+    user = UserResponse(**user_data)
+    
+    # Verificar si el usuario actual le dio like
+    user_like = await db.comment_likes.find_one({
+        "comment_id": comment_id,
+        "user_id": current_user.id
+    })
+    
+    # Obtener respuestas directas
+    replies_cursor = db.comments.find({
+        "parent_comment_id": comment_id
+    }).sort("created_at", 1)
+    
+    replies_data = await replies_cursor.to_list(100)
+    
+    # Procesar respuestas
+    replies = []
+    for reply_data in replies_data:
+        reply_user_data = await db.users.find_one({"id": reply_data["user_id"]})
+        if reply_user_data:
+            reply_user_like = await db.comment_likes.find_one({
+                "comment_id": reply_data["id"],
+                "user_id": current_user.id
+            })
+            
+            reply = CommentResponse(
+                **reply_data,
+                user=UserResponse(**reply_user_data),
+                replies=[],  # Por ahora solo 2 niveles
+                reply_count=0,
+                user_liked=bool(reply_user_like)
+            )
+            replies.append(reply)
+    
+    return CommentResponse(
+        **comment,
+        user=user,
+        replies=replies,
+        reply_count=len(replies),
+        user_liked=bool(user_like)
+    )
+
 # Add the API router to the main app
 app.include_router(api_router)
 
