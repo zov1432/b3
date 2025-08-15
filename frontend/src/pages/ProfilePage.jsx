@@ -309,17 +309,7 @@ const ProfilePage = () => {
                 
                 <p className="text-white/90 max-w-md">{displayUser.bio}</p>
                 
-                <div className="flex items-center gap-4 text-sm text-white/80">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4" />
-                    <span>{displayUser.location}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>Se unió en {displayUser.joinDate}</span>
-                  </div>
-                  {/* Removed streak display */}
-                </div>
+
               </div>
 
               <div className="flex gap-2">
