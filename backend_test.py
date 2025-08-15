@@ -887,6 +887,7 @@ def main():
     print(f"\n🔐 Authentication System: {'✅ WORKING' if critical_passed else '❌ FAILED'}")
     print(f"💬 Messaging System: {'✅ WORKING' if messaging_passed else '❌ FAILED'}")
     print(f"🎯 Addiction Integration: {'✅ WORKING' if integration_passed else '❌ FAILED'}")
+    print(f"👤 Profile Update Endpoints: {'✅ WORKING' if profile_updates_passed else '❌ FAILED'}")
     print(f"\n🚀 Overall System Status: {'✅ ALL SYSTEMS OPERATIONAL' if overall_success else '❌ CRITICAL ISSUES FOUND'}")
     
     if overall_success:
@@ -894,6 +895,7 @@ def main():
         print("✅ Users can register, login, search for others, send messages, and track actions")
         print("✅ JWT authentication is properly protecting endpoints")
         print("✅ Addiction system is integrated with real user authentication")
+        print("✅ Profile update endpoints (profile, password, settings) are working correctly")
     else:
         print("\n⚠️  ISSUES DETECTED - See detailed logs above for specific problems")
     
