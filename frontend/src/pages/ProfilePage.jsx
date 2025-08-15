@@ -43,6 +43,10 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [savedPolls, setSavedPolls] = useState([]);
   const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
+  const [selectedPollId, setSelectedPollId] = useState(null);
+  const [selectedPollTitle, setSelectedPollTitle] = useState('');
+  const [selectedPollAuthor, setSelectedPollAuthor] = useState('');
   const { toast } = useToast();
   const { user: authUser, logout, refreshUser } = useAuth();
   const { userId } = useParams();
