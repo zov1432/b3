@@ -868,6 +868,7 @@ def main():
     print(f"Messaging System: {'✅ PASS' if results['messaging'] else '❌ FAIL'}")
     print(f"Addiction Integration: {'✅ PASS' if results['addiction_integration'] else '❌ FAIL'}")
     print(f"Authentication Requirements: {'✅ PASS' if results['auth_requirements'] else '❌ FAIL'}")
+    print(f"Profile Update Endpoints: {'✅ PASS' if results['profile_updates'] else '❌ FAIL'}")
     print(f"Complete User Flow: {'✅ PASS' if results['complete_flow'] else '❌ FAIL'}")
     
     # Critical systems check
@@ -879,8 +880,9 @@ def main():
     
     integration_passed = results['addiction_integration']
     auth_requirements_passed = results['auth_requirements']
+    profile_updates_passed = results['profile_updates']
     
-    overall_success = critical_passed and messaging_passed and integration_passed and auth_requirements_passed
+    overall_success = critical_passed and messaging_passed and integration_passed and auth_requirements_passed and profile_updates_passed
     
     print(f"\n🔐 Authentication System: {'✅ WORKING' if critical_passed else '❌ FAILED'}")
     print(f"💬 Messaging System: {'✅ WORKING' if messaging_passed else '❌ FAILED'}")
