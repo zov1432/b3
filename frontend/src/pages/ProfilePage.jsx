@@ -6,6 +6,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
 import PollCard from '../components/PollCard';
+import EditProfileModal from '../components/EditProfileModal';
 import { Settings, Users, Vote, Trophy, Heart, LogOut, ArrowLeft, AtSign, Bookmark } from 'lucide-react';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
