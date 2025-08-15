@@ -595,6 +595,13 @@ export const mockPolls = [
     id: '2',
     title: '¿Cuál es la mejor receta de cocina?',
     author: 'ChefMaster',
+    authorUser: {
+      username: 'chefmaster',
+      displayName: 'Chef Master',
+      avatar: 'https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=400&h=400&fit=crop&crop=face',
+      verified: false,
+      followers: '567K'
+    },
     timeAgo: 'hace 1 hora',
     music: {
       id: 'music_2',
