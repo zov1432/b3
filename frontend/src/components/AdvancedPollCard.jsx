@@ -169,6 +169,7 @@ const AdvancedPollCard = ({
   const [isPlaying, setIsPlaying] = useState(isActive);
   const [volume, setVolume] = useState(0.7);
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
   
   const cardRef = useRef(null);
   const navigate = useNavigate();
