@@ -10,6 +10,10 @@ import { useTikTok } from '../contexts/TikTokContext';
 const FeedPage = () => {
   const [polls, setPolls] = useState(mockPolls);
   const [isLoading, setIsLoading] = useState(true);
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
+  const [selectedPollId, setSelectedPollId] = useState(null);
+  const [selectedPollTitle, setSelectedPollTitle] = useState('');
+  const [selectedPollAuthor, setSelectedPollAuthor] = useState('');
   const { toast } = useToast();
   const { trackAction } = useAddiction();
   const { enterTikTokMode, exitTikTokMode, isTikTokMode } = useTikTok();
