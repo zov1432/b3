@@ -235,6 +235,7 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
 const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen = false }) => {
   const navigate = useNavigate();
   const { getSocialProof, socialProofData } = useAddiction();
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
   
   // Get social proof for this poll
   const socialProof = socialProofData[poll.id] || null;
