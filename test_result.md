@@ -312,8 +312,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Feed TikTok de Pantalla Completa"
-    - "Sistema de Mensajería Frontend"
+    - "Página de Explorar con Mensaje Próximamente"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
