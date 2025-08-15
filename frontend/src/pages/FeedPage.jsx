@@ -117,10 +117,13 @@ const FeedPage = () => {
 
   const handleComment = async (pollId) => {
     await trackAction('create');
-    toast({
-      title: "Comentarios",
-      description: "Funcionalidad de comentarios próximamente",
-    });
+    const poll = polls.find(p => p.id === pollId);
+    if (poll) {
+      setSelectedPollId(pollId);
+      setSelectedPollTitle(poll.title);
+      setSelectedPollAuthor(poll.author);
+      setShowCommentsModal(true);
+    }
   };
 
   const handleSave = async (pollId) => {
