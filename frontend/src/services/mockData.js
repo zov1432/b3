@@ -721,6 +721,13 @@ export const mockPolls = [
     id: '4',
     title: '¿Mejor setup de trabajo?',
     author: 'TechReviewer',
+    authorUser: {
+      username: 'techreviewer',
+      displayName: 'Tech Reviewer',
+      avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&crop=face',
+      verified: false,
+      followers: '723K'
+    },
     timeAgo: 'hace 1 día',
     music: {
       id: 'music_4',
