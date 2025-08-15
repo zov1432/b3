@@ -251,6 +251,27 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
   };
 
   const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/poll/${poll.id}`;
+    
+    // Intentar usar Web Share API primero (mejor para móviles)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Vota en esta encuesta',
+          text: 'Mira esta increíble votación',
+          url: shareUrl,
+        });
+        // No mostrar toast aquí porque Web Share API ya da feedback
+        return;
+      } catch (err) {
+        // Si el usuario cancela el share, no mostrar error
+        if (err.name !== 'AbortError') {
+          console.log('Error al compartir:', err);
+        }
+      }
+    }
+    
+    // Ejecutar la función de callback principal
     onShare(poll.id);
   };
 
