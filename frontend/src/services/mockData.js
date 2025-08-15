@@ -304,6 +304,13 @@ export const mockPolls = [
     id: 'nature_photo_1',
     title: '¿Cuál es la fotografía de naturaleza más espectacular?',
     author: 'Nature_Explorer',
+    authorUser: {
+      username: 'nature_explorer',
+      displayName: 'Nature Explorer',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
+      verified: false,
+      followers: '890K'
+    },
     timeAgo: 'hace 2 horas',
     music: {
       id: 'music_nature_1',
