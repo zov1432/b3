@@ -3,6 +3,13 @@ export const mockPolls = [
     id: 'video_gaming_1',
     title: '¿Cuál es el mejor gameplay de hoy?',
     author: 'ProGamer_Alex',
+    authorUser: {
+      username: 'progamer_alex',
+      displayName: 'ProGamer Alex',
+      avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop&crop=face',
+      verified: true,
+      followers: '3.2M'
+    },
     timeAgo: 'hace 15 minutos',
     music: {
       id: 'music_gaming_1',
