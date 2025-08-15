@@ -426,6 +426,15 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
           </div>
         </div>
       )}
+
+      {/* Modal de comentarios */}
+      <CommentsModal
+        isOpen={showCommentsModal}
+        onClose={() => setShowCommentsModal(false)}
+        pollId={poll.id}
+        pollTitle={poll.title}
+        pollAuthor={poll.author}
+      />
     </div>
   );
 };
