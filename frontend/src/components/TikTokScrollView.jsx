@@ -364,7 +364,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
               size="sm"
               onClick={(e) => {
                 e.stopPropagation();
-                onComment(poll.id);
+                setShowCommentsModal(true);
               }}
               className="flex items-center gap-1 text-white hover:text-blue-400 hover:scale-105 transition-all duration-200 h-auto p-2 rounded-lg bg-black/20 backdrop-blur-sm"
             >
