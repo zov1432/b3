@@ -106,6 +106,13 @@ export const mockPolls = [
     id: 'art_battle_1',
     title: '¿Cuál es la obra de arte más impresionante?',
     author: 'ArtMaster_Studio',
+    authorUser: {
+      username: 'artmaster_studio',
+      displayName: 'ArtMaster Studio',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+      verified: true,
+      followers: '1.8M'
+    },
     timeAgo: 'hace 32 minutos',
     music: {
       id: 'music_art_1',
