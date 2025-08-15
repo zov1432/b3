@@ -156,24 +156,29 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
+    const response = await fetch(url, config);
+    
+    if (response.status === 401) {
+      // Token expired or invalid
+      logout();
+      throw new Error('Session expired. Please login again.');
+    }
+    
+    return response;
+  };
+
+  const refreshUser = async () => {
+    if (!token) return;
+
     try {
-      const response = await fetch(url, config);
-      
-      if (response.status === 401) {
-        // Token expired or invalid
-        logout();
-        throw new Error('Session expired. Please login again.');
+      const response = await apiRequest('/api/auth/me');
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        localStorage.setItem('authUser', JSON.stringify(userData));
       }
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Request failed');
-      }
-      
-      return await response.json();
     } catch (error) {
-      console.error('API request error:', error);
-      throw error;
+      console.error('Error refreshing user data:', error);
     }
   };
 
