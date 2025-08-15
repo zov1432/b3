@@ -784,6 +784,13 @@ export const mockPolls = [
     id: '5',
     title: '¿Mejor plan para el fin de semana?',
     author: 'WeekendVibes',
+    authorUser: {
+      username: 'weekendvibes',
+      displayName: 'Weekend Vibes',
+      avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop&crop=face',
+      verified: false,
+      followers: '412K'
+    },
     timeAgo: 'hace 5 horas',
     music: {
       id: 'music_5',
