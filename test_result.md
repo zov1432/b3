@@ -312,7 +312,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Página de Explorar con Mensaje Próximamente"
+    - "Cambio de Icono Battle Live en Navegación Lateral Derecha"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
