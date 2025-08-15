@@ -318,7 +318,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Cambio de Icono Battle Live en Navegación Lateral Derecha"
+    - "Error en Botón de Compartir en Feed Móvil"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
