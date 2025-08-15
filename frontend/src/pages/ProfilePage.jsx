@@ -259,12 +259,64 @@ const ProfilePage = () => {
     });
   };
 
-  const handleShare = (pollId) => {
-    navigator.clipboard.writeText(`${window.location.origin}/poll/${pollId}`);
-    toast({
-      title: "¡Enlace copiado!",
-      description: "El enlace de la votación ha sido copiado al portapapeles",
-    });
+  const handleShare = async (pollId) => {
+    const shareUrl = `${window.location.origin}/poll/${pollId}`;
+    
+    // Intentar usar Web Share API primero (mejor para móviles)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Vota en esta encuesta',
+          text: 'Mira esta increíble votación',
+          url: shareUrl,
+        });
+        toast({
+          title: "¡Compartido exitosamente!",
+          description: "La votación ha sido compartida",
+        });
+        return;
+      } catch (err) {
+        // Si el usuario cancela el share, no mostrar error
+        if (err.name !== 'AbortError') {
+          console.log('Error al compartir:', err);
+        }
+      }
+    }
+    
+    // Fallback: intentar copiar al portapapeles
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast({
+        title: "¡Enlace copiado!",
+        description: "El enlace de la votación ha sido copiado al portapapeles",
+      });
+    } catch (err) {
+      // Fallback final: crear elemento temporal para copiar
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        toast({
+          title: "¡Enlace copiado!",
+          description: "El enlace de la votación ha sido copiado al portapapeles",
+        });
+      } catch (fallbackErr) {
+        // Si todo falla, mostrar el enlace para copiar manualmente
+        toast({
+          title: "Copiar enlace",
+          description: `Copia este enlace: ${shareUrl}`,
+          duration: 8000,
+        });
+      }
+    }
   };
 
   const handleComment = (pollId) => {
