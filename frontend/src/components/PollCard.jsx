@@ -578,7 +578,7 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onComment(poll.id)}
+                  onClick={handleComment}
                   className="flex items-center gap-2 text-gray-600 hover:text-blue-600 hover:scale-105 transition-transform"
                 >
                   <MessageCircle className="w-5 h-5" />
