@@ -500,6 +500,13 @@ export const mockPolls = [
     id: '1',
     title: '¿Quién ganó el mejor outfit de hoy?',
     author: 'Noviago',
+    authorUser: {
+      username: 'noviago',
+      displayName: 'Noviago',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
+      verified: true,
+      followers: '4.1M'
+    },
     timeAgo: 'hace 2 semanas',
     music: {
       id: 'music_1',
