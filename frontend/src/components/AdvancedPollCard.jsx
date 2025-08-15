@@ -519,7 +519,7 @@ const AdvancedPollCard = ({
             label="Comentar"
             count={poll.comments}
             isActive={false}
-            onClick={() => onComment(poll.id)}
+            onClick={() => setShowCommentsModal(true)}
           />
           
           <QuickReaction
