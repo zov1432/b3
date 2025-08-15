@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TikTokScrollView from '../components/TikTokScrollView';
 import PollCard from '../components/PollCard';
+import CommentsModal from '../components/CommentsModal';
 import { mockPolls, createPoll } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
 import { useAddiction } from '../contexts/AddictionContext';
