@@ -617,6 +617,15 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
           </div>
         </CardContent>
       </Card>
+
+      {/* Modal de comentarios */}
+      <CommentsModal
+        isOpen={showCommentsModal}
+        onClose={() => setShowCommentsModal(false)}
+        pollId={poll.id}
+        pollTitle={poll.title}
+        pollAuthor={poll.author}
+      />
     </motion.div>
   );
 };
