@@ -668,6 +668,15 @@ const AdvancedPollCard = ({
           backdrop-filter: blur(6px);
         }
       `}</style>
+
+      {/* Modal de comentarios */}
+      <CommentsModal
+        isOpen={showCommentsModal}
+        onClose={() => setShowCommentsModal(false)}
+        pollId={poll.id}
+        pollTitle={poll.title}
+        pollAuthor={poll.author}
+      />
     </motion.div>
   );
 };
