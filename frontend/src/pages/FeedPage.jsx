@@ -235,6 +235,15 @@ const FeedPage = () => {
           </button>
         </div>
       </div>
+
+      {/* Comments Modal */}
+      <CommentsModal
+        isOpen={showCommentsModal}
+        onClose={() => setShowCommentsModal(false)}
+        pollId={selectedPollId}
+        pollTitle={selectedPollTitle}
+        pollAuthor={selectedPollAuthor}
+      />
     </div>
   );
 };
