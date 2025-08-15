@@ -101,11 +101,11 @@ const CommentsModal = ({
           </div>
           
           {/* Contenido */}
-          <div className="flex flex-col h-full max-h-[calc(90vh-80px)]">
+          <div className="flex flex-col h-full max-h-[calc(90vh-80px)] overflow-hidden">
             <CommentSection
               pollId={pollId}
               isVisible={isOpen}
-              maxHeight="calc(90vh - 80px)"
+              maxHeight="100%"
               showHeader={false}
             />
           </div>
