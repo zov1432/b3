@@ -316,7 +316,11 @@ const ProfilePage = () => {
               <div className="flex gap-2">
                 {isOwnProfile ? (
                   <>
-                    <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                    <Button 
+                      variant="outline" 
+                      className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      onClick={() => setEditProfileModalOpen(true)}
+                    >
                       <Settings className="w-4 h-4 mr-2" />
                       Editar
                     </Button>
