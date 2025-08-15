@@ -18,7 +18,8 @@ import re
 # Import models
 from models import (
     UserProfile, User, UserCreate, UserLogin, UserResponse, Token,
-    Message, MessageCreate, Conversation, ConversationResponse
+    Message, MessageCreate, Conversation, ConversationResponse,
+    UserUpdate, PasswordChange, UserSettings
 )
 from auth import (
     verify_password, get_password_hash, create_access_token, 
