@@ -201,6 +201,13 @@ export const mockPolls = [
     id: 'dance_video_1',
     title: '¿Cuál es la mejor coreografía viral?',
     author: 'DanceTrend_Official',
+    authorUser: {
+      username: 'dancetrend_official',
+      displayName: 'DanceTrend Official',
+      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b77c?w=400&h=400&fit=crop&crop=face',
+      verified: true,
+      followers: '2.7M'
+    },
     timeAgo: 'hace 1 hora',
     music: {
       id: 'music_dance_1',
