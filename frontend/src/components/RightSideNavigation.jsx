@@ -30,7 +30,7 @@ const RightSideNavigation = ({ onCreatePoll }) => {
         )} />
       </button>
 
-      {/* Explorar */}
+      {/* Battle Live */}
       <button
         onClick={() => navigate('/explore')}
         className={cn(
@@ -40,9 +40,9 @@ const RightSideNavigation = ({ onCreatePoll }) => {
             : "bg-white/60 hover:bg-white hover:scale-110 w-4 h-10 shadow-lg",
           "flex items-center justify-center"
         )}
-        title="Explorar"
+        title="Battle Live"
       >
-        <Search className={cn(
+        <Swords className={cn(
           "w-3 h-3",
           location.pathname === '/explore' ? "text-white" : "text-gray-600"
         )} />
