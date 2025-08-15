@@ -65,6 +65,19 @@ class Token(BaseModel):
     expires_in: int
     user: UserResponse
 
+class UserUpdate(BaseModel):
+    display_name: Optional[str] = None
+    bio: Optional[str] = None
+    avatar_url: Optional[str] = None
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+class UserSettings(BaseModel):
+    is_public: Optional[bool] = None
+    allow_messages: Optional[bool] = None
+
 # =============  MESSAGING MODELS =============
 
 class Message(BaseModel):
