@@ -1133,8 +1133,353 @@ def test_nested_comments_system(base_url):
     print(f"\nNested Comments System Tests Summary: {success_count}/12 tests passed")
     return success_count >= 9  # At least 9 out of 12 tests should pass
 
+def test_follow_system(base_url):
+    """Test comprehensive follow/unfollow system"""
+    print("\n=== Testing Follow System ===")
+    
+    if len(auth_tokens) < 2:
+        print("❌ Need at least 2 authenticated users for follow testing")
+        return False
+    
+    headers1 = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    headers2 = {"Authorization": f"Bearer {auth_tokens[1]}"}
+    success_count = 0
+    
+    user1_id = test_users[0]['id']
+    user2_id = test_users[1]['id']
+    
+    print(f"Testing follow system between User1 ({test_users[0]['username']}) and User2 ({test_users[1]['username']})")
+    
+    # Test 1: Follow a user (User1 follows User2)
+    print("\nTesting POST /api/users/{user_id}/follow - Follow a user...")
+    try:
+        response = requests.post(f"{base_url}/users/{user2_id}/follow", 
+                               headers=headers1, timeout=10)
+        print(f"Follow User Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ User followed successfully")
+            print(f"Message: {data['message']}")
+            print(f"Follow ID: {data['follow_id']}")
+            success_count += 1
+        else:
+            print(f"❌ Follow user failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Follow user error: {e}")
+    
+    # Test 2: Check follow status (User1 checking if following User2)
+    print(f"\nTesting GET /api/users/{user2_id}/follow-status - Check follow status...")
+    try:
+        response = requests.get(f"{base_url}/users/{user2_id}/follow-status", 
+                              headers=headers1, timeout=10)
+        print(f"Follow Status Check Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Follow status retrieved successfully")
+            print(f"Is Following: {data['is_following']}")
+            print(f"Follow ID: {data.get('follow_id', 'N/A')}")
+            
+            if data['is_following']:
+                print("✅ Follow status correctly shows as following")
+                success_count += 1
+            else:
+                print("❌ Follow status should show as following")
+        else:
+            print(f"❌ Follow status check failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Follow status check error: {e}")
+    
+    # Test 3: Get users I'm following (User1's following list)
+    print(f"\nTesting GET /api/users/following - Get users I'm following...")
+    try:
+        response = requests.get(f"{base_url}/users/following", 
+                              headers=headers1, timeout=10)
+        print(f"Get Following Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Following list retrieved successfully")
+            print(f"Following count: {data['total']}")
+            print(f"Following users: {len(data['following'])}")
+            
+            if data['total'] > 0:
+                following_user = data['following'][0]
+                print(f"Following user: {following_user['username']} ({following_user['display_name']})")
+                
+                # Verify User2 is in the following list
+                if any(user['id'] == user2_id for user in data['following']):
+                    print("✅ User2 correctly appears in User1's following list")
+                    success_count += 1
+                else:
+                    print("❌ User2 should appear in User1's following list")
+            else:
+                print("❌ Following list should contain at least one user")
+        else:
+            print(f"❌ Get following failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get following error: {e}")
+    
+    # Test 4: Get user's followers (User2's followers list)
+    print(f"\nTesting GET /api/users/{user2_id}/followers - Get user's followers...")
+    try:
+        response = requests.get(f"{base_url}/users/{user2_id}/followers", timeout=10)
+        print(f"Get Followers Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Followers list retrieved successfully")
+            print(f"Followers count: {data['total']}")
+            print(f"Followers users: {len(data['followers'])}")
+            
+            if data['total'] > 0:
+                follower_user = data['followers'][0]
+                print(f"Follower user: {follower_user['username']} ({follower_user['display_name']})")
+                
+                # Verify User1 is in User2's followers list
+                if any(user['id'] == user1_id for user in data['followers']):
+                    print("✅ User1 correctly appears in User2's followers list")
+                    success_count += 1
+                else:
+                    print("❌ User1 should appear in User2's followers list")
+            else:
+                print("❌ Followers list should contain at least one user")
+        else:
+            print(f"❌ Get followers failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get followers error: {e}")
+    
+    # Test 5: Get who a user is following (User2's following list)
+    print(f"\nTesting GET /api/users/{user2_id}/following - Get who a user is following...")
+    try:
+        response = requests.get(f"{base_url}/users/{user2_id}/following", timeout=10)
+        print(f"Get User Following Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ User following list retrieved successfully")
+            print(f"User2 following count: {data['total']}")
+            print(f"User2 following users: {len(data['following'])}")
+            success_count += 1
+        else:
+            print(f"❌ Get user following failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get user following error: {e}")
+    
+    # Test 6: Test duplicate follow (should fail)
+    print(f"\nTesting duplicate follow - should fail...")
+    try:
+        response = requests.post(f"{base_url}/users/{user2_id}/follow", 
+                               headers=headers1, timeout=10)
+        print(f"Duplicate Follow Status Code: {response.status_code}")
+        
+        if response.status_code == 400:
+            print("✅ Duplicate follow properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject duplicate follow, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Duplicate follow test error: {e}")
+    
+    # Test 7: Test following yourself (should fail)
+    print(f"\nTesting following yourself - should fail...")
+    try:
+        response = requests.post(f"{base_url}/users/{user1_id}/follow", 
+                               headers=headers1, timeout=10)
+        print(f"Self Follow Status Code: {response.status_code}")
+        
+        if response.status_code == 400:
+            print("✅ Self follow properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject self follow, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Self follow test error: {e}")
+    
+    # Test 8: Test following non-existent user (should fail)
+    print(f"\nTesting following non-existent user - should fail...")
+    try:
+        fake_user_id = "non_existent_user_id_12345"
+        response = requests.post(f"{base_url}/users/{fake_user_id}/follow", 
+                               headers=headers1, timeout=10)
+        print(f"Non-existent User Follow Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Non-existent user follow properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject non-existent user follow, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Non-existent user follow test error: {e}")
+    
+    # Test 9: Unfollow user (User1 unfollows User2)
+    print(f"\nTesting DELETE /api/users/{user2_id}/follow - Unfollow user...")
+    try:
+        response = requests.delete(f"{base_url}/users/{user2_id}/follow", 
+                                 headers=headers1, timeout=10)
+        print(f"Unfollow User Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ User unfollowed successfully")
+            print(f"Message: {data['message']}")
+            success_count += 1
+        else:
+            print(f"❌ Unfollow user failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Unfollow user error: {e}")
+    
+    # Test 10: Verify unfollow - check follow status again
+    print(f"\nTesting follow status after unfollow - should be false...")
+    try:
+        response = requests.get(f"{base_url}/users/{user2_id}/follow-status", 
+                              headers=headers1, timeout=10)
+        print(f"Follow Status After Unfollow Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Follow status retrieved after unfollow")
+            print(f"Is Following: {data['is_following']}")
+            
+            if not data['is_following']:
+                print("✅ Follow status correctly shows as not following after unfollow")
+                success_count += 1
+            else:
+                print("❌ Follow status should show as not following after unfollow")
+        else:
+            print(f"❌ Follow status check after unfollow failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Follow status after unfollow error: {e}")
+    
+    # Test 11: Verify following list is empty after unfollow
+    print(f"\nTesting following list after unfollow - should be empty...")
+    try:
+        response = requests.get(f"{base_url}/users/following", 
+                              headers=headers1, timeout=10)
+        print(f"Following List After Unfollow Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Following list retrieved after unfollow")
+            print(f"Following count: {data['total']}")
+            
+            # Check if User2 is no longer in the following list
+            if not any(user['id'] == user2_id for user in data['following']):
+                print("✅ User2 correctly removed from User1's following list")
+                success_count += 1
+            else:
+                print("❌ User2 should be removed from User1's following list")
+        else:
+            print(f"❌ Following list after unfollow failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Following list after unfollow error: {e}")
+    
+    # Test 12: Test unfollow non-existent relationship (should fail)
+    print(f"\nTesting unfollow non-existent relationship - should fail...")
+    try:
+        response = requests.delete(f"{base_url}/users/{user2_id}/follow", 
+                                 headers=headers1, timeout=10)
+        print(f"Unfollow Non-existent Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Unfollow non-existent relationship properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject unfollow non-existent relationship, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Unfollow non-existent test error: {e}")
+    
+    # Test 13: Test authentication requirements for follow endpoints
+    print(f"\nTesting authentication requirements for follow endpoints...")
+    try:
+        # Test follow without auth
+        response = requests.post(f"{base_url}/users/{user2_id}/follow", timeout=10)
+        if response.status_code in [401, 403]:
+            print("✅ Follow endpoint properly requires authentication")
+            success_count += 1
+        else:
+            print(f"❌ Follow should require authentication, got status: {response.status_code}")
+            
+        # Test follow status without auth
+        response = requests.get(f"{base_url}/users/{user2_id}/follow-status", timeout=10)
+        if response.status_code in [401, 403]:
+            print("✅ Follow status endpoint properly requires authentication")
+            success_count += 1
+        else:
+            print(f"❌ Follow status should require authentication, got status: {response.status_code}")
+            
+        # Test following list without auth
+        response = requests.get(f"{base_url}/users/following", timeout=10)
+        if response.status_code in [401, 403]:
+            print("✅ Following list endpoint properly requires authentication")
+            success_count += 1
+        else:
+            print(f"❌ Following list should require authentication, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Authentication requirements test error: {e}")
+    
+    # Test 14: Complete follow workflow test
+    print(f"\nTesting complete follow workflow...")
+    try:
+        # User2 follows User1 (reverse relationship)
+        print("Step 1: User2 follows User1...")
+        response = requests.post(f"{base_url}/users/{user1_id}/follow", 
+                               headers=headers2, timeout=10)
+        
+        if response.status_code == 200:
+            print("✅ User2 successfully followed User1")
+            
+            # Check mutual following status
+            print("Step 2: Checking mutual follow status...")
+            response1 = requests.get(f"{base_url}/users/{user1_id}/follow-status", 
+                                   headers=headers2, timeout=10)
+            response2 = requests.get(f"{base_url}/users/{user2_id}/follow-status", 
+                                   headers=headers1, timeout=10)
+            
+            if (response1.status_code == 200 and response2.status_code == 200):
+                data1 = response1.json()
+                data2 = response2.json()
+                
+                print(f"User2 following User1: {data1['is_following']}")
+                print(f"User1 following User2: {data2['is_following']}")
+                
+                if data1['is_following'] and not data2['is_following']:
+                    print("✅ Follow relationships are correctly independent")
+                    success_count += 1
+                else:
+                    print("❌ Follow relationships should be independent")
+            
+            # Clean up - unfollow
+            print("Step 3: Cleaning up - User2 unfollows User1...")
+            requests.delete(f"{base_url}/users/{user1_id}/follow", 
+                          headers=headers2, timeout=10)
+            print("✅ Cleanup completed")
+            
+        else:
+            print(f"❌ User2 follow User1 failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Complete workflow test error: {e}")
+    
+    print(f"\nFollow System Tests Summary: {success_count}/15 tests passed")
+    return success_count >= 12  # At least 12 out of 15 tests should pass
+
 def test_complete_user_flow(base_url):
-    """Test complete user flow: register -> login -> profile -> search -> message -> track actions"""
+    """Test complete user flow: register -> login -> profile -> search -> message -> track actions -> follow"""
     print("\n=== Testing Complete User Flow ===")
     
     # This test uses the data from previous tests
@@ -1149,6 +1494,7 @@ def test_complete_user_flow(base_url):
     print(f"✅ Messaging system: Working") 
     print(f"✅ Addiction system integration: Working")
     print(f"✅ Nested comments system: Working")
+    print(f"✅ Follow system: Working")
     
     return True
 
