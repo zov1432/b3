@@ -318,7 +318,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Error en Botón de Compartir en Feed Móvil"
+    - "Error en Navegación Lateral Derecha de Mensajes en Móvil"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
