@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { 
-  Heart, MessageCircle, Share, Bookmark, MoreHorizontal, 
+  Heart, MessageCircle, Send, Bookmark, MoreHorizontal, 
   Play, Pause, Volume2, VolumeX, Crown, CheckCircle,
   Sparkles, Zap, Flame, Star
 } from 'lucide-react';
