@@ -324,6 +324,18 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Sistema de Seguimiento de Usuarios Completado (Follow/Unfollow)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py, /app/backend/models.py, /app/frontend/src/contexts/FollowContext.js, /app/frontend/src/components/TikTokScrollView.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Sistema completo de seguimiento implementado: BACKEND: 1) Modelos Follow, FollowCreate, FollowResponse, FollowStatus, FollowingList, FollowersList agregados a models.py, 2) Endpoints implementados: POST /api/users/{user_id}/follow (seguir), DELETE /api/users/{user_id}/follow (dejar de seguir), GET /api/users/{user_id}/follow-status (estado), GET /api/users/following (usuarios que sigo), GET /api/users/{user_id}/followers (seguidores), GET /api/users/{user_id}/following (a quién sigue), 3) Validación completa: no seguirse a sí mismo, usuario debe existir, no seguir duplicados, autenticación requerida. FRONTEND: 1) FollowContext creado con followUser, unfollowUser, getFollowStatus, isFollowing, getFollowingUsers, 2) TikTokScrollView actualizado para usar contexto real en lugar de estado local, 3) Botón plus desaparece cuando se está siguiendo, aparece CheckCircle verde, 4) Inicialización automática del estado de seguimiento al montar componente, 5) Toast notifications en lugar de alerts. INTEGRACIÓN: Conectado con AuthContext, validaciones de usuario actual, manejo de errores. Pendiente testing completo del flujo frontend."
+
   - task: "Navegación a Perfiles de Autores de Encuestas"
     implemented: true
     working: false
