@@ -176,12 +176,9 @@ export const AuthProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      const response = await apiRequest('/api/auth/me');
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        localStorage.setItem('authUser', JSON.stringify(userData));
-      }
+      const userData = await apiRequest('/api/auth/me');
+      setUser(userData);
+      localStorage.setItem('authUser', JSON.stringify(userData));
     } catch (error) {
       console.error('Error refreshing user data:', error);
     }
