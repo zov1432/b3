@@ -187,13 +187,13 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                 </Avatar>
               </button>
 
-              {/* Botón separado para seguir - Solo se muestra si no se está siguiendo */}
-              {!isFollowing && (
+              {/* Botón separado para seguir - Solo se muestra si no se está siguiendo y no es el usuario actual */}
+              {!isFollowing(authorUserId) && currentUser && authorUserId !== currentUser.id && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     // Aquí llamamos a la función de seguir usuario
-                    handleFollowUser(poll.authorUser || { username: poll.author });
+                    handleFollowUser(poll.authorUser || { username: poll.author, id: authorUserId });
                   }}
                   className="absolute -bottom-1 -right-1 bg-blue-500 hover:bg-blue-600 rounded-full p-1 shadow-lg cursor-pointer transition-colors duration-200 hover:scale-110"
                 >
@@ -202,7 +202,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
               )}
               
               {/* Hover tooltip para seguir - Solo cuando se puede seguir */}
-              {!isFollowing && (
+              {!isFollowing(authorUserId) && currentUser && authorUserId !== currentUser.id && (
                 <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
                   <div className="bg-blue-800/90 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm whitespace-nowrap border border-blue-600/30 shadow-lg">
                     <div className="font-medium">@{poll.authorUser?.username || poll.author}</div>
@@ -212,7 +212,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
               )}
               
               {/* Indicador de siguiendo */}
-              {isFollowing && (
+              {isFollowing(authorUserId) && (
                 <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1 shadow-lg">
                   <CheckCircle className="w-3 h-3 text-white" />
                 </div>
