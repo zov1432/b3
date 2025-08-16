@@ -20,7 +20,8 @@ from models import (
     UserProfile, User, UserCreate, UserLogin, UserResponse, Token,
     Message, MessageCreate, Conversation, ConversationResponse,
     UserUpdate, PasswordChange, UserSettings,
-    Comment, CommentCreate, CommentUpdate, CommentResponse, CommentLike
+    Comment, CommentCreate, CommentUpdate, CommentResponse, CommentLike,
+    Follow, FollowCreate, FollowResponse, FollowStatus, FollowingList, FollowersList
 )
 from auth import (
     verify_password, get_password_hash, create_access_token, 
