@@ -1547,6 +1547,9 @@ def main():
     results['nested_comments'] = test_nested_comments_system(base_url)
     
     print("\n" + "="*60)
+    results['follow_system'] = test_follow_system(base_url)
+    
+    print("\n" + "="*60)
     results['complete_flow'] = test_complete_user_flow(base_url)
     
     # Summary
