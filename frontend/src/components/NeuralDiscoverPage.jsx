@@ -752,7 +752,7 @@ const MasonryPollCard = ({ poll, index, onVote, onLike, onShare, onComment }) =>
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
-            <Share className="w-4 h-4" />
+            <Send className="w-4 h-4" />
             <span>{poll.shares}</span>
           </motion.button>
         </div>
