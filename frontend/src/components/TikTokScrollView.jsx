@@ -135,11 +135,11 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                 </div>
               </div>
               
-              {/* Hover tooltip para propietario */}
+              {/* Hover tooltip para seguir */}
               <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-                <div className="bg-yellow-800/90 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm whitespace-nowrap border border-yellow-600/30 shadow-lg">
+                <div className="bg-blue-800/90 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm whitespace-nowrap border border-blue-600/30 shadow-lg">
                   <div className="font-medium">@{poll.authorUser?.username || poll.author}</div>
-                  <div className="text-yellow-300 text-[10px]">Propietario</div>
+                  <div className="text-blue-300 text-[10px]">Seguir usuario</div>
                 </div>
               </div>
             </button>
