@@ -40,8 +40,20 @@ export const FollowProvider = ({ children }) => {
     }
   };
 
-  const followUser = async (userId) => {
+  const followUser = async (userIdOrUsername) => {
     try {
+      let userId = userIdOrUsername;
+      
+      // If it looks like a username (no UUID format), try to resolve it to ID
+      if (!userIdOrUsername.includes('-') && userIdOrUsername.length > 5) {
+        const user = await getUserByUsername(userIdOrUsername);
+        if (user) {
+          userId = user.id;
+        } else {
+          return { success: false, error: 'Usuario no encontrado' };
+        }
+      }
+
       const response = await apiRequest(`/api/users/${userId}/follow`, {
         method: 'POST',
       });
