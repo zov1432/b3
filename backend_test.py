@@ -1499,7 +1499,7 @@ def test_complete_user_flow(base_url):
     return True
 
 def main():
-    print("=== AUTHENTICATION & MESSAGING SYSTEM TESTING ===")
+    print("=== FOLLOW SYSTEM HEALTH CHECK TESTING ===")
     print(f"Test started at: {datetime.now()}")
     
     # Get backend URL
@@ -1510,7 +1510,7 @@ def main():
     
     print(f"Testing backend at: {base_url}")
     
-    # Run comprehensive tests
+    # Run focused tests for follow system
     results = {}
     
     print("\n" + "="*60)
