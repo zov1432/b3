@@ -318,7 +318,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Sistema de Seguimiento de Usuarios (Follow/Unfollow)"
+    - "Sistema de Seguimiento de Usuarios Completado (Follow/Unfollow)"
+    - "Funcionalidad del Botón Plus en Feed TikTok con Backend Real"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
