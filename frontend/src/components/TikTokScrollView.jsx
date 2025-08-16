@@ -146,9 +146,6 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-white text-base">{poll.author}</h3>
-                <span className="bg-yellow-400/20 text-yellow-300 text-xs px-2 py-0.5 rounded-full font-medium border border-yellow-400/30">
-                  Autor
-                </span>
               </div>
               <p className="text-sm text-white/70">{poll.timeAgo}</p>
             </div>
