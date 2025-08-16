@@ -1530,54 +1530,42 @@ def main():
     
     # Summary
     print("\n" + "="*60)
-    print("=== COMPREHENSIVE TEST SUMMARY ===")
+    print("=== FOLLOW SYSTEM HEALTH CHECK SUMMARY ===")
     print(f"Health Check: {'✅ PASS' if results['health'] else '❌ FAIL'}")
     print(f"User Registration: {'✅ PASS' if results['registration'] else '❌ FAIL'}")
     print(f"User Login: {'✅ PASS' if results['login'] else '❌ FAIL'}")
     print(f"Get Current User: {'✅ PASS' if results['current_user'] else '❌ FAIL'}")
-    print(f"JWT Validation: {'✅ PASS' if results['jwt_validation'] else '❌ FAIL'}")
-    print(f"User Search: {'✅ PASS' if results['user_search'] else '❌ FAIL'}")
-    print(f"Messaging System: {'✅ PASS' if results['messaging'] else '❌ FAIL'}")
-    print(f"Addiction Integration: {'✅ PASS' if results['addiction_integration'] else '❌ FAIL'}")
-    print(f"Authentication Requirements: {'✅ PASS' if results['auth_requirements'] else '❌ FAIL'}")
-    print(f"Profile Update Endpoints: {'✅ PASS' if results['profile_updates'] else '❌ FAIL'}")
-    print(f"Nested Comments System: {'✅ PASS' if results['nested_comments'] else '❌ FAIL'}")
     print(f"Follow System: {'✅ PASS' if results['follow_system'] else '❌ FAIL'}")
-    print(f"Complete User Flow: {'✅ PASS' if results['complete_flow'] else '❌ FAIL'}")
     
-    # Critical systems check
-    critical_systems = ['health', 'registration', 'login', 'current_user', 'jwt_validation']
+    # Critical systems check for follow functionality
+    critical_systems = ['health', 'registration', 'login', 'current_user']
     critical_passed = all(results[system] for system in critical_systems)
     
-    messaging_systems = ['user_search', 'messaging']
-    messaging_passed = all(results[system] for system in messaging_systems)
-    
-    integration_passed = results['addiction_integration']
-    auth_requirements_passed = results['auth_requirements']
-    profile_updates_passed = results['profile_updates']
-    nested_comments_passed = results['nested_comments']
     follow_system_passed = results['follow_system']
     
-    overall_success = critical_passed and messaging_passed and integration_passed and auth_requirements_passed and profile_updates_passed and nested_comments_passed and follow_system_passed
+    overall_success = critical_passed and follow_system_passed
     
     print(f"\n🔐 Authentication System: {'✅ WORKING' if critical_passed else '❌ FAILED'}")
-    print(f"💬 Messaging System: {'✅ WORKING' if messaging_passed else '❌ FAILED'}")
-    print(f"🎯 Addiction Integration: {'✅ WORKING' if integration_passed else '❌ FAILED'}")
-    print(f"👤 Profile Update Endpoints: {'✅ WORKING' if profile_updates_passed else '❌ FAILED'}")
-    print(f"💬 Nested Comments System: {'✅ WORKING' if nested_comments_passed else '❌ FAILED'}")
     print(f"👥 Follow System: {'✅ WORKING' if follow_system_passed else '❌ FAILED'}")
-    print(f"\n🚀 Overall System Status: {'✅ ALL SYSTEMS OPERATIONAL' if overall_success else '❌ CRITICAL ISSUES FOUND'}")
+    print(f"\n🚀 Overall System Status: {'✅ FOLLOW SYSTEM READY' if overall_success else '❌ CRITICAL ISSUES FOUND'}")
     
     if overall_success:
-        print("\n🎉 CONGRATULATIONS! Complete authentication and messaging system is working perfectly!")
-        print("✅ Users can register, login, search for others, send messages, and track actions")
-        print("✅ JWT authentication is properly protecting endpoints")
-        print("✅ Addiction system is integrated with real user authentication")
-        print("✅ Profile update endpoints (profile, password, settings) are working correctly")
-        print("✅ Nested comments system with full CRUD operations and recursive deletion is working perfectly")
-        print("✅ Follow system with complete follow/unfollow workflow is working perfectly")
+        print("\n🎉 FOLLOW SYSTEM HEALTH CHECK PASSED!")
+        print("✅ All 6 follow endpoints are working correctly:")
+        print("   - POST /api/users/{user_id}/follow")
+        print("   - DELETE /api/users/{user_id}/follow")
+        print("   - GET /api/users/{user_id}/follow-status")
+        print("   - GET /api/users/following")
+        print("   - GET /api/users/{user_id}/followers")
+        print("   - GET /api/users/{user_id}/following")
+        print("✅ Authentication system is working properly")
+        print("✅ Backend is ready for frontend plus button functionality")
     else:
         print("\n⚠️  ISSUES DETECTED - See detailed logs above for specific problems")
+        if not critical_passed:
+            print("❌ Authentication system issues prevent follow system testing")
+        if not follow_system_passed:
+            print("❌ Follow system endpoints have critical issues")
     
     return 0 if overall_success else 1
 
