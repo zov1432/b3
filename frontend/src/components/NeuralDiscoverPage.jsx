@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { cn } from '../lib/utils';
 import { 
   Search, Filter, TrendingUp, Users, Brain, Sparkles, 
-  Zap, Heart, MessageCircle, Share, Crown, Star,
+  Zap, Heart, MessageCircle, Send, Crown, Star,
   ChevronDown, Play, Volume2, Bookmark, Grid3X3,
   Eye, Target, Flame, Award, CheckCircle, MoreHorizontal
 } from 'lucide-react';
