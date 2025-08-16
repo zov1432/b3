@@ -316,7 +316,7 @@ const TikTokVotingCard = ({
             whileTap={{ scale: 0.9 }}
           >
             <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <Share className="w-6 h-6" />
+              <Send className="w-6 h-6" />
             </div>
             <span className="text-xs font-semibold">{poll.shares > 999 ? `${(poll.shares/1000).toFixed(1)}K` : poll.shares}</span>
           </motion.button>
