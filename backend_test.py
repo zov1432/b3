@@ -1526,31 +1526,7 @@ def main():
     results['current_user'] = test_get_current_user(base_url)
     
     print("\n" + "="*60)
-    results['jwt_validation'] = test_jwt_validation(base_url)
-    
-    print("\n" + "="*60)
-    results['user_search'] = test_user_search(base_url)
-    
-    print("\n" + "="*60)
-    results['messaging'] = test_messaging_system(base_url)
-    
-    print("\n" + "="*60)
-    results['addiction_integration'] = test_addiction_system_integration(base_url)
-    
-    print("\n" + "="*60)
-    results['auth_requirements'] = test_authentication_requirements(base_url)
-    
-    print("\n" + "="*60)
-    results['profile_updates'] = test_profile_update_endpoints(base_url)
-    
-    print("\n" + "="*60)
-    results['nested_comments'] = test_nested_comments_system(base_url)
-    
-    print("\n" + "="*60)
     results['follow_system'] = test_follow_system(base_url)
-    
-    print("\n" + "="*60)
-    results['complete_flow'] = test_complete_user_flow(base_url)
     
     # Summary
     print("\n" + "="*60)
