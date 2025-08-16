@@ -86,8 +86,20 @@ export const FollowProvider = ({ children }) => {
     }
   };
 
-  const getFollowStatus = async (userId) => {
+  const getFollowStatus = async (userIdOrUsername) => {
     try {
+      let userId = userIdOrUsername;
+      
+      // If it looks like a username, try to resolve it to ID
+      if (!userIdOrUsername.includes('-') && userIdOrUsername.length > 5) {
+        const user = await getUserByUsername(userIdOrUsername);
+        if (user) {
+          userId = user.id;
+        } else {
+          return false;
+        }
+      }
+
       const response = await apiRequest(`/api/users/${userId}/follow-status`);
       // Update local cache
       setFollowingUsers(prev => new Map(prev.set(userId, response.is_following)));
