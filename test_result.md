@@ -318,7 +318,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Error en Navegación Lateral Derecha de Mensajes en Móvil"
+    - "Funcionalidad del Botón Plus en Feed TikTok"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
