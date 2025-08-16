@@ -85,7 +85,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
     if (authorUserId && currentUser && authorUserId !== currentUser.id) {
       getFollowStatus(authorUserId);
     }
-  }, [authorUserId, currentUser]);
+  }, [authorUserId, currentUser, getFollowStatus]);
 
   const handleVote = (optionId) => {
     if (!poll.userVote) {
