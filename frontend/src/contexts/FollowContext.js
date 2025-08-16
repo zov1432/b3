@@ -14,6 +14,31 @@ export const useFollow = () => {
 export const FollowProvider = ({ children }) => {
   const { apiRequest } = useAuth();
   const [followingUsers, setFollowingUsers] = useState(new Map()); // userId -> isFollowing boolean
+  const [userCache, setUserCache] = useState(new Map()); // username -> user object cache
+
+  const getUserByUsername = async (username) => {
+    try {
+      // Check cache first
+      if (userCache.has(username)) {
+        return userCache.get(username);
+      }
+
+      // Search for user
+      const response = await apiRequest(`/api/users/search?q=${encodeURIComponent(username)}`);
+      const user = response.find(u => u.username === username);
+      
+      if (user) {
+        // Cache the result
+        setUserCache(prev => new Map(prev.set(username, user)));
+        return user;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error searching user:', error);
+      return null;
+    }
+  };
 
   const followUser = async (userId) => {
     try {
