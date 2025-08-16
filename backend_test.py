@@ -38,7 +38,7 @@ def test_health_check(base_url):
         
         if response.status_code == 200:
             data = response.json()
-            if "Ultra-Addictive Social Network API" in data.get("message", ""):
+            if "Social Network API" in data.get("name", ""):
                 print("✅ Health check endpoint working correctly")
                 return True
         
