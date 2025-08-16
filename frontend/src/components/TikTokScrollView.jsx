@@ -161,25 +161,36 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                 </Avatar>
               </button>
 
-              {/* Botón separado para seguir */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // Aquí llamamos a la función de seguir usuario
-                  handleFollowUser(poll.authorUser || { username: poll.author });
-                }}
-                className="absolute -bottom-1 -right-1 bg-blue-500 hover:bg-blue-600 rounded-full p-1 shadow-lg cursor-pointer transition-colors duration-200 hover:scale-110"
-              >
-                <Plus className="w-3 h-3 text-white" />
-              </button>
+              {/* Botón separado para seguir - Solo se muestra si no se está siguiendo */}
+              {!isFollowing && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Aquí llamamos a la función de seguir usuario
+                    handleFollowUser(poll.authorUser || { username: poll.author });
+                  }}
+                  className="absolute -bottom-1 -right-1 bg-blue-500 hover:bg-blue-600 rounded-full p-1 shadow-lg cursor-pointer transition-colors duration-200 hover:scale-110"
+                >
+                  <Plus className="w-3 h-3 text-white" />
+                </button>
+              )}
               
-              {/* Hover tooltip para seguir */}
-              <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-                <div className="bg-blue-800/90 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm whitespace-nowrap border border-blue-600/30 shadow-lg">
-                  <div className="font-medium">@{poll.authorUser?.username || poll.author}</div>
-                  <div className="text-blue-300 text-[10px]">Seguir usuario</div>
+              {/* Hover tooltip para seguir - Solo cuando se puede seguir */}
+              {!isFollowing && (
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                  <div className="bg-blue-800/90 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm whitespace-nowrap border border-blue-600/30 shadow-lg">
+                    <div className="font-medium">@{poll.authorUser?.username || poll.author}</div>
+                    <div className="text-blue-300 text-[10px]">Seguir usuario</div>
+                  </div>
                 </div>
-              </div>
+              )}
+              
+              {/* Indicador de siguiendo */}
+              {isFollowing && (
+                <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1 shadow-lg">
+                  <CheckCircle className="w-3 h-3 text-white" />
+                </div>
+              )}
             </div>
             <div>
               <div className="flex items-center gap-2">
