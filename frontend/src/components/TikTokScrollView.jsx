@@ -63,8 +63,29 @@ const UserButton = ({ user, percentage, isSelected, isWinner, onClick, onUserCli
 const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCreatePoll, isActive, index, total }) => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [showCommentsModal, setShowCommentsModal] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
   const navigate = useNavigate();
+  const { followUser, unfollowUser, isFollowing, getFollowStatus } = useFollow();
+  const { user: currentUser } = useAuth();
+  const { toast } = useToast();
+
+  // Get user ID from poll author
+  const getAuthorUserId = () => {
+    if (poll.authorUser && poll.authorUser.id) {
+      return poll.authorUser.id;
+    }
+    // If we only have username, we'll need to handle this differently
+    // For now, let's use the username as fallback
+    return poll.author;
+  };
+
+  const authorUserId = getAuthorUserId();
+
+  // Check follow status when component mounts
+  useEffect(() => {
+    if (authorUserId && currentUser && authorUserId !== currentUser.id) {
+      getFollowStatus(authorUserId);
+    }
+  }, [authorUserId, currentUser]);
 
   const handleVote = (optionId) => {
     if (!poll.userVote) {
@@ -77,30 +98,32 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
   };
 
   const handleFollowUser = async (user) => {
+    const userId = user.id || user.username;
+    
     try {
-      // Aquí llamamos al endpoint de seguir usuario
-      const response = await fetch('/api/follow', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({
-          userId: user.id || user.username
-        })
-      });
-
-      if (response.ok) {
-        // Marcar como siguiendo y ocultar el botón
-        setIsFollowing(true);
-        // Mostrar mensaje de éxito
-        alert(`¡Ahora sigues a @${user.username}!`);
+      const result = await followUser(userId);
+      if (result.success) {
+        toast({
+          title: "¡Siguiendo!",
+          description: `Ahora sigues a @${user.username}`,
+          duration: 2000,
+        });
       } else {
-        alert('Error al seguir al usuario');
+        toast({
+          title: "Error",
+          description: result.error || "Error al seguir al usuario",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     } catch (error) {
       console.error('Error following user:', error);
-      alert('Error al seguir al usuario');
+      toast({
+        title: "Error",
+        description: "Error al seguir al usuario",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
