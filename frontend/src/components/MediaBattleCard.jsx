@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { 
-  Heart, MessageCircle, Share, Play, Pause, Volume2, VolumeX, 
+  Heart, MessageCircle, Send, Play, Pause, Volume2, VolumeX, 
   Crown, CheckCircle, Flame, Zap, Star, Award, Users,
   Camera, Music, Sparkles, Trophy, TrendingUp, Target
 } from 'lucide-react';
