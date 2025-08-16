@@ -164,7 +164,12 @@ export const AuthProvider = ({ children }) => {
       throw new Error('Session expired. Please login again.');
     }
     
-    return response;
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    }
+    
+    // Parse JSON response
+    return await response.json();
   };
 
   const refreshUser = async () => {
