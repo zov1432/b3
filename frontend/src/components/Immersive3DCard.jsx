@@ -379,7 +379,7 @@ const Immersive3DCard = ({
                 onShare?.(poll.id);
               }}
             >
-              <Share className="w-5 h-5 text-white" />
+              <Send className="w-5 h-5 text-white" />
             </motion.button>
             
             <motion.button
