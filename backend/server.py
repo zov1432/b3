@@ -306,6 +306,106 @@ async def search_users(q: str = "", current_user: UserResponse = Depends(get_cur
     
     return [UserResponse(**user) for user in users]
 
+# =============  FOLLOW ENDPOINTS =============
+
+@api_router.post("/users/{user_id}/follow")
+async def follow_user(user_id: str, current_user: UserResponse = Depends(get_current_user)):
+    """Follow a user"""
+    # Check if user to follow exists
+    user_to_follow = await db.users.find_one({"id": user_id})
+    if not user_to_follow:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if user is trying to follow themselves
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot follow yourself")
+    
+    # Check if already following
+    existing_follow = await db.follows.find_one({
+        "follower_id": current_user.id,
+        "following_id": user_id
+    })
+    if existing_follow:
+        raise HTTPException(status_code=400, detail="Already following this user")
+    
+    # Create follow relationship
+    follow_data = Follow(
+        follower_id=current_user.id,
+        following_id=user_id
+    )
+    
+    result = await db.follows.insert_one(follow_data.model_dump())
+    if not result.inserted_id:
+        raise HTTPException(status_code=500, detail="Failed to follow user")
+    
+    return {"message": "Successfully followed user", "follow_id": follow_data.id}
+
+@api_router.delete("/users/{user_id}/follow")
+async def unfollow_user(user_id: str, current_user: UserResponse = Depends(get_current_user)):
+    """Unfollow a user"""
+    # Find and delete follow relationship
+    result = await db.follows.delete_one({
+        "follower_id": current_user.id,
+        "following_id": user_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Follow relationship not found")
+    
+    return {"message": "Successfully unfollowed user"}
+
+@api_router.get("/users/{user_id}/follow-status")
+async def get_follow_status(user_id: str, current_user: UserResponse = Depends(get_current_user)):
+    """Get follow status for a specific user"""
+    follow_relationship = await db.follows.find_one({
+        "follower_id": current_user.id,
+        "following_id": user_id
+    })
+    
+    return FollowStatus(
+        is_following=follow_relationship is not None,
+        follow_id=follow_relationship["id"] if follow_relationship else None
+    )
+
+@api_router.get("/users/following")
+async def get_following_users(current_user: UserResponse = Depends(get_current_user)):
+    """Get list of users that current user is following"""
+    follows = await db.follows.find({"follower_id": current_user.id}).to_list(1000)
+    
+    following_ids = [follow["following_id"] for follow in follows]
+    users = await db.users.find({"id": {"$in": following_ids}}).to_list(1000)
+    
+    return FollowingList(
+        following=[UserResponse(**user) for user in users],
+        total=len(users)
+    )
+
+@api_router.get("/users/{user_id}/followers")
+async def get_user_followers(user_id: str):
+    """Get list of users following the specified user"""
+    follows = await db.follows.find({"following_id": user_id}).to_list(1000)
+    
+    follower_ids = [follow["follower_id"] for follow in follows]
+    users = await db.users.find({"id": {"$in": follower_ids}}).to_list(1000)
+    
+    return FollowersList(
+        followers=[UserResponse(**user) for user in users],
+        total=len(users)
+    )
+
+@api_router.get("/users/{user_id}/following")
+async def get_user_following(user_id: str):
+    """Get list of users that specified user is following"""
+    follows = await db.follows.find({"follower_id": user_id}).to_list(1000)
+    
+    following_ids = [follow["following_id"] for follow in follows]
+    users = await db.users.find({"id": {"$in": following_ids}}).to_list(1000)
+    
+    return FollowingList(
+        following=[UserResponse(**user) for user in users],
+        total=len(users)
+    )
+
 # =============  MESSAGING ENDPOINTS =============
 
 @api_router.post("/messages")
