@@ -114,26 +114,35 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
            style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* PROPIETARIO - Diseño distintivo con borde dorado y badge - CLICKEABLE */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleUserClick(poll.authorUser || { username: poll.author });
-              }}
-              className="group relative transition-transform duration-200 hover:scale-110"
-            >
-              <div className="relative">
+            {/* PROPIETARIO - Avatar clickeable para perfil */}
+            <div className="group relative">
+              {/* Avatar para navegar al perfil */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUserClick(poll.authorUser || { username: poll.author });
+                }}
+                className="relative transition-transform duration-200 hover:scale-110"
+              >
                 <Avatar className="ring-3 ring-yellow-400 shadow-lg shadow-yellow-400/50 w-12 h-12 relative">
                   <AvatarImage src={poll.authorUser?.avatar || "https://github.com/shadcn.png"} />
                   <AvatarFallback className="bg-gradient-to-br from-yellow-500 to-orange-600 text-white font-bold">
                     {((poll.author || 'U') + '').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                {/* Badge de seguir */}
-                <div className="absolute -bottom-1 -right-1 bg-blue-500 hover:bg-blue-600 rounded-full p-1 shadow-lg cursor-pointer transition-colors duration-200">
-                  <Plus className="w-3 h-3 text-white" />
-                </div>
-              </div>
+              </button>
+
+              {/* Botón separado para seguir */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Aquí llamamos a la función de seguir usuario
+                  handleFollowUser(poll.authorUser || { username: poll.author });
+                }}
+                className="absolute -bottom-1 -right-1 bg-blue-500 hover:bg-blue-600 rounded-full p-1 shadow-lg cursor-pointer transition-colors duration-200 hover:scale-110"
+              >
+                <Plus className="w-3 h-3 text-white" />
+              </button>
               
               {/* Hover tooltip para seguir */}
               <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
@@ -142,7 +151,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                   <div className="text-blue-300 text-[10px]">Seguir usuario</div>
                 </div>
               </div>
-            </button>
+            </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-white text-base">{poll.author}</h3>
