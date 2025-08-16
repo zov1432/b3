@@ -72,6 +72,32 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
     navigate(`/profile/${user.username}`);
   };
 
+  const handleFollowUser = async (user) => {
+    try {
+      // Aquí llamamos al endpoint de seguir usuario
+      const response = await fetch('/api/follow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          userId: user.id || user.username
+        })
+      });
+
+      if (response.ok) {
+        // Mostrar mensaje de éxito
+        alert(`¡Ahora sigues a @${user.username}!`);
+      } else {
+        alert('Error al seguir al usuario');
+      }
+    } catch (error) {
+      console.error('Error following user:', error);
+      alert('Error al seguir al usuario');
+    }
+  };
+
   const handleMusicToggle = (playing) => {
     setIsMusicPlaying(playing);
   };
