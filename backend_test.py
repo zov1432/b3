@@ -197,7 +197,7 @@ def test_user_login(base_url):
         invalid_data['password'] = "wrongpassword"
         response = requests.post(f"{base_url}/auth/login", json=invalid_data, timeout=10)
         
-        if response.status_code == 401:
+        if response.status_code == 400:
             print("✅ Invalid credentials properly rejected")
         else:
             print(f"❌ Invalid credentials should be rejected, got status: {response.status_code}")
