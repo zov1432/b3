@@ -397,7 +397,7 @@ const MediaBattleCard = ({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Share className="w-5 h-5" />
+            <Send className="w-5 h-5" />
             <span className="font-semibold">{poll.shares.toLocaleString()}</span>
           </motion.button>
         </div>
