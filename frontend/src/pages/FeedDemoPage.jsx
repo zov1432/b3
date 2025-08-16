@@ -259,7 +259,7 @@ const FeedCard = ({ poll, index, isActive = false }) => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <Share className="w-5 h-5" />
+              <Send className="w-5 h-5" />
               <span className="font-bold">{(poll.shares / 1000).toFixed(0)}K</span>
             </motion.button>
           </div>
