@@ -88,6 +88,8 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
       });
 
       if (response.ok) {
+        // Marcar como siguiendo y ocultar el botón
+        setIsFollowing(true);
         // Mostrar mensaje de éxito
         alert(`¡Ahora sigues a @${user.username}!`);
       } else {
