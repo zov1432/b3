@@ -1566,6 +1566,7 @@ def main():
     print(f"Authentication Requirements: {'✅ PASS' if results['auth_requirements'] else '❌ FAIL'}")
     print(f"Profile Update Endpoints: {'✅ PASS' if results['profile_updates'] else '❌ FAIL'}")
     print(f"Nested Comments System: {'✅ PASS' if results['nested_comments'] else '❌ FAIL'}")
+    print(f"Follow System: {'✅ PASS' if results['follow_system'] else '❌ FAIL'}")
     print(f"Complete User Flow: {'✅ PASS' if results['complete_flow'] else '❌ FAIL'}")
     
     # Critical systems check
