@@ -116,6 +116,35 @@ class ConversationResponse(BaseModel):
     unread_count: int = 0
     created_at: datetime
 
+# =============  FOLLOW MODELS =============
+
+class Follow(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    follower_id: str  # ID del usuario que sigue
+    following_id: str  # ID del usuario seguido
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class FollowCreate(BaseModel):
+    user_id: str  # ID del usuario a seguir
+
+class FollowResponse(BaseModel):
+    id: str
+    follower: UserResponse
+    following: UserResponse
+    created_at: datetime
+
+class FollowStatus(BaseModel):
+    is_following: bool
+    follow_id: Optional[str] = None
+
+class FollowingList(BaseModel):
+    following: List[UserResponse]
+    total: int
+
+class FollowersList(BaseModel):
+    followers: List[UserResponse]
+    total: int
+
 # =============  COMMENT MODELS =============
 
 class Comment(BaseModel):
