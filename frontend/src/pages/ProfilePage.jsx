@@ -454,7 +454,7 @@ const ProfilePage = () => {
             color="purple"
           />
           <StatCard
-            icon={Heart}
+            icon={Users}
             label="Siguiendo"
             value={displayUser.following}
             color="red"
