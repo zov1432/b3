@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { 
-  Heart, MessageCircle, Share, Bookmark, Play, Pause,
+  Heart, MessageCircle, Send, Bookmark, Play, Pause,
   Volume2, VolumeX, MoreHorizontal, CheckCircle,
   Users, Eye, ThumbsUp, Crown, Star, Flame
 } from 'lucide-react';
