@@ -136,6 +136,7 @@ export const FollowProvider = ({ children }) => {
     getFollowStatus,
     isFollowing,
     getFollowingUsers,
+    getUserByUsername,
     followingUsers
   };
 
