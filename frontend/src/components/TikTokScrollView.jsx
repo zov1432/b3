@@ -129,9 +129,9 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                     {((poll.author || 'U') + '').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                {/* Badge de propietario */}
-                <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full p-1 shadow-lg">
-                  <Crown className="w-3 h-3 text-yellow-900 fill-current" />
+                {/* Badge de seguir */}
+                <div className="absolute -bottom-1 -right-1 bg-blue-500 hover:bg-blue-600 rounded-full p-1 shadow-lg cursor-pointer transition-colors duration-200">
+                  <Plus className="w-3 h-3 text-white" />
                 </div>
               </div>
               
