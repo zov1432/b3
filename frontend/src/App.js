@@ -22,6 +22,7 @@ import { TikTokProvider, useTikTok } from './contexts/TikTokContext';
 // Import Authentication and Addiction
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { AddictionProvider } from './contexts/AddictionContext';
+import { FollowProvider } from './contexts/FollowContext';
 
 function AppContent() {
   const { toast } = useToast();
