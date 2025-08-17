@@ -111,6 +111,7 @@ export const FollowProvider = ({ children }) => {
   const getFollowStatus = async (userIdOrUsername) => {
     try {
       let userId = userIdOrUsername;
+      let originalKey = userIdOrUsername;
       
       // If it looks like a username, try to resolve it to ID
       if (!userIdOrUsername.includes('-') && userIdOrUsername.length > 5) {
@@ -123,8 +124,13 @@ export const FollowProvider = ({ children }) => {
       }
 
       const response = await apiRequest(`/api/users/${userId}/follow-status`);
-      // Update local cache
-      setFollowingUsers(prev => new Map(prev.set(userId, response.is_following)));
+      // Update local cache with both keys
+      setFollowingUsers(prev => {
+        const newMap = new Map(prev);
+        newMap.set(userId, response.is_following);
+        newMap.set(originalKey, response.is_following);
+        return newMap;
+      });
       return response.is_following;
     } catch (error) {
       console.error('Error getting follow status:', error);
