@@ -203,6 +203,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
               {!isFollowing(authorUserId) && currentUser && authorUserId !== currentUser.id && (
                 <button
                   onClick={(e) => {
+                    console.log('🎯 PLUS BUTTON CLICKED!');
                     e.stopPropagation();
                     // Crear objeto de usuario con username correcto
                     const userToFollow = poll.authorUser || { 
@@ -210,6 +211,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                       displayName: poll.author,
                       id: authorUserId 
                     };
+                    console.log('📝 userToFollow object:', userToFollow);
                     handleFollowUser(userToFollow);
                   }}
                   className="absolute -bottom-1 -right-1 bg-blue-500 hover:bg-blue-600 rounded-full p-1 shadow-lg cursor-pointer transition-colors duration-200 hover:scale-110"
