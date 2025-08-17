@@ -75,15 +75,31 @@ export const FollowProvider = ({ children }) => {
     }
   };
 
-  const unfollowUser = async (userId) => {
+  const unfollowUser = async (userIdOrUsername) => {
     try {
+      let userId = userIdOrUsername;
+      let originalKey = userIdOrUsername;
+      
+      // If it looks like a username, try to resolve it to ID
+      if (!userIdOrUsername.includes('-') && userIdOrUsername.length > 5) {
+        const user = await getUserByUsername(userIdOrUsername);
+        if (user) {
+          userId = user.id;
+        }
+      }
+      
       const response = await apiRequest(`/api/users/${userId}/follow`, {
         method: 'DELETE',
       });
       
       if (response.message) {
-        // Update local state
-        setFollowingUsers(prev => new Map(prev.set(userId, false)));
+        // Update local state with both keys
+        setFollowingUsers(prev => {
+          const newMap = new Map(prev);
+          newMap.set(userId, false);  // Set with resolved user ID
+          newMap.set(originalKey, false);  // Set with original key
+          return newMap;
+        });
         return { success: true, message: response.message };
       }
     } catch (error) {
