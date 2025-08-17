@@ -43,6 +43,7 @@ export const FollowProvider = ({ children }) => {
   const followUser = async (userIdOrUsername) => {
     try {
       let userId = userIdOrUsername;
+      let originalKey = userIdOrUsername;  // Mantener la clave original también
       
       // If it looks like a username (no UUID format), try to resolve it to ID
       if (!userIdOrUsername.includes('-') && userIdOrUsername.length > 5) {
@@ -59,8 +60,13 @@ export const FollowProvider = ({ children }) => {
       });
       
       if (response.message) {
-        // Update local state
-        setFollowingUsers(prev => new Map(prev.set(userId, true)));
+        // Update local state with both keys to ensure compatibility
+        setFollowingUsers(prev => {
+          const newMap = new Map(prev);
+          newMap.set(userId, true);  // Set with resolved user ID
+          newMap.set(originalKey, true);  // Set with original key (username)
+          return newMap;
+        });
         return { success: true, message: response.message };
       }
     } catch (error) {
