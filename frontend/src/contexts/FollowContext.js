@@ -41,42 +41,30 @@ export const FollowProvider = ({ children }) => {
   };
 
   const followUser = async (userIdOrUsername) => {
-    console.log('🔧 DEBUG followUser called with:', userIdOrUsername);
-    
     try {
       let userId = userIdOrUsername;
       let originalKey = userIdOrUsername;  // Mantener la clave original también
       
       // If it looks like a username (no UUID format), try to resolve it to ID
       if (!userIdOrUsername.includes('-') && userIdOrUsername.length > 5) {
-        console.log('🔍 Resolving username to ID:', userIdOrUsername);
         const user = await getUserByUsername(userIdOrUsername);
         if (user) {
           userId = user.id;
-          console.log('✅ Resolved to user ID:', userId);
         } else {
-          console.log('❌ User not found:', userIdOrUsername);
           return { success: false, error: 'Usuario no encontrado' };
         }
       }
 
-      console.log('📡 Making API call to follow:', userId);
       const response = await apiRequest(`/api/users/${userId}/follow`, {
         method: 'POST',
       });
       
       if (response.message) {
-        console.log('✅ API response success:', response);
         // Update local state with both keys to ensure compatibility
         setFollowingUsers(prev => {
           const newMap = new Map(prev);
           newMap.set(userId, true);  // Set with resolved user ID
           newMap.set(originalKey, true);  // Set with original key (username)
-          console.log('🔄 Updated following state:', {
-            userId: userId,
-            originalKey: originalKey,
-            newMapSize: newMap.size
-          });
           return newMap;
         });
         return { success: true, message: response.message };
