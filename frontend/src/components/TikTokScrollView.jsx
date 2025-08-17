@@ -106,9 +106,13 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
     try {
       const result = await followUser(userId);
       if (result.success) {
+        // Actualizar el estado local usando la misma clave que se usa para verificar
+        // Esto asegura que isFollowing(authorUserId) devuelva true inmediatamente
+        setFollowingUsers(prev => new Map(prev.set(authorUserId, true)));
+        
         toast({
           title: "¡Siguiendo!",
-          description: `Ahora sigues a @${user.username}`,
+          description: `Ahora sigues a @${user.username || user.displayName}`,
           duration: 2000,
         });
       } else {
