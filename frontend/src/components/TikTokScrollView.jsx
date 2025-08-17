@@ -103,24 +103,15 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
   const handleFollowUser = async (user) => {
     const userId = user.id || user.username;
     
-    console.log('🔧 DEBUG handleFollowUser:', {
-      user,
-      userId,
-      authorUserId,
-      isCurrentlyFollowing: isFollowing(authorUserId)
-    });
-    
     try {
       const result = await followUser(userId);
       if (result.success) {
-        console.log('✅ Follow successful, result:', result);
         toast({
           title: "¡Siguiendo!",
           description: `Ahora sigues a @${user.username || user.displayName}`,
           duration: 2000,
         });
       } else {
-        console.log('❌ Follow failed, result:', result);
         toast({
           title: "Error",
           description: result.error || "Error al seguir al usuario",
