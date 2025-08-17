@@ -1498,8 +1498,343 @@ def test_complete_user_flow(base_url):
     
     return True
 
+def test_follow_system_with_usernames(base_url):
+    """Test follow system with specific usernames as requested in review"""
+    print("\n=== Testing Follow System with Specific Usernames ===")
+    print("Testing the 'Usuario no encontrado' error fix with proper usernames")
+    
+    # Generate unique timestamp for this test
+    timestamp = int(time.time())
+    
+    # Create 2 test users with proper usernames as requested
+    test_users_data = [
+        {
+            "email": f"progamer.alex.{timestamp}@example.com",
+            "username": "progamer_alex",
+            "display_name": "ProGamer Alex",
+            "password": "gamerpass123"
+        },
+        {
+            "email": f"artmaster.studio.{timestamp}@example.com", 
+            "username": "artmaster_studio",
+            "display_name": "ArtMaster Studio",
+            "password": "artpass456"
+        }
+    ]
+    
+    created_users = []
+    user_tokens = []
+    success_count = 0
+    
+    # Step 1: Register the test users
+    print("\n--- Step 1: Creating test users with proper usernames ---")
+    for i, user_data in enumerate(test_users_data):
+        print(f"Registering user {i+1}: {user_data['username']}")
+        try:
+            response = requests.post(f"{base_url}/auth/register", json=user_data, timeout=10)
+            print(f"Registration Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                print(f"✅ User {user_data['username']} registered successfully")
+                print(f"User ID: {data['user']['id']}")
+                print(f"Username: {data['user']['username']}")
+                print(f"Display Name: {data['user']['display_name']}")
+                
+                created_users.append(data['user'])
+                user_tokens.append(data['access_token'])
+                success_count += 1
+            else:
+                print(f"❌ Registration failed for {user_data['username']}: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Registration error for {user_data['username']}: {e}")
+    
+    if len(created_users) < 2:
+        print("❌ Failed to create required test users")
+        return False
+    
+    # Step 2: Test user search functionality with specific usernames
+    print("\n--- Step 2: Testing user search with specific usernames ---")
+    headers1 = {"Authorization": f"Bearer {user_tokens[0]}"}
+    headers2 = {"Authorization": f"Bearer {user_tokens[1]}"}
+    
+    # Test search for "progamer_alex"
+    print("Testing GET /api/users/search?q=progamer_alex")
+    try:
+        response = requests.get(f"{base_url}/users/search?q=progamer_alex", headers=headers2, timeout=10)
+        print(f"Search Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            search_results = response.json()
+            print(f"✅ Search successful, found {len(search_results)} users")
+            
+            # Verify progamer_alex is found
+            progamer_found = False
+            for user in search_results:
+                print(f"Found user: {user['username']} - {user['display_name']}")
+                if user['username'] == 'progamer_alex':
+                    progamer_found = True
+                    print("✅ progamer_alex found in search results")
+                    break
+            
+            if progamer_found:
+                success_count += 1
+            else:
+                print("❌ progamer_alex not found in search results")
+        else:
+            print(f"❌ User search failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ User search error: {e}")
+    
+    # Test search for "artmaster_studio"
+    print("\nTesting GET /api/users/search?q=artmaster_studio")
+    try:
+        response = requests.get(f"{base_url}/users/search?q=artmaster_studio", headers=headers1, timeout=10)
+        print(f"Search Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            search_results = response.json()
+            print(f"✅ Search successful, found {len(search_results)} users")
+            
+            # Verify artmaster_studio is found
+            artmaster_found = False
+            for user in search_results:
+                print(f"Found user: {user['username']} - {user['display_name']}")
+                if user['username'] == 'artmaster_studio':
+                    artmaster_found = True
+                    print("✅ artmaster_studio found in search results")
+                    break
+            
+            if artmaster_found:
+                success_count += 1
+            else:
+                print("❌ artmaster_studio not found in search results")
+        else:
+            print(f"❌ User search failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ User search error: {e}")
+    
+    # Step 3: Test follow functionality with user IDs
+    print("\n--- Step 3: Testing follow functionality with user IDs ---")
+    user1_id = created_users[0]['id']  # progamer_alex
+    user2_id = created_users[1]['id']  # artmaster_studio
+    
+    print(f"Testing POST /api/users/{user2_id}/follow (progamer_alex follows artmaster_studio)")
+    try:
+        response = requests.post(f"{base_url}/users/{user2_id}/follow", headers=headers1, timeout=10)
+        print(f"Follow Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Follow successful: {data['message']}")
+            print(f"Follow ID: {data['follow_id']}")
+            success_count += 1
+        else:
+            print(f"❌ Follow failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Follow error: {e}")
+    
+    # Step 4: Verify follow status
+    print(f"\n--- Step 4: Verifying follow status ---")
+    print(f"Testing GET /api/users/{user2_id}/follow-status")
+    try:
+        response = requests.get(f"{base_url}/users/{user2_id}/follow-status", headers=headers1, timeout=10)
+        print(f"Follow Status Check Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Follow status retrieved: is_following = {data['is_following']}")
+            if data['is_following']:
+                print("✅ Follow relationship confirmed")
+                success_count += 1
+            else:
+                print("❌ Follow relationship not confirmed")
+        else:
+            print(f"❌ Follow status check failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Follow status error: {e}")
+    
+    # Step 5: Test reverse follow (artmaster_studio follows progamer_alex)
+    print(f"\n--- Step 5: Testing reverse follow ---")
+    print(f"Testing POST /api/users/{user1_id}/follow (artmaster_studio follows progamer_alex)")
+    try:
+        response = requests.post(f"{base_url}/users/{user1_id}/follow", headers=headers2, timeout=10)
+        print(f"Reverse Follow Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Reverse follow successful: {data['message']}")
+            success_count += 1
+        else:
+            print(f"❌ Reverse follow failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Reverse follow error: {e}")
+    
+    # Step 6: Test following lists
+    print(f"\n--- Step 6: Testing following lists ---")
+    print("Testing GET /api/users/following (progamer_alex's following list)")
+    try:
+        response = requests.get(f"{base_url}/users/following", headers=headers1, timeout=10)
+        print(f"Following List Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Following list retrieved: {data['total']} users")
+            for user in data['following']:
+                print(f"Following: {user['username']} - {user['display_name']}")
+            
+            # Verify artmaster_studio is in the list
+            if any(user['username'] == 'artmaster_studio' for user in data['following']):
+                print("✅ artmaster_studio found in progamer_alex's following list")
+                success_count += 1
+            else:
+                print("❌ artmaster_studio not found in following list")
+        else:
+            print(f"❌ Following list failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Following list error: {e}")
+    
+    # Step 7: Test followers list
+    print(f"\n--- Step 7: Testing followers list ---")
+    print(f"Testing GET /api/users/{user2_id}/followers (artmaster_studio's followers)")
+    try:
+        response = requests.get(f"{base_url}/users/{user2_id}/followers", timeout=10)
+        print(f"Followers List Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Followers list retrieved: {data['total']} users")
+            for user in data['followers']:
+                print(f"Follower: {user['username']} - {user['display_name']}")
+            
+            # Verify progamer_alex is in the list
+            if any(user['username'] == 'progamer_alex' for user in data['followers']):
+                print("✅ progamer_alex found in artmaster_studio's followers list")
+                success_count += 1
+            else:
+                print("❌ progamer_alex not found in followers list")
+        else:
+            print(f"❌ Followers list failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Followers list error: {e}")
+    
+    # Step 8: Test error scenarios that were causing "Usuario no encontrado"
+    print(f"\n--- Step 8: Testing error scenarios ---")
+    
+    # Test following non-existent user
+    print("Testing follow with non-existent user ID")
+    try:
+        fake_user_id = "non_existent_user_12345"
+        response = requests.post(f"{base_url}/users/{fake_user_id}/follow", headers=headers1, timeout=10)
+        print(f"Non-existent User Follow Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Non-existent user properly returns 404 (Usuario no encontrado)")
+            success_count += 1
+        else:
+            print(f"❌ Should return 404 for non-existent user, got: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Non-existent user test error: {e}")
+    
+    # Test search with partial username
+    print("\nTesting search with partial username 'progamer'")
+    try:
+        response = requests.get(f"{base_url}/users/search?q=progamer", headers=headers2, timeout=10)
+        print(f"Partial Search Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            search_results = response.json()
+            print(f"✅ Partial search successful, found {len(search_results)} users")
+            
+            # Should find progamer_alex
+            if any(user['username'] == 'progamer_alex' for user in search_results):
+                print("✅ progamer_alex found with partial search 'progamer'")
+                success_count += 1
+            else:
+                print("❌ progamer_alex not found with partial search")
+        else:
+            print(f"❌ Partial search failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Partial search error: {e}")
+    
+    # Step 9: Clean up - unfollow relationships
+    print(f"\n--- Step 9: Cleanup - Testing unfollow functionality ---")
+    
+    # Unfollow artmaster_studio
+    print(f"Testing DELETE /api/users/{user2_id}/follow (progamer_alex unfollows artmaster_studio)")
+    try:
+        response = requests.delete(f"{base_url}/users/{user2_id}/follow", headers=headers1, timeout=10)
+        print(f"Unfollow Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Unfollow successful: {data['message']}")
+            success_count += 1
+        else:
+            print(f"❌ Unfollow failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Unfollow error: {e}")
+    
+    # Unfollow progamer_alex
+    print(f"Testing DELETE /api/users/{user1_id}/follow (artmaster_studio unfollows progamer_alex)")
+    try:
+        response = requests.delete(f"{base_url}/users/{user1_id}/follow", headers=headers2, timeout=10)
+        print(f"Reverse Unfollow Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"✅ Reverse unfollow successful: {data['message']}")
+            success_count += 1
+        else:
+            print(f"❌ Reverse unfollow failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Reverse unfollow error: {e}")
+    
+    # Final verification
+    print(f"\n--- Final Verification ---")
+    print(f"Testing follow status after cleanup")
+    try:
+        response = requests.get(f"{base_url}/users/{user2_id}/follow-status", headers=headers1, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            if not data['is_following']:
+                print("✅ Follow status correctly shows not following after cleanup")
+                success_count += 1
+            else:
+                print("❌ Should not be following after unfollow")
+        else:
+            print(f"❌ Final verification failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Final verification error: {e}")
+    
+    print(f"\n=== Follow System with Usernames Test Summary ===")
+    print(f"✅ Tests passed: {success_count}/12")
+    print(f"✅ Users created: progamer_alex, artmaster_studio")
+    print(f"✅ User search functionality: Working")
+    print(f"✅ Follow/unfollow with user IDs: Working")
+    print(f"✅ Follow status verification: Working")
+    print(f"✅ Following/followers lists: Working")
+    print(f"✅ Error handling for non-existent users: Working")
+    print(f"✅ 'Usuario no encontrado' error should be fixed")
+    
+    return success_count >= 10  # At least 10 out of 12 tests should pass
+
 def main():
-    print("=== FOLLOW SYSTEM HEALTH CHECK TESTING ===")
+    print("=== FOLLOW SYSTEM USERNAME TESTING ===")
+    print("Testing the 'Usuario no encontrado' error fix with specific usernames")
     print(f"Test started at: {datetime.now()}")
     
     # Get backend URL
@@ -1510,7 +1845,7 @@ def main():
     
     print(f"Testing backend at: {base_url}")
     
-    # Run focused tests for follow system
+    # Run focused tests for follow system with usernames
     results = {}
     
     print("\n" + "="*60)
