@@ -151,7 +151,14 @@ export const FollowProvider = ({ children }) => {
   };
 
   const isFollowing = (userId) => {
-    return followingUsers.get(userId) || false;
+    const result = followingUsers.get(userId) || false;
+    console.log('🤔 isFollowing check:', {
+      userId,
+      result,
+      allKeys: Array.from(followingUsers.keys()),
+      mapSize: followingUsers.size
+    });
+    return result;
   };
 
   const getFollowingUsers = async () => {
