@@ -1852,6 +1852,9 @@ def main():
     results['health'] = test_health_check(base_url)
     
     print("\n" + "="*60)
+    results['follow_usernames'] = test_follow_system_with_usernames(base_url)
+    
+    print("\n" + "="*60)
     results['registration'] = test_user_registration(base_url)
     
     print("\n" + "="*60)
