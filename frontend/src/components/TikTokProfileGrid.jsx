@@ -102,7 +102,7 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
   return (
     <div className="grid grid-cols-3 gap-1">
       {polls.map((poll, index) => {
-        const coverImage = getCoverImage(poll);
+        const optionImages = getOptionImages(poll);
         const voteCount = getVoteCount(poll);
 
         return (
@@ -116,12 +116,8 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
           >
-            {/* Cover Image */}
-            <img
-              src={coverImage}
-              alt={poll.title}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
+            {/* Composite Cover Images */}
+            {renderCompositeThumbnail(poll, optionImages)}
 
             {/* Subtle dark overlay for better text visibility */}
             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
