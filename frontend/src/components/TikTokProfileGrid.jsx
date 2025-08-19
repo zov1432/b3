@@ -18,22 +18,85 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
     return poll.totalVotes || 0;
   };
 
-  // Function to get cover image (like in the feed)
-  const getCoverImage = (poll) => {
-    // Use the first option's media thumbnail, or fallback to a default
-    if (poll.options && poll.options.length > 0) {
-      for (let option of poll.options) {
-        if (option.media && option.media.thumbnail) {
-          return option.media.thumbnail;
-        }
-        if (option.media && option.media.url) {
-          return option.media.url;
-        }
-      }
+  // Function to get all option images for creating a composite thumbnail
+  const getOptionImages = (poll) => {
+    if (!poll.options || poll.options.length === 0) {
+      return [];
     }
-    
-    // Fallback to a default image based on poll content
-    return 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=600&fit=crop&crop=center';
+
+    return poll.options.map(option => {
+      if (option.media && option.media.thumbnail) {
+        return option.media.thumbnail;
+      }
+      if (option.media && option.media.url) {
+        return option.media.url;
+      }
+      // Fallback image for options without media
+      return 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=600&fit=crop&crop=center';
+    });
+  };
+
+  // Function to create a composite thumbnail layout
+  const renderCompositeThumbnail = (poll, images) => {
+    if (images.length === 1) {
+      // Single image - full cover
+      return (
+        <img
+          src={images[0]}
+          alt={poll.title}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      );
+    } else if (images.length === 2) {
+      // Two images - split vertically
+      return (
+        <div className="w-full h-full flex">
+          {images.slice(0, 2).map((img, idx) => (
+            <img
+              key={idx}
+              src={img}
+              alt={`${poll.title} option ${idx + 1}`}
+              className="w-1/2 h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ))}
+        </div>
+      );
+    } else if (images.length === 3) {
+      // Three images - one large on left, two stacked on right
+      return (
+        <div className="w-full h-full flex">
+          <img
+            src={images[0]}
+            alt={`${poll.title} option 1`}
+            className="w-2/3 h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="w-1/3 h-full flex flex-col">
+            {images.slice(1, 3).map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={`${poll.title} option ${idx + 2}`}
+                className="w-full h-1/2 object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ))}
+          </div>
+        </div>
+      );
+    } else {
+      // Four or more images - 2x2 grid
+      return (
+        <div className="w-full h-full grid grid-cols-2 grid-rows-2">
+          {images.slice(0, 4).map((img, idx) => (
+            <img
+              key={idx}
+              src={img}
+              alt={`${poll.title} option ${idx + 1}`}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ))}
+        </div>
+      );
+    }
   };
 
   return (
