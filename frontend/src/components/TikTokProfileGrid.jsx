@@ -71,21 +71,21 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
 
             {/* Bottom Stats Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-3">
-              {/* View Count */}
+              {/* Vote Count */}
               <div className="flex items-center gap-1 text-white text-sm font-semibold drop-shadow-lg mb-1">
                 <Play className="w-4 h-4" />
-                {formatViewCount(viewCount)}
+                {formatViewCount(voteCount)}
               </div>
 
               {/* Additional stats */}
               <div className="flex items-center gap-3 text-white text-xs">
                 <div className="flex items-center gap-1">
                   <Heart className="w-3 h-3" />
-                  {formatViewCount(poll.likes || Math.floor(viewCount * 0.1))}
+                  {formatViewCount(poll.likes || Math.floor(voteCount * 0.1))}
                 </div>
                 <div className="flex items-center gap-1">
                   <MessageCircle className="w-3 h-3" />
-                  {formatViewCount(poll.comments || Math.floor(viewCount * 0.05))}
+                  {formatViewCount(poll.comments || Math.floor(voteCount * 0.05))}
                 </div>
               </div>
 
