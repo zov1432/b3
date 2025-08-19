@@ -1,9 +1,9 @@
 import React from 'react';
-import { Play, Heart, MessageCircle } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const TikTokProfileGrid = ({ polls, onPollClick }) => {
-  // Function to format view count (convert votes to views)
+  // Function to format vote count
   const formatViewCount = (votes) => {
     if (votes >= 1000000) {
       return `${(votes / 1000000).toFixed(1)}M`;
@@ -18,14 +18,28 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
     return poll.totalVotes || 0;
   };
 
+  // Function to get cover image (like in the feed)
+  const getCoverImage = (poll) => {
+    // Use the first option's media thumbnail, or fallback to a default
+    if (poll.options && poll.options.length > 0) {
+      for (let option of poll.options) {
+        if (option.media && option.media.thumbnail) {
+          return option.media.thumbnail;
+        }
+        if (option.media && option.media.url) {
+          return option.media.url;
+        }
+      }
+    }
+    
+    // Fallback to a default image based on poll content
+    return 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=600&fit=crop&crop=center';
+  };
+
   return (
     <div className="grid grid-cols-3 gap-1">
       {polls.map((poll, index) => {
-        // Get the first option's thumbnail or a random one
-        const thumbnail = poll.options?.[0]?.media?.thumbnail || 
-                         poll.options?.[Math.floor(Math.random() * poll.options.length)]?.media?.thumbnail ||
-                         'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=600&fit=crop&crop=center';
-        
+        const coverImage = getCoverImage(poll);
         const voteCount = getVoteCount(poll);
 
         return (
@@ -39,9 +53,9 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
           >
-            {/* Background Image */}
+            {/* Cover Image */}
             <img
-              src={thumbnail}
+              src={coverImage}
               alt={poll.title}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
@@ -59,34 +73,16 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
               </motion.div>
             </div>
 
-            {/* Bottom Stats Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-3">
-              {/* Vote Count */}
-              <div className="flex items-center gap-1 text-white text-sm font-semibold drop-shadow-lg mb-1">
+            {/* Vote Count Only */}
+            <div className="absolute bottom-3 left-3">
+              <div className="flex items-center gap-1 text-white text-sm font-semibold drop-shadow-lg">
                 <Play className="w-4 h-4" />
                 {formatViewCount(voteCount)}
-              </div>
-
-              {/* Additional stats */}
-              <div className="flex items-center gap-3 text-white text-xs">
-                <div className="flex items-center gap-1">
-                  <Heart className="w-3 h-3" />
-                  {formatViewCount(poll.likes || Math.floor(voteCount * 0.1))}
-                </div>
-                <div className="flex items-center gap-1">
-                  <MessageCircle className="w-3 h-3" />
-                  {formatViewCount(poll.comments || Math.floor(voteCount * 0.05))}
-                </div>
-              </div>
-
-              {/* Title (truncated) */}
-              <div className="text-white text-xs mt-1 truncate font-medium drop-shadow-sm">
-                {poll.title}
               </div>
             </div>
 
             {/* Gradient overlay for better text readability */}
-            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           </motion.div>
         );
       })}
