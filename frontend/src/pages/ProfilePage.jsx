@@ -603,44 +603,6 @@ const ProfilePage = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="activity" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <h3 className="text-lg font-semibold">Actividad Reciente</h3>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                      <Vote className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Creaste una nueva votación</p>
-                      <p className="text-xs text-gray-500">hace 2 horas</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                    <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                      <Trophy className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Tu votación alcanzó 100 votos</p>
-                      <p className="text-xs text-gray-500">hace 1 día</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-                    <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                      <Users className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Tienes 10 nuevos seguidores</p>
-                      <p className="text-xs text-gray-500">hace 3 días</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
       </div>
 
