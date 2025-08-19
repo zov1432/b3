@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: Test the TikTok-style profile grid implementation. I've implemented a new TikTokProfileGrid component that shows user posts in a 3-column grid format similar to TikTok/Instagram profiles. Please test: 1. User registration and authentication 2. Navigation to profile page 3. Check that the "Votaciones" tab shows posts in a 3-column grid format 4. Verify that each grid item has: - "MAKE YOUR CHOICE" overlay text - Vote count overlay (using real poll.totalVotes) - Play button on hover - Proper image thumbnails
+user_problem_statement: CAMBIO TERMINOLÓGICO EN PERFIL: Cambiar "votos totales" por "me gusta" en la sección del perfil del usuario. Este cambio mejora la experiencia del usuario usando terminología más familiar y atractiva en lugar de "votos totales".
 
 backend:
   - task: "Sistema de Autenticación JWT"
