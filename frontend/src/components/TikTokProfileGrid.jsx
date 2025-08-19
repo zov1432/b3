@@ -59,16 +59,6 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
               </motion.div>
             </div>
 
-            {/* "MAKE YOUR CHOICE" Overlay */}
-            <div className="absolute top-3 left-3 right-3">
-              <div className="text-white text-xs font-bold tracking-wide drop-shadow-lg">
-                MAKE YOUR
-              </div>
-              <div className="text-white text-xs font-bold tracking-wide drop-shadow-lg">
-                CHOICE
-              </div>
-            </div>
-
             {/* Bottom Stats Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-3">
               {/* Vote Count */}
