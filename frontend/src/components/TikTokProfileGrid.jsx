@@ -60,20 +60,8 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
-            {/* Dark overlay for better text visibility */}
-            <div className="absolute inset-0 bg-black/30" />
-
-            {/* MAKE YOUR CHOICE text overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-white font-bold text-lg tracking-wider drop-shadow-lg text-center px-4">
-                <div className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent font-extrabold text-xl mb-1">
-                  MAKE YOUR
-                </div>
-                <div className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent font-extrabold text-xl">
-                  CHOICE
-                </div>
-              </div>
-            </div>
+            {/* Subtle dark overlay for better text visibility */}
+            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
 
             {/* Play Button (on hover) */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -85,11 +73,11 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
               </motion.div>
             </div>
 
-            {/* Vote Count with Play icon */}
-            <div className="absolute bottom-2 left-2">
-              <div className="flex items-center gap-1 text-white text-sm font-bold drop-shadow-lg">
-                <Play className="w-3 h-3 fill-white" />
-                <span className="text-shadow-lg">{formatViewCount(voteCount)}</span>
+            {/* Vote Count with Play icon - Bottom left corner */}
+            <div className="absolute bottom-2 left-2 z-10">
+              <div className="flex items-center gap-1 text-white font-bold drop-shadow-lg">
+                <Play className="w-4 h-4 fill-white" />
+                <span className="text-sm font-bold">{formatViewCount(voteCount)}</span>
               </div>
             </div>
 
