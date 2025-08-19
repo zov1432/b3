@@ -526,8 +526,8 @@ const ProfilePage = () => {
                 <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Heart className="w-12 h-12 text-gray-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">No tienes votaciones favoritas</h3>
-                <p className="text-gray-600 mb-6">¡Dale like a las votaciones que más te gusten!</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">No tienes publicaciones favoritas</h3>
+                <p className="text-gray-600 mb-6">¡Dale like a las publicaciones que más te gusten!</p>
               </div>
             ) : (
               <TikTokProfileGrid 
