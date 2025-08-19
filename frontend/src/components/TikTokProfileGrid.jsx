@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play } from 'lucide-react';
+import { Play, Vote, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const TikTokProfileGrid = ({ polls, onPollClick }) => {
