@@ -593,7 +593,8 @@ const ProfilePage = () => {
                 <TikTokProfileGrid 
                   polls={savedPolls} 
                   onPollClick={(poll) => {
-                    handleComment(poll.id);
+                    // Navigate to feed to see the full poll
+                    navigate('/feed');
                   }}
                 />
               </div>
