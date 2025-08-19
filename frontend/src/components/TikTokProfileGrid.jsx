@@ -45,7 +45,7 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
         return (
           <motion.div
             key={poll.id}
-            className="relative aspect-[3/4] bg-black rounded-lg overflow-hidden cursor-pointer group"
+            className="relative aspect-[3/4] bg-black overflow-hidden cursor-pointer group"
             onClick={() => onPollClick && onPollClick(poll)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -60,10 +60,22 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
-            {/* Dark overlay */}
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
+            {/* Dark overlay for better text visibility */}
+            <div className="absolute inset-0 bg-black/30" />
 
-            {/* Play Button */}
+            {/* MAKE YOUR CHOICE text overlay */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-white font-bold text-lg tracking-wider drop-shadow-lg text-center px-4">
+                <div className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent font-extrabold text-xl mb-1">
+                  MAKE YOUR
+                </div>
+                <div className="bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent font-extrabold text-xl">
+                  CHOICE
+                </div>
+              </div>
+            </div>
+
+            {/* Play Button (on hover) */}
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div
                 className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -73,16 +85,16 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
               </motion.div>
             </div>
 
-            {/* Vote Count Only */}
-            <div className="absolute bottom-3 left-3">
-              <div className="flex items-center gap-1 text-white text-sm font-semibold drop-shadow-lg">
-                <Play className="w-4 h-4" />
-                {formatViewCount(voteCount)}
+            {/* Vote Count with Play icon */}
+            <div className="absolute bottom-2 left-2">
+              <div className="flex items-center gap-1 text-white text-sm font-bold drop-shadow-lg">
+                <Play className="w-3 h-3 fill-white" />
+                <span className="text-shadow-lg">{formatViewCount(voteCount)}</span>
               </div>
             </div>
 
             {/* Gradient overlay for better text readability */}
-            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
           </motion.div>
         );
       })}
