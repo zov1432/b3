@@ -653,6 +653,17 @@ const ProfilePage = () => {
         pollTitle={selectedPollTitle}
         pollAuthor={selectedPollAuthor}
       />
+
+      {/* Poll Modal */}
+      <PollModal
+        isOpen={showPollModal}
+        onClose={() => setShowPollModal(false)}
+        poll={selectedPoll}
+        onVote={handleVote}
+        onLike={handleLike}
+        onShare={handleShare}
+        onComment={handleComment}
+      />
     </div>
   );
 };
