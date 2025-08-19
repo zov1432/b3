@@ -486,7 +486,7 @@ const ProfilePage = () => {
         <Tabs defaultValue="polls" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="polls" className="flex items-center gap-2">
-              <Vote className="w-4 h-4" />
+              <Grid3X3 className="w-4 h-4" />
               Publicaciones
             </TabsTrigger>
             <TabsTrigger value="liked" className="flex items-center gap-2">
