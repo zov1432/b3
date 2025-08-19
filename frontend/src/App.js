@@ -53,8 +53,16 @@ function AppContent() {
     );
   }
 
-  // Show auth page if not authenticated
-  if (!isAuthenticated) {
+  // Check if we're on a demo page that doesn't require auth
+  const location = window.location.pathname;
+  const isDemoPage = location.startsWith('/grid-demo') || 
+                    location.startsWith('/explore-demo') || 
+                    location.startsWith('/battle-demo') || 
+                    location.startsWith('/feed-demo') || 
+                    location.startsWith('/test-fomo');
+
+  // Show auth page if not authenticated and not on demo page
+  if (!isAuthenticated && !isDemoPage) {
     return <AuthPage />;
   }
 
