@@ -81,8 +81,8 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
               </div>
             </div>
 
-            {/* Gradient overlay for better text readability */}
-            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
+            {/* Subtle gradient overlay for text readability */}
+            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           </motion.div>
         );
       })}
