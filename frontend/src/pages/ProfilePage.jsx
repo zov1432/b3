@@ -325,8 +325,17 @@ const ProfilePage = () => {
   };
 
   const handlePollClick = (poll) => {
-    setSelectedPoll(poll);
-    setShowPollModal(true);
+    // Encontrar el índice de la publicación seleccionada dentro de la lista actual
+    const currentPolls = activeTab === 'polls' ? userPolls : 
+                        activeTab === 'liked' ? likedPolls :
+                        activeTab === 'mentions' ? mentionedPolls :
+                        activeTab === 'saved' ? savedPolls : [];
+    
+    const pollIndex = currentPolls.findIndex(p => p.id === poll.id);
+    
+    setTikTokPolls(currentPolls);
+    setInitialPollIndex(pollIndex >= 0 ? pollIndex : 0);
+    setShowTikTokView(true);
   };
 
   const handleComment = (pollId) => {
