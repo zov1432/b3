@@ -323,6 +323,11 @@ const ProfilePage = () => {
     }
   };
 
+  const handlePollClick = (poll) => {
+    setSelectedPoll(poll);
+    setShowPollModal(true);
+  };
+
   const handleComment = (pollId) => {
     const poll = polls.find(p => p.id === pollId);
     if (poll) {
