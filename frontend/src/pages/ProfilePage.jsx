@@ -9,6 +9,7 @@ import PollCard from '../components/PollCard';
 import EditProfileModal from '../components/EditProfileModal';
 import CommentsModal from '../components/CommentsModal';
 import TikTokProfileGrid from '../components/TikTokProfileGrid';
+import PollModal from '../components/PollModal';
 import { Settings, Users, Vote, Trophy, Heart, LogOut, ArrowLeft, AtSign, Bookmark } from 'lucide-react';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
