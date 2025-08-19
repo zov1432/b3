@@ -49,8 +49,9 @@ const ProfilePage = () => {
   const [selectedPollId, setSelectedPollId] = useState(null);
   const [selectedPollTitle, setSelectedPollTitle] = useState('');
   const [selectedPollAuthor, setSelectedPollAuthor] = useState('');
-  const [showPollModal, setShowPollModal] = useState(false);
-  const [selectedPoll, setSelectedPoll] = useState(null);
+  const [showTikTokView, setShowTikTokView] = useState(false);
+  const [tikTokPolls, setTikTokPolls] = useState([]);
+  const [initialPollIndex, setInitialPollIndex] = useState(0);
   const { toast } = useToast();
   const { user: authUser, logout, refreshUser } = useAuth();
   const { userId } = useParams();
