@@ -13,12 +13,9 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
     return votes.toString();
   };
 
-  // Function to get random view count based on votes
-  const getViewCount = (poll) => {
-    // Use totalVotes as base and multiply by random factor for "views"
-    const baseViews = poll.totalVotes || 100;
-    const multiplier = Math.random() * 100 + 50; // 50-150x multiplier
-    return Math.floor(baseViews * multiplier);
+  // Function to get vote count
+  const getVoteCount = (poll) => {
+    return poll.totalVotes || 0;
   };
 
   return (
