@@ -49,6 +49,8 @@ const ProfilePage = () => {
   const [selectedPollId, setSelectedPollId] = useState(null);
   const [selectedPollTitle, setSelectedPollTitle] = useState('');
   const [selectedPollAuthor, setSelectedPollAuthor] = useState('');
+  const [showPollModal, setShowPollModal] = useState(false);
+  const [selectedPoll, setSelectedPoll] = useState(null);
   const { toast } = useToast();
   const { user: authUser, logout, refreshUser } = useAuth();
   const { userId } = useParams();
