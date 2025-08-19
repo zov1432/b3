@@ -545,27 +545,12 @@ const ProfilePage = () => {
                     {mentionedPolls.length} menciones encontradas
                   </h3>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {mentionedPolls.map((poll) => (
-                    <div key={poll.id} className="animate-fade-in">
-                      <div className="relative">
-                        <PollCard
-                          poll={poll}
-                          onVote={handleVote}
-                          onLike={handleLike}
-                          onShare={handleShare}
-                          onComment={handleComment}
-                          onSave={handleSave}
-                        />
-                        {/* Mention badge */}
-                        <div className="absolute top-2 right-2 bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 shadow-sm">
-                          <AtSign className="w-3 h-3" />
-                          Mencionado
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <TikTokProfileGrid 
+                  polls={mentionedPolls} 
+                  onPollClick={(poll) => {
+                    handleComment(poll.id);
+                  }}
+                />
               </div>
             )}
           </TabsContent>
