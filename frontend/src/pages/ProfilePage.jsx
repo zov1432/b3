@@ -509,10 +509,7 @@ const ProfilePage = () => {
             ) : (
               <TikTokProfileGrid 
                 polls={userPolls} 
-                onPollClick={(poll) => {
-                  // Navigate to feed to see the full poll
-                  navigate('/feed');
-                }}
+                onPollClick={handlePollClick}
               />
             )}
           </TabsContent>
