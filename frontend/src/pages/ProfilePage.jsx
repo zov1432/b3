@@ -664,16 +664,20 @@ const ProfilePage = () => {
         pollAuthor={selectedPollAuthor}
       />
 
-      {/* Poll Modal */}
-      <PollModal
-        isOpen={showPollModal}
-        onClose={() => setShowPollModal(false)}
-        poll={selectedPoll}
-        onVote={handleVote}
-        onLike={handleLike}
-        onShare={handleShare}
-        onComment={handleComment}
-      />
+      {/* TikTok View Modal */}
+      {showTikTokView && (
+        <div className="fixed inset-0 bg-black z-50">
+          <TikTokScrollView
+            polls={tikTokPolls}
+            onVote={handleVote}
+            onLike={handleLike}
+            onShare={handleShare}
+            onComment={handleComment}
+            initialIndex={initialPollIndex}
+            onClose={() => setShowTikTokView(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };
