@@ -77,6 +77,7 @@ function AppContent() {
             <Route path="/explore-demo" element={<ExploreDemo />} />
             <Route path="/battle-demo" element={<LiveBattleDemoPage />} />
             <Route path="/feed-demo" element={<FeedDemoPage />} />
+            <Route path="/grid-demo" element={<GridDemo />} />
             <Route path="/test-fomo" element={<TestFOMO />} />
           </Routes>
 
