@@ -519,20 +519,12 @@ const ProfilePage = () => {
                 <p className="text-gray-600 mb-6">¡Dale like a las votaciones que más te gusten!</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {likedPolls.map((poll) => (
-                  <div key={poll.id} className="animate-fade-in">
-                    <PollCard
-                      poll={poll}
-                      onVote={handleVote}
-                      onLike={handleLike}
-                      onShare={handleShare}
-                      onComment={handleComment}
-                      onSave={handleSave}
-                    />
-                  </div>
-                ))}
-              </div>
+              <TikTokProfileGrid 
+                polls={likedPolls} 
+                onPollClick={(poll) => {
+                  handleComment(poll.id);
+                }}
+              />
             )}
           </TabsContent>
 
