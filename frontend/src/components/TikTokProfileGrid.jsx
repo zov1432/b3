@@ -26,7 +26,7 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
                          poll.options?.[Math.floor(Math.random() * poll.options.length)]?.media?.thumbnail ||
                          'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=600&fit=crop&crop=center';
         
-        const viewCount = getViewCount(poll);
+        const voteCount = getVoteCount(poll);
 
         return (
           <motion.div
