@@ -588,40 +588,12 @@ const ProfilePage = () => {
                     Limpiar todo
                   </Button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {savedPolls.map((poll) => (
-                    <div key={poll.id} className="animate-fade-in">
-                      <div className="relative group">
-                        <PollCard
-                          poll={poll}
-                          onVote={handleVote}
-                          onLike={handleLike}
-                          onShare={handleShare}
-                          onComment={handleComment}
-                          onSave={handleSave}
-                        />
-                        {/* Saved badge with remove option */}
-                        <div className="absolute top-2 right-2 flex items-center gap-1">
-                          <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 shadow-sm">
-                            <Bookmark className="w-3 h-3" />
-                            Guardado
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="w-8 h-8 p-0 bg-red-100 hover:bg-red-200 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleSave(poll.id);
-                            }}
-                          >
-                            <span className="text-xs">✕</span>
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <TikTokProfileGrid 
+                  polls={savedPolls} 
+                  onPollClick={(poll) => {
+                    handleComment(poll.id);
+                  }}
+                />
               </div>
             )}
           </TabsContent>
