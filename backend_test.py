@@ -1949,79 +1949,65 @@ def test_follow_system_with_usernames(base_url):
     return success_count >= 10  # At least 10 out of 12 tests should pass
 
 def main():
-    print("=== FOLLOW SYSTEM USERNAME TESTING ===")
-    print("Testing the 'Usuario no encontrado' error fix with specific usernames")
-    print(f"Test started at: {datetime.now()}")
+    """Main test execution function"""
+    print("🚀 Starting Backend API Testing for TikTok Profile Grid Implementation")
+    print("=" * 80)
     
     # Get backend URL
     base_url = get_backend_url()
     if not base_url:
-        print("❌ Could not determine backend URL from frontend/.env")
+        print("❌ Could not determine backend URL from frontend .env file")
         sys.exit(1)
     
-    print(f"Testing backend at: {base_url}")
+    print(f"🌐 Testing backend at: {base_url}")
+    print("=" * 80)
     
-    # Run focused tests for follow system with usernames
-    results = {}
+    # Test results tracking
+    test_results = {}
     
-    print("\n" + "="*60)
-    results['health'] = test_health_check(base_url)
+    # Run all tests
+    test_results['health_check'] = test_health_check(base_url)
+    test_results['user_registration'] = test_user_registration(base_url)
+    test_results['user_login'] = test_user_login(base_url)
+    test_results['get_current_user'] = test_get_current_user(base_url)
+    test_results['jwt_validation'] = test_jwt_validation(base_url)
+    test_results['user_search'] = test_user_search(base_url)
+    test_results['messaging_system'] = test_messaging_system(base_url)
+    test_results['addiction_system'] = test_addiction_system_integration(base_url)
+    test_results['authentication_requirements'] = test_authentication_requirements(base_url)
+    test_results['profile_updates'] = test_profile_update_endpoints(base_url)
+    test_results['nested_comments'] = test_nested_comments_system(base_url)
+    test_results['follow_system'] = test_follow_system(base_url)
+    test_results['follow_system_usernames'] = test_follow_system_with_usernames(base_url)
+    test_results['tiktok_profile_grid_backend'] = test_tiktok_profile_grid_backend_support(base_url)
+    test_results['complete_flow'] = test_complete_user_flow(base_url)
     
-    print("\n" + "="*60)
-    results['follow_usernames'] = test_follow_system_with_usernames(base_url)
+    # Print summary
+    print("\n" + "=" * 80)
+    print("📊 FINAL TEST RESULTS SUMMARY")
+    print("=" * 80)
     
-    print("\n" + "="*60)
-    results['registration'] = test_user_registration(base_url)
+    passed_tests = 0
+    total_tests = len(test_results)
     
-    print("\n" + "="*60)
-    results['login'] = test_user_login(base_url)
+    for test_name, result in test_results.items():
+        status = "✅ PASSED" if result else "❌ FAILED"
+        print(f"{test_name.replace('_', ' ').title()}: {status}")
+        if result:
+            passed_tests += 1
     
-    print("\n" + "="*60)
-    results['current_user'] = test_get_current_user(base_url)
+    print("=" * 80)
+    print(f"📈 OVERALL RESULTS: {passed_tests}/{total_tests} tests passed ({(passed_tests/total_tests)*100:.1f}%)")
     
-    print("\n" + "="*60)
-    results['follow_system'] = test_follow_system(base_url)
-    
-    # Summary
-    print("\n" + "="*60)
-    print("=== FOLLOW SYSTEM HEALTH CHECK SUMMARY ===")
-    print(f"Health Check: {'✅ PASS' if results['health'] else '❌ FAIL'}")
-    print(f"User Registration: {'✅ PASS' if results['registration'] else '❌ FAIL'}")
-    print(f"User Login: {'✅ PASS' if results['login'] else '❌ FAIL'}")
-    print(f"Get Current User: {'✅ PASS' if results['current_user'] else '❌ FAIL'}")
-    print(f"Follow System: {'✅ PASS' if results['follow_system'] else '❌ FAIL'}")
-    
-    # Critical systems check for follow functionality
-    critical_systems = ['health', 'registration', 'login', 'current_user']
-    critical_passed = all(results[system] for system in critical_systems)
-    
-    follow_system_passed = results['follow_system']
-    
-    overall_success = critical_passed and follow_system_passed
-    
-    print(f"\n🔐 Authentication System: {'✅ WORKING' if critical_passed else '❌ FAILED'}")
-    print(f"👥 Follow System: {'✅ WORKING' if follow_system_passed else '❌ FAILED'}")
-    print(f"\n🚀 Overall System Status: {'✅ FOLLOW SYSTEM READY' if overall_success else '❌ CRITICAL ISSUES FOUND'}")
-    
-    if overall_success:
-        print("\n🎉 FOLLOW SYSTEM HEALTH CHECK PASSED!")
-        print("✅ All 6 follow endpoints are working correctly:")
-        print("   - POST /api/users/{user_id}/follow")
-        print("   - DELETE /api/users/{user_id}/follow")
-        print("   - GET /api/users/{user_id}/follow-status")
-        print("   - GET /api/users/following")
-        print("   - GET /api/users/{user_id}/followers")
-        print("   - GET /api/users/{user_id}/following")
-        print("✅ Authentication system is working properly")
-        print("✅ Backend is ready for frontend plus button functionality")
+    if passed_tests == total_tests:
+        print("🎉 ALL TESTS PASSED! Backend is ready for TikTok Profile Grid implementation.")
+        return 0
+    elif passed_tests >= total_tests * 0.8:
+        print("⚠️  MOST TESTS PASSED. Backend is mostly functional with minor issues.")
+        return 0
     else:
-        print("\n⚠️  ISSUES DETECTED - See detailed logs above for specific problems")
-        if not critical_passed:
-            print("❌ Authentication system issues prevent follow system testing")
-        if not follow_system_passed:
-            print("❌ Follow system endpoints have critical issues")
-    
-    return 0 if overall_success else 1
+        print("🚨 MULTIPLE TEST FAILURES. Backend needs attention before TikTok Profile Grid can work properly.")
+        return 1
 
 if __name__ == "__main__":
     sys.exit(main())
