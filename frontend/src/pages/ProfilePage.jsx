@@ -484,10 +484,10 @@ const ProfilePage = () => {
 
         {/* Content Tabs */}
         <Tabs defaultValue="polls" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="polls" className="flex items-center gap-2">
               <Vote className="w-4 h-4" />
-              Votaciones
+              Publicaciones
             </TabsTrigger>
             <TabsTrigger value="liked" className="flex items-center gap-2">
               <Heart className="w-4 h-4" />
@@ -500,10 +500,6 @@ const ProfilePage = () => {
             <TabsTrigger value="saved" className="flex items-center gap-2">
               <Bookmark className="w-4 h-4" />
               Guardados
-            </TabsTrigger>
-            <TabsTrigger value="activity" className="flex items-center gap-2">
-              <Trophy className="w-4 h-4" />
-              Actividad
             </TabsTrigger>
           </TabsList>
 
