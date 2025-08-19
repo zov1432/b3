@@ -226,7 +226,7 @@ backend:
           comment: "✅ FOLLOW SYSTEM VERIFIED FOR TIKTOK PROFILE GRID (2025-01-08): Comprehensive testing of follow system completed successfully, fully supporting TikTok profile grid social features. VERIFIED FUNCTIONALITY (16/15 tests passed + 14/12 username tests passed): 1) ✅ FOLLOW USER: POST /api/users/{user_id}/follow working perfectly - successfully followed users, generates unique follow_id, rejects duplicates and self-follows, 2) ✅ UNFOLLOW USER: DELETE /api/users/{user_id}/follow working perfectly - removes relationships, handles non-existent relationships properly, 3) ✅ FOLLOW STATUS: GET /api/users/{user_id}/follow-status working perfectly - returns correct is_following status and follow_id, 4) ✅ FOLLOWING LIST: GET /api/users/following working perfectly - returns complete list of followed users with proper counts, 5) ✅ FOLLOWERS LIST: GET /api/users/{user_id}/followers working perfectly - returns followers with complete user info, 6) ✅ USER FOLLOWING: GET /api/users/{user_id}/following working perfectly - shows who a user is following, 7) ✅ USERNAME TESTING: Created and tested specific users (progamer_alex, artmaster_studio) matching frontend mockData, 8) ✅ USER SEARCH: GET /api/users/search working perfectly for finding users to follow, 9) ✅ ERROR HANDLING: Proper 404 responses for non-existent users, 400 for invalid operations, 10) ✅ AUTHENTICATION: All endpoints properly protected and require valid JWT tokens. Follow system fully supports TikTok profile grid plus button functionality and user interactions."
 
 frontend:
-  - task: "Cambio Terminológico Perfil - Votos a Me Gusta"
+  - task: "Rediseño Completo Tabs de Perfil"
     implemented: true
     working: true
     file: "/app/frontend/src/pages/ProfilePage.jsx"
@@ -236,7 +236,7 @@ frontend:
     status_history:
         - working: true
           agent: "main"
-          comment: "✅ CAMBIO TERMINOLÓGICO COMPLETADO EXITOSAMENTE: Implementado cambio solicitado por usuario de 'votos totales' por 'me gusta' en ProfilePage.jsx línea 471. CAMBIOS REALIZADOS: 1) ✅ ETIQUETA CAMBIADA: 'Votos totales' → 'Me gusta' en StatCard del perfil, 2) ✅ ÍCONO ACTUALIZADO: Trophy → Heart para mayor coherencia visual con concepto 'me gusta', 3) ✅ FUNCIONALIDAD MANTENIDA: El valor (totalVotes) se mantiene igual, solo cambió la presentación al usuario, 4) ✅ SERVICIOS REINICIADOS: Frontend y backend reiniciados exitosamente para aplicar cambios. RESULTADO: El perfil del usuario ahora muestra 'Me gusta' en lugar de 'Votos totales', proporcionando una terminología más familiar y atractiva para los usuarios. Pendiente testing para confirmar funcionamiento."
+          comment: "✅ REDISEÑO COMPLETO DE PERFIL EXITOSO: Implementados todos los cambios solicitados por el usuario para mejorar la UX del perfil. CAMBIOS REALIZADOS: 1) ✅ 'VOTACIONES' → 'PUBLICACIONES': Cambiado en tab, estadística y todos los textos relacionados, 2) ✅ ELIMINADA TAB 'ACTIVIDAD': Removida completamente del perfil (se moverá a ajustes), cambio de grid-cols-5 a grid-cols-4, 3) ✅ TERMINOLOGÍA ACTUALIZADA: 'No has creado votaciones' → 'No has creado publicaciones', 'votaciones favoritas' → 'publicaciones favoritas', 4) ✅ ICONOS MANTENIDOS: Heart, AtSign, Bookmark conservados como solicitado, 5) ✅ SERVICIOS REINICIADOS: Frontend reiniciado exitosamente. RESULTADO: Perfil más limpio con mejor terminología y navegación simplificada a 4 tabs principales. Pendiente testing."
   - task: "TikTok Profile Grid Component"
     implemented: true
     working: true
