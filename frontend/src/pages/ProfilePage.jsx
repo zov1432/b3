@@ -591,10 +591,7 @@ const ProfilePage = () => {
                 </div>
                 <TikTokProfileGrid 
                   polls={savedPolls} 
-                  onPollClick={(poll) => {
-                    // Navigate to feed to see the full poll
-                    navigate('/feed');
-                  }}
+                  onPollClick={handlePollClick}
                 />
               </div>
             )}
