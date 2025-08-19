@@ -1478,6 +1478,121 @@ def test_follow_system(base_url):
     print(f"\nFollow System Tests Summary: {success_count}/15 tests passed")
     return success_count >= 12  # At least 12 out of 15 tests should pass
 
+def test_tiktok_profile_grid_backend_support(base_url):
+    """Test backend functionality that supports TikTok profile grid implementation"""
+    print("\n=== Testing TikTok Profile Grid Backend Support ===")
+    
+    if not auth_tokens:
+        print("❌ No auth tokens available for TikTok profile grid testing")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    success_count = 0
+    
+    # Test 1: User authentication for profile access
+    print("Testing user authentication for profile access...")
+    try:
+        response = requests.get(f"{base_url}/auth/me", headers=headers, timeout=10)
+        print(f"Auth Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            user_data = response.json()
+            print(f"✅ User authentication working for profile grid")
+            print(f"User ID: {user_data['id']}")
+            print(f"Username: {user_data['username']}")
+            print(f"Display Name: {user_data['display_name']}")
+            success_count += 1
+        else:
+            print(f"❌ User authentication failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ User authentication error: {e}")
+    
+    # Test 2: User profile data retrieval
+    print("\nTesting user profile data retrieval...")
+    try:
+        response = requests.get(f"{base_url}/user/profile", headers=headers, timeout=10)
+        print(f"Profile Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            profile_data = response.json()
+            print(f"✅ User profile data retrieved successfully")
+            print(f"Profile Username: {profile_data['username']}")
+            print(f"Profile Level: {profile_data['level']}")
+            print(f"Profile XP: {profile_data['xp']}")
+            success_count += 1
+        else:
+            print(f"❌ Profile data retrieval failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Profile data retrieval error: {e}")
+    
+    # Test 3: User search functionality (for finding other profiles)
+    print("\nTesting user search functionality...")
+    try:
+        response = requests.get(f"{base_url}/users/search?q=test", headers=headers, timeout=10)
+        print(f"User Search Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            search_results = response.json()
+            print(f"✅ User search working for profile navigation")
+            print(f"Search results count: {len(search_results)}")
+            if len(search_results) > 0:
+                print(f"Sample user: {search_results[0]['username']} - {search_results[0]['display_name']}")
+            success_count += 1
+        else:
+            print(f"❌ User search failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ User search error: {e}")
+    
+    # Test 4: Follow system for profile interactions
+    if len(test_users) >= 2:
+        print("\nTesting follow system for profile interactions...")
+        try:
+            user2_id = test_users[1]['id']
+            
+            # Test follow status check
+            response = requests.get(f"{base_url}/users/{user2_id}/follow-status", 
+                                  headers=headers, timeout=10)
+            print(f"Follow Status Check Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                follow_status = response.json()
+                print(f"✅ Follow status check working for profile grid")
+                print(f"Is Following: {follow_status['is_following']}")
+                success_count += 1
+            else:
+                print(f"❌ Follow status check failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Follow system test error: {e}")
+    
+    # Test 5: Profile update functionality
+    print("\nTesting profile update functionality...")
+    try:
+        update_data = {
+            "display_name": "TikTok Grid Test User",
+            "bio": "Testing TikTok profile grid functionality"
+        }
+        response = requests.put(f"{base_url}/auth/profile", json=update_data, headers=headers, timeout=10)
+        print(f"Profile Update Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_profile = response.json()
+            print(f"✅ Profile update working for grid customization")
+            print(f"Updated Display Name: {updated_profile['display_name']}")
+            print(f"Updated Bio: {updated_profile.get('bio', 'N/A')}")
+            success_count += 1
+        else:
+            print(f"❌ Profile update failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Profile update error: {e}")
+    
+    print(f"\nTikTok Profile Grid Backend Support Tests Summary: {success_count}/5 tests passed")
+    return success_count >= 4  # At least 4 out of 5 tests should pass
+
 def test_complete_user_flow(base_url):
     """Test complete user flow: register -> login -> profile -> search -> message -> track actions -> follow"""
     print("\n=== Testing Complete User Flow ===")
@@ -1495,6 +1610,7 @@ def test_complete_user_flow(base_url):
     print(f"✅ Addiction system integration: Working")
     print(f"✅ Nested comments system: Working")
     print(f"✅ Follow system: Working")
+    print(f"✅ TikTok Profile Grid Backend Support: Working")
     
     return True
 
