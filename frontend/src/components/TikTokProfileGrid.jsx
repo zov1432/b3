@@ -132,10 +132,10 @@ const TikTokProfileGrid = ({ polls, onPollClick }) => {
               </motion.div>
             </div>
 
-            {/* Vote Count with Play icon - Bottom left corner */}
+            {/* Vote Count with Vote icon - Bottom left corner */}
             <div className="absolute bottom-2 left-2 z-10">
               <div className="flex items-center gap-1 text-white font-bold drop-shadow-lg">
-                <Play className="w-4 h-4 fill-white" />
+                <Vote className="w-4 h-4 fill-white" />
                 <span className="text-sm font-bold">{formatViewCount(voteCount)}</span>
               </div>
             </div>
