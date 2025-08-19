@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: CAMBIO TERMINOLÓGICO EN PERFIL: Cambiar "votos totales" por "me gusta" en la sección del perfil del usuario. Este cambio mejora la experiencia del usuario usando terminología más familiar y atractiva en lugar de "votos totales".
+user_problem_statement: REDISEÑO COMPLETO DE TABS DE PERFIL: 1) Cambiar "Votaciones" por "Publicaciones" en tabs y estadísticas, 2) Mantener iconos actuales para Me gusta, Menciones y Guardados, 3) Eliminar tab "Actividad" del perfil (mover a ajustes), 4) Actualizar terminología en todo el perfil para mejor UX.
 
 backend:
   - task: "Sistema de Autenticación JWT"
