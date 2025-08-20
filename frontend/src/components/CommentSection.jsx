@@ -300,36 +300,32 @@ const CommentSection = ({
       animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      {/* Header moderno */}
-      {(showHeader || (!showHeader && user)) && (
+      {/* Header moderno - solo mostrar cuando showHeader = true */}
+      {showHeader && (
         <div className="comment-header p-6 bg-gradient-to-r from-gray-50/80 via-white to-gray-50/80 border-b border-gray-100 backdrop-blur-sm">
           <div className="flex items-center justify-between">
-            {showHeader && (
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
-                  <MessageCircle className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-lg">Comentarios</h3>
-                  {comments.length > 0 && (
-                    <p className="text-sm text-gray-500">{comments.length} comentario{comments.length !== 1 ? 's' : ''}</p>
-                  )}
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                <MessageCircle className="w-5 h-5 text-white" />
               </div>
-            )}
+              <div>
+                <h3 className="font-bold text-gray-900 text-lg">Comentarios</h3>
+                {comments.length > 0 && (
+                  <p className="text-sm text-gray-500">{comments.length} comentario{comments.length !== 1 ? 's' : ''}</p>
+                )}
+              </div>
+            </div>
             
-            <div className={cn("flex items-center gap-3", !showHeader && "ml-auto")}>
-              {showHeader && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => loadComments(0, false)}
-                  disabled={loading}
-                  className="h-10 px-4 rounded-xl hover:bg-gray-100 transition-colors"
-                >
-                  <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
-                </Button>
-              )}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => loadComments(0, false)}
+                disabled={loading}
+                className="h-10 px-4 rounded-xl hover:bg-gray-100 transition-colors"
+              >
+                <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
+              </Button>
               
               {user && (
                 <Button
