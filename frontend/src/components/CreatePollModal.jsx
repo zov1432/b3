@@ -181,13 +181,15 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-gradient-to-br from-white to-blue-50/30">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-blue-600" />
-            Crear Nueva Votación Visual
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-white border-0 shadow-2xl">
+        <DialogHeader className="border-b border-gray-100 pb-6">
+          <DialogTitle className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            Crear Nueva Votación
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-gray-600 text-base mt-2">
             Crea una pregunta interesante y agrega imágenes o videos para cada opción.
           </DialogDescription>
         </DialogHeader>
