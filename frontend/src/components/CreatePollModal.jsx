@@ -21,7 +21,7 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
   if (!media) return null;
 
   return (
-    <div className="relative w-full h-32 rounded-lg overflow-hidden bg-gray-100">
+    <div className="relative w-full h-40 rounded-xl overflow-hidden bg-gray-100 shadow-sm">
       {isVideo ? (
         <div className="relative w-full h-full">
           <img 
@@ -29,8 +29,10 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
             alt="Video preview"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <Play className="w-8 h-8 text-white" />
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+              <Play className="w-8 h-8 text-gray-900 ml-1" />
+            </div>
           </div>
         </div>
       ) : (
@@ -42,9 +44,9 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
       )}
       <button
         onClick={onRemove}
-        className="absolute top-1 right-1 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition-colors"
+        className="absolute top-3 right-3 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg"
       >
-        <X className="w-3 h-3" />
+        <X className="w-4 h-4" />
       </button>
     </div>
   );
