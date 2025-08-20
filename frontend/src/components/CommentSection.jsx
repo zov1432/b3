@@ -465,25 +465,25 @@ const CommentSection = ({
       
       {/* Área de comentario flotante moderna */}
       {!showHeader && user && !showNewCommentForm && (
-        <div className="sticky bottom-0 bg-white/95 backdrop-blur-xl border-t border-gray-200/60 p-4">
+        <div className="sticky bottom-0 bg-white/95 backdrop-blur-xl border-t border-gray-200/60 p-3 sm:p-4">
           <Button
             onClick={() => setShowNewCommentForm(true)}
-            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white py-4 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white py-3 sm:py-4 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
           >
-            <MessageCircle className="w-5 h-5 mr-3" />
-            Escribir comentario
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3" />
+            <span className="text-sm sm:text-base">Escribir comentario</span>
           </Button>
         </div>
       )}
       
       {/* Aviso para usuarios no autenticados - Diseño moderno */}
       {!user && (
-        <div className="auth-notice p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-t border-amber-200/60">
+        <div className="auth-notice p-4 sm:p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-t border-amber-200/60">
           <div className="text-center">
-            <p className="text-amber-800 font-medium mb-2">
+            <p className="text-amber-800 font-medium mb-2 text-sm sm:text-base">
               ¡Únete a la conversación!
             </p>
-            <p className="text-sm text-amber-700">
+            <p className="text-xs sm:text-sm text-amber-700">
               <a href="/login" className="font-semibold hover:underline text-indigo-600 hover:text-indigo-700 transition-colors">
                 Inicia sesión
               </a> para comentar y conectar con la comunidad
