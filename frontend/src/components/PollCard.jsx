@@ -158,7 +158,7 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
-          <Crown className="w-3 h-3" />
+          <Trophy className="w-3 h-3" />
           Ganador
         </motion.div>
       )}
