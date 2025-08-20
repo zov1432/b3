@@ -57,6 +57,19 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
           />
         )}
 
+        {/* Winner Badge - Moved to progress bar area */}
+        {isWinner && totalVotes > 0 && (
+          <motion.div 
+            className="absolute bottom-3 left-3 bg-green-600 text-white px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5 shadow-lg z-10"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <Crown className="w-4 h-4" />
+            Ganador
+          </motion.div>
+        )}
+
         {/* Play Button with pulse effect */}
         <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-colors">
           <motion.div 
