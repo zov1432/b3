@@ -366,28 +366,29 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
           </div>
         </form>
 
-        <DialogFooter>
+        <DialogFooter className="border-t border-gray-100 pt-6">
           <Button
             type="button"
             variant="outline"
             onClick={() => setIsOpen(false)}
             disabled={isCreating}
+            className="h-12 px-6 text-base font-medium rounded-xl"
           >
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isCreating}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-12 px-8 text-base font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
           >
             {isCreating ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                Creando...
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3" />
+                Creando votación...
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4 mr-2" />
+                <Sparkles className="w-5 h-5 mr-3" />
                 Crear Votación
               </>
             )}
