@@ -397,7 +397,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                   optionIndex < 2 ? "bottom-16 right-4" : "top-16 right-4"
                 )}>
                   <div className="bg-green-600/95 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1.5 shadow-2xl backdrop-blur-sm animate-pulse">
-                    <Crown className="w-4 h-4" />
+                    <Trophy className="w-4 h-4" />
                     Ganador
                   </div>
                 </div>
