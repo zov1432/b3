@@ -283,7 +283,7 @@ const Immersive3DCard = ({
                           animate={{ scale: 1 }}
                           transition={{ delay: 0.5, type: "spring" }}
                         >
-                          <Crown className="w-5 h-5 text-yellow-400 fill-current" />
+                          <Trophy className="w-5 h-5 text-yellow-400 fill-current" />
                         </motion.div>
                       )}
                       
