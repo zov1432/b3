@@ -463,7 +463,7 @@ const ProfilePage = () => {
           />
           <StatCard
             icon={Grid3X3}
-            label="Publicaciones"
+            label="Votaciones"
             value={displayUser.totalPolls}
             color="green"
           />
@@ -471,13 +471,13 @@ const ProfilePage = () => {
             icon={Heart}
             label="Me gusta"
             value={displayUser.totalVotes.toLocaleString()}
-            color="purple"
+            color="pink"
           />
           <StatCard
             icon={Users}
             label="Siguiendo"
             value={displayUser.following}
-            color="red"
+            color="purple"
           />
         </div>
 
