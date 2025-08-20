@@ -302,7 +302,7 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                 </div>
 
                 {/* Media Upload/Preview */}
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {option.media ? (
                     <MediaUploadPreview 
                       media={option.media}
@@ -310,16 +310,25 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                       onRemove={() => updateOption(index, 'media', null)}
                     />
                   ) : (
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-                      <div className="space-y-2">
-                        <div className="flex justify-center gap-2">
-                          <Image className="w-8 h-8 text-gray-400" />
-                          <Video className="w-8 h-8 text-gray-400" />
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200">
+                      <div className="space-y-4">
+                        <div className="flex justify-center gap-3">
+                          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <Image className="w-6 h-6 text-blue-600" />
+                          </div>
+                          <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                            <Video className="w-6 h-6 text-purple-600" />
+                          </div>
                         </div>
-                        <p className="text-sm text-gray-600">
-                          Arrastra una imagen o video aquí
-                        </p>
-                        <div className="flex justify-center gap-2">
+                        <div>
+                          <p className="text-base font-medium text-gray-900 mb-1">
+                            Sube una imagen o video
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Arrastra el archivo aquí o haz clic para seleccionar
+                          </p>
+                        </div>
+                        <div className="flex justify-center">
                           <label className="cursor-pointer">
                             <input
                               type="file"
@@ -330,9 +339,9 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                               }}
                               className="hidden"
                             />
-                            <Button type="button" variant="outline" size="sm" className="text-blue-600 border-blue-300 hover:bg-blue-50">
-                              <Upload className="w-4 h-4 mr-1" />
-                              Subir Archivo
+                            <Button type="button" variant="outline" size="default" className="text-blue-600 border-blue-300 hover:bg-blue-50 rounded-lg h-11 px-6">
+                              <Upload className="w-5 h-5 mr-2" />
+                              Seleccionar Archivo
                             </Button>
                           </label>
                         </div>
@@ -348,10 +357,10 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                 type="button"
                 variant="outline"
                 onClick={addOption}
-                className="w-full border-dashed border-2 border-blue-300 text-blue-600 hover:bg-blue-50"
+                className="w-full h-14 border-2 border-dashed border-blue-300 text-blue-600 hover:bg-blue-50 rounded-xl text-base font-medium"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Agregar opción
+                <Plus className="w-5 h-5 mr-3" />
+                Agregar otra opción
               </Button>
             )}
           </div>
