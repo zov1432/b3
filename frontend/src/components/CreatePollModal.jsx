@@ -259,7 +259,7 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
 
           {/* Selector de música expandido */}
           {showMusicSelector && !selectedMusic && (
-            <div className="border rounded-lg overflow-hidden bg-white shadow-sm">
+            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
               <MusicSelector
                 onSelectMusic={(music) => {
                   setSelectedMusic(music);
@@ -272,21 +272,21 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
           )}
 
           {/* Opciones con Media */}
-          <div className="space-y-4">
-            <Label className="text-base font-semibold">
-              Opciones con imágenes/videos
+          <div className="space-y-6">
+            <Label className="text-lg font-semibold text-gray-900">
+              Opciones para votar
             </Label>
             {options.map((option, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+              <div key={index} className="bg-gray-50/50 border border-gray-200 rounded-xl p-6 space-y-4 hover:shadow-sm transition-shadow">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-sm">
                     {String.fromCharCode(65 + index)}
                   </div>
                   <Input
                     placeholder={`Descripción opción ${index + 1}`}
                     value={option.text}
                     onChange={(e) => updateOption(index, 'text', e.target.value)}
-                    className="flex-1 focus:ring-2 focus:ring-blue-500/20"
+                    className="flex-1 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-lg h-12 text-base bg-white"
                   />
                   {options.length > 2 && (
                     <Button
@@ -294,9 +294,9 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => removeOption(index)}
-                      className="hover:bg-red-100 hover:text-red-600"
+                      className="hover:bg-red-100 hover:text-red-600 rounded-lg w-10 h-10"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-5 h-5" />
                     </Button>
                   )}
                 </div>
