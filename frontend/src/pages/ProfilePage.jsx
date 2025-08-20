@@ -462,7 +462,7 @@ const ProfilePage = () => {
             color="blue"
           />
           <StatCard
-            icon={Grid3X3}
+            icon={Check}
             label="Votaciones"
             value={displayUser.totalPolls}
             color="green"
