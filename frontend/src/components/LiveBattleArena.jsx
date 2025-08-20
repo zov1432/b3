@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { 
-  Swords, Users, Clock, Trophy, Flame, Zap, Crown, 
+  Swords, Users, Clock, Trophy, Flame, Zap, 
   Play, Calendar, MessageCircle, Heart, Share, Star,
   Shield, Target, Award, Eye, Volume2, VolumeX,
   ChevronRight, Timer, Coins, TrendingUp, Fire
