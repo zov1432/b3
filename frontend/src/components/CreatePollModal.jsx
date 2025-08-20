@@ -194,18 +194,18 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 py-4">
+        <form onSubmit={handleSubmit} className="space-y-8 py-6">
           {/* Título */}
-          <div className="space-y-2">
-            <Label htmlFor="title" className="text-base font-semibold">
-              Pregunta
+          <div className="space-y-3">
+            <Label htmlFor="title" className="text-lg font-semibold text-gray-900">
+              ¿Cuál es tu pregunta?
             </Label>
             <Textarea
               id="title"
               placeholder="Ej: ¿Quién ganó el mejor outfit de hoy?"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="min-h-[80px] resize-none focus:ring-2 focus:ring-blue-500/20"
+              className="min-h-[100px] resize-none border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-xl text-base p-4 bg-gray-50/50"
             />
           </div>
 
