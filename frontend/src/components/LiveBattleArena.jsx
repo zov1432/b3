@@ -264,7 +264,7 @@ const LiveBattleCard = ({ battle, index, onJoinBattle }) => {
                     {battle.fighter1.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                {/* Crown para el ganador */}
+                {/* Trophy para el ganador */}
                 {winner.id === battle.fighter1.id && (
                   <motion.div
                     className="absolute -top-2 -right-2"
@@ -272,7 +272,7 @@ const LiveBattleCard = ({ battle, index, onJoinBattle }) => {
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: "spring", stiffness: 200 }}
                   >
-                    <Crown className="w-6 h-6 text-yellow-400 fill-current" />
+                    <Trophy className="w-6 h-6 text-yellow-400 fill-current" />
                   </motion.div>
                 )}
               </div>
