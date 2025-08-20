@@ -326,16 +326,6 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                 <div className="absolute inset-0 ring-2 ring-green-400 ring-inset"></div>
               )}
 
-
-
-              {/* Winner badge - Enhanced */}
-              {isWinner && poll.totalVotes > 0 && (
-                <div className="absolute top-4 left-4 bg-green-600/95 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1.5 shadow-2xl backdrop-blur-sm z-20 animate-pulse">
-                  <Crown className="w-4 h-4" />
-                  Ganador
-                </div>
-              )}
-
               {/* Combined Profile + Title Layout - Conditional positioning */}
               <div className={cn(
                 "absolute left-4 right-4 z-20",
