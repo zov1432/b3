@@ -651,7 +651,6 @@ const BattleOptionCard = ({
                 transition={{ delay: 1, type: "spring" }}
               >
                 <Trophy className="w-6 h-6" />
-                <span className="font-bold">¡GANADOR!</span>
               </motion.div>
             )}
           </div>
