@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { MessageCircle, Loader2, AlertCircle, RefreshCw, Send, Plus } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../contexts/AuthContext';
 import { cn } from '../lib/utils';
@@ -208,14 +208,14 @@ const CommentSection = ({
     }
   }, [pollId, isVisible]);
 
-  // Formulario para nuevo comentario
+  // Formulario para nuevo comentario - Diseño moderno
   const NewCommentForm = () => (
     <motion.div
-      className="new-comment-form p-4 bg-gray-50 border-b border-gray-200"
+      className="new-comment-form p-6 bg-gradient-to-r from-indigo-50/50 via-white to-purple-50/50 border-b border-gray-100 backdrop-blur-sm"
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       <form 
         onSubmit={async (e) => {
@@ -230,28 +230,35 @@ const CommentSection = ({
             // Error ya manejado en handleCreateComment
           }
         }}
-        className="space-y-3"
+        className="space-y-4"
       >
-        <textarea
-          name="content"
-          placeholder="Escribe tu comentario..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          rows={3}
-          maxLength={500}
-          required
-        />
+        <div className="relative">
+          <textarea
+            name="content"
+            placeholder="¿Qué piensas sobre esto? Comparte tu opinión..."
+            className="w-full px-4 py-4 pr-12 border-2 border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all duration-200 placeholder:text-gray-400 bg-white/80 backdrop-blur-sm"
+            rows={4}
+            maxLength={500}
+            required
+          />
+          <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded-full">
+            500 max
+          </div>
+        </div>
         
         <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">
-            Máximo 500 caracteres
-          </span>
+          <div className="flex items-center gap-3 text-xs text-gray-500">
+            <kbd className="px-2 py-1 bg-gray-100 text-gray-600 rounded-lg font-mono">⌘ + Enter</kbd>
+            <span>para enviar rápido</span>
+          </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={() => setShowNewCommentForm(false)}
+              className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-xl"
             >
               Cancelar
             </Button>
@@ -260,7 +267,7 @@ const CommentSection = ({
               type="submit"
               size="sm"
               disabled={submitting}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-medium"
             >
               {submitting ? (
                 <>
@@ -268,7 +275,10 @@ const CommentSection = ({
                   Enviando...
                 </>
               ) : (
-                'Comentar'
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Comentar
+                </>
               )}
             </Button>
           </div>
@@ -283,33 +293,38 @@ const CommentSection = ({
 
   return (
     <motion.div 
-      className="comment-section bg-white border border-gray-200 rounded-lg overflow-hidden"
+      className="comment-section bg-white/95 backdrop-blur-xl border border-gray-200/60 rounded-2xl overflow-hidden shadow-lg"
       style={{ maxHeight }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      {/* Header - siempre mostrar cuando no hay showHeader pero sí usuario autenticado */}
+      {/* Header moderno */}
       {(showHeader || (!showHeader && user)) && (
-        <div className="comment-header p-4 bg-gray-50 border-b border-gray-200">
+        <div className="comment-header p-6 bg-gradient-to-r from-gray-50/80 via-white to-gray-50/80 border-b border-gray-100 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             {showHeader && (
-              <div className="flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-gray-600" />
-                <span className="font-semibold text-gray-900">
-                  Comentarios {comments.length > 0 && `(${comments.length})`}
-                </span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                  <MessageCircle className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-lg">Comentarios</h3>
+                  {comments.length > 0 && (
+                    <p className="text-sm text-gray-500">{comments.length} comentario{comments.length !== 1 ? 's' : ''}</p>
+                  )}
+                </div>
               </div>
             )}
             
-            <div className={cn("flex items-center gap-2", !showHeader && "ml-auto")}>
+            <div className={cn("flex items-center gap-3", !showHeader && "ml-auto")}>
               {showHeader && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => loadComments(0, false)}
                   disabled={loading}
-                  className="h-8"
+                  className="h-10 px-4 rounded-xl hover:bg-gray-100 transition-colors"
                 >
                   <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
                 </Button>
@@ -319,15 +334,27 @@ const CommentSection = ({
                 <Button
                   size="sm"
                   onClick={() => setShowNewCommentForm(!showNewCommentForm)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className={cn(
+                    "px-5 py-2 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg",
+                    showNewCommentForm 
+                      ? "bg-gray-200 text-gray-700 hover:bg-gray-300" 
+                      : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white"
+                  )}
                 >
-                  {showNewCommentForm ? 'Cancelar' : 'Comentar'}
+                  {showNewCommentForm ? (
+                    'Cancelar'
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Comentar
+                    </>
+                  )}
                 </Button>
               )}
               
               {!user && (
-                <div className="text-sm text-gray-500">
-                  Inicia sesión para comentar
+                <div className="text-sm text-gray-500 bg-amber-50 px-4 py-2 rounded-xl border border-amber-200">
+                  <span>Inicia sesión para comentar</span>
                 </div>
               )}
             </div>
@@ -340,22 +367,26 @@ const CommentSection = ({
         {showNewCommentForm && <NewCommentForm />}
       </AnimatePresence>
       
-      {/* Lista de comentarios */}
-      <div className="comment-list overflow-y-auto flex-1" style={{ maxHeight: `calc(${maxHeight} - 120px)` }}>
+      {/* Lista de comentarios con diseño moderno */}
+      <div className="comment-list overflow-y-auto flex-1 bg-gradient-to-b from-white to-gray-50/30" style={{ maxHeight: `calc(${maxHeight} - 140px)` }}>
         {error && (
           <motion.div 
-            className="error-message p-4 bg-red-50 border-b border-red-200"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="error-message p-4 m-4 bg-red-50 border border-red-200 rounded-2xl"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
           >
-            <div className="flex items-center gap-2 text-red-700">
-              <AlertCircle className="w-4 h-4" />
-              <span className="text-sm">{error}</span>
+            <div className="flex items-center gap-3 text-red-700">
+              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                <AlertCircle className="w-4 h-4" />
+              </div>
+              <div className="flex-1">
+                <span className="text-sm font-medium">{error}</span>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => loadComments(0, false)}
-                className="ml-2 h-6 text-red-700 hover:text-red-800"
+                className="h-8 text-red-700 hover:text-red-800 hover:bg-red-100 rounded-xl"
               >
                 Reintentar
               </Button>
@@ -364,20 +395,34 @@ const CommentSection = ({
         )}
         
         {loading && comments.length === 0 ? (
-          <div className="loading-state p-8 flex items-center justify-center">
-            <div className="flex items-center gap-2 text-gray-500">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Cargando comentarios...</span>
+          <div className="loading-state p-12 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4 text-gray-500">
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+              </div>
+              <span className="font-medium">Cargando comentarios...</span>
             </div>
           </div>
         ) : comments.length === 0 ? (
-          <div className="empty-state p-8 text-center">
-            <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500 mb-2">No hay comentarios aún</p>
-            <p className="text-sm text-gray-400">¡Sé el primero en comentar!</p>
+          <div className="empty-state p-12 text-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <MessageCircle className="w-10 h-10 text-indigo-300" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">¡Sé el primero!</h3>
+            <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+              No hay comentarios aún. Inicia la conversación y comparte tu perspectiva.
+            </p>
+            {user && (
+              <Button
+                onClick={() => setShowNewCommentForm(true)}
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-8 py-3 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Escribir primer comentario
+              </Button>
+            )}
           </div>
         ) : (
-          <div className="comments-container p-4 space-y-4">
+          <div className="comments-container p-6 space-y-6">
             <AnimatePresence mode="popLayout">
               {comments.map((comment, index) => (
                 <Comment
@@ -393,15 +438,15 @@ const CommentSection = ({
               ))}
             </AnimatePresence>
             
-            {/* Botón cargar más */}
+            {/* Botón cargar más - Diseño moderno */}
             {hasMore && (
-              <div className="load-more p-4 text-center border-t border-gray-100">
+              <div className="load-more p-6 text-center border-t border-gray-100">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={loadMoreComments}
                   disabled={loading}
-                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                  className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 px-8 py-3 rounded-2xl font-medium transition-all duration-200"
                 >
                   {loading ? (
                     <>
@@ -409,7 +454,7 @@ const CommentSection = ({
                       Cargando...
                     </>
                   ) : (
-                    'Cargar más comentarios'
+                    'Mostrar más comentarios'
                   )}
                 </Button>
               </div>
@@ -418,27 +463,32 @@ const CommentSection = ({
         )}
       </div>
       
-      {/* Área de comentario flotante cuando no hay header */}
+      {/* Área de comentario flotante moderna */}
       {!showHeader && user && !showNewCommentForm && (
-        <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
+        <div className="sticky bottom-0 bg-white/95 backdrop-blur-xl border-t border-gray-200/60 p-4">
           <Button
             onClick={() => setShowNewCommentForm(true)}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white py-4 rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
           >
-            <MessageCircle className="w-4 h-4 mr-2" />
+            <MessageCircle className="w-5 h-5 mr-3" />
             Escribir comentario
           </Button>
         </div>
       )}
       
-      {/* Aviso para usuarios no autenticados */}
+      {/* Aviso para usuarios no autenticados - Diseño moderno */}
       {!user && (
-        <div className="auth-notice p-4 bg-yellow-50 border-t border-yellow-200">
-          <p className="text-sm text-yellow-700 text-center">
-            <a href="/login" className="font-semibold hover:underline">
-              Inicia sesión
-            </a> para comentar y participar en la conversación
-          </p>
+        <div className="auth-notice p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-t border-amber-200/60">
+          <div className="text-center">
+            <p className="text-amber-800 font-medium mb-2">
+              ¡Únete a la conversación!
+            </p>
+            <p className="text-sm text-amber-700">
+              <a href="/login" className="font-semibold hover:underline text-indigo-600 hover:text-indigo-700 transition-colors">
+                Inicia sesión
+              </a> para comentar y conectar con la comunidad
+            </p>
+          </div>
         </div>
       )}
     </motion.div>
