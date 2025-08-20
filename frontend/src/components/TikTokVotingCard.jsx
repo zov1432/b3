@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { 
   Heart, MessageCircle, Send, Play, Volume2, VolumeX,
-  Crown, CheckCircle, Flame, Users, TrendingUp
+  Trophy, CheckCircle, Flame, Users, TrendingUp
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
