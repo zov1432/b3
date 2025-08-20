@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Heart, MessageCircle, MoreHorizontal, Edit3, Trash2, 
-  ChevronDown, ChevronUp, Reply, Flag, CheckCircle 
+  ChevronDown, ChevronUp, Reply, Flag, CheckCircle, Send, Sparkles
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
@@ -45,40 +45,46 @@ const CommentForm = ({
   return (
     <motion.form 
       className={cn(
-        "space-y-3 p-3 rounded-lg border bg-white/95 backdrop-blur-sm",
-        isReply ? "ml-8 border-blue-200" : "border-gray-200"
+        "space-y-4 p-5 rounded-2xl border-2 bg-white/90 backdrop-blur-sm shadow-lg",
+        isReply ? "ml-8 border-indigo-200 bg-gradient-to-r from-indigo-50/50 to-purple-50/50" : "border-gray-200"
       )}
       onSubmit={handleSubmit}
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: 'auto' }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.2 }}
+      initial={{ opacity: 0, height: 0, scale: 0.95 }}
+      animate={{ opacity: 1, height: 'auto', scale: 1 }}
+      exit={{ opacity: 0, height: 0, scale: 0.95 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      <textarea
-        ref={textareaRef}
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        rows={isReply ? 2 : 3}
-        maxLength={500}
-        autoFocus
-      />
+      <div className="relative">
+        <textarea
+          ref={textareaRef}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          className="w-full px-4 py-4 pr-20 border-2 border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all duration-200 placeholder:text-gray-400 bg-white/80 backdrop-blur-sm"
+          rows={isReply ? 3 : 4}
+          maxLength={500}
+          autoFocus
+        />
+        <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded-lg">
+          {content.length}/500
+        </div>
+      </div>
       
       <div className="flex items-center justify-between">
-        <span className="text-xs text-gray-500">
-          {content.length}/500 caracteres • Ctrl+Enter para enviar
-        </span>
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          <kbd className="px-2 py-1 bg-gray-100 text-gray-600 rounded-lg font-mono">⌘+↵</kbd>
+          <span>envío rápido</span>
+        </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {onCancel && (
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={onCancel}
-              className="text-gray-600 hover:text-gray-800"
+              className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-xl"
             >
               Cancelar
             </Button>
@@ -88,9 +94,19 @@ const CommentForm = ({
             type="submit"
             size="sm"
             disabled={!content.trim() || isSubmitting}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-medium"
           >
-            {isSubmitting ? 'Enviando...' : isEditing ? 'Guardar' : 'Comentar'}
+            {isSubmitting ? (
+              <>
+                <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                Enviando...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                {isEditing ? 'Guardar' : 'Comentar'}
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -178,38 +194,40 @@ const Comment = ({
     <motion.div
       className={cn(
         "comment-thread",
-        depth > 0 && "ml-6 pl-4 border-l-2 border-gray-100"
+        depth > 0 && "ml-6 pl-6 border-l-2 border-gradient-to-b from-indigo-100 to-purple-100"
       )}
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3, delay: depth * 0.1 }}
+      transition={{ duration: 0.4, delay: depth * 0.1 }}
     >
-      <div className="comment-item bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-        {/* Header del comentario */}
-        <div className="flex items-start gap-3 mb-3">
-          <Avatar className="w-8 h-8 flex-shrink-0">
+      <div className="comment-item bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-gray-100/80 hover:shadow-lg hover:bg-white/90 transition-all duration-300">
+        {/* Header del comentario con diseño moderno */}
+        <div className="flex items-start gap-4 mb-4">
+          <Avatar className="w-11 h-11 flex-shrink-0 ring-2 ring-white shadow-lg">
             <AvatarImage src={comment.user.avatar_url} />
-            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-xs">
+            <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
               {((comment.user.display_name || comment.user.username || 'U') + '').charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="font-semibold text-gray-900 text-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-bold text-gray-900 text-sm">
                 {comment.user.display_name || comment.user.username}
               </span>
               
               {comment.user.is_verified && (
-                <CheckCircle className="w-3 h-3 text-blue-500 fill-current" />
+                <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-3 h-3 text-white fill-current" />
+                </div>
               )}
               
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                 {formatTimeAgo(comment.created_at)}
               </span>
               
               {comment.is_edited && (
-                <span className="text-xs text-gray-400">(editado)</span>
+                <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-full">editado</span>
               )}
             </div>
             
@@ -223,94 +241,102 @@ const Comment = ({
                 isEditing={true}
               />
             ) : (
-              <p className="text-gray-800 text-sm leading-relaxed mb-3 whitespace-pre-wrap">
-                {comment.content}
-              </p>
+              <div className="bg-gray-50/50 rounded-xl p-4 border border-gray-100">
+                <p className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">
+                  {comment.content}
+                </p>
+              </div>
             )}
           </div>
           
-          {/* Menú de acciones */}
+          {/* Menú de acciones con diseño moderno */}
           <div className="relative">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowMenu(!showMenu)}
-              className="h-6 w-6 p-0 hover:bg-gray-100"
+              className="h-8 w-8 p-0 hover:bg-gray-100/80 rounded-xl transition-all duration-200"
             >
-              <MoreHorizontal className="w-4 h-4" />
+              <MoreHorizontal className="w-4 h-4 text-gray-400" />
             </Button>
             
-            {showMenu && (
-              <motion.div 
-                className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-10 min-w-[120px]"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-              >
-                {isAuthor && (
-                  <>
-                    <button
-                      onClick={() => {
-                        setShowEditForm(true);
-                        setShowMenu(false);
-                      }}
-                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <Edit3 className="w-3 h-3" />
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleDelete();
-                        setShowMenu(false);
-                      }}
-                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                      Eliminar
-                    </button>
-                  </>
-                )}
-                
-                <button
-                  onClick={() => setShowMenu(false)}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            <AnimatePresence>
+              {showMenu && (
+                <motion.div 
+                  className="absolute right-0 top-10 bg-white/95 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-2xl py-2 z-20 min-w-[140px] overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <Flag className="w-3 h-3" />
-                  Reportar
-                </button>
-              </motion.div>
-            )}
+                  {isAuthor && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowEditForm(true);
+                          setShowMenu(false);
+                        }}
+                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleDelete();
+                          setShowMenu(false);
+                        }}
+                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Eliminar
+                      </button>
+                      <div className="h-px bg-gray-200 mx-2 my-1" />
+                    </>
+                  )}
+                  
+                  <button
+                    onClick={() => setShowMenu(false)}
+                    className="flex items-center gap-3 w-full px-4 py-3 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors"
+                  >
+                    <Flag className="w-4 h-4" />
+                    Reportar
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
         
-        {/* Acciones del comentario */}
-        <div className="flex items-center gap-4 text-sm">
+        {/* Acciones del comentario con diseño moderno */}
+        <div className="flex items-center gap-2 text-sm">
           <motion.button
             onClick={handleLike}
             disabled={isLiking}
             className={cn(
-              "flex items-center gap-1.5 px-2 py-1 rounded-full transition-colors",
+              "flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 font-medium",
               comment.user_liked 
-                ? "text-red-600 bg-red-50 hover:bg-red-100" 
-                : "text-gray-600 hover:text-red-600 hover:bg-red-50"
+                ? "text-red-600 bg-red-50 hover:bg-red-100 shadow-md" 
+                : "text-gray-600 hover:text-red-600 hover:bg-red-50 hover:shadow-md"
             )}
             whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
           >
             <Heart className={cn(
-              "w-4 h-4 transition-all",
-              comment.user_liked && "fill-current"
+              "w-4 h-4 transition-all duration-200",
+              comment.user_liked && "fill-current scale-110"
             )} />
             {comment.likes > 0 && (
-              <span className="font-medium">{comment.likes}</span>
+              <span>{comment.likes}</span>
             )}
           </motion.button>
           
           {canReply && (
             <motion.button
               onClick={() => setShowReplyForm(!showReplyForm)}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-full text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200 font-medium hover:shadow-md"
               whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
             >
               <Reply className="w-4 h-4" />
               Responder
@@ -320,15 +346,19 @@ const Comment = ({
           {hasReplies && (
             <motion.button
               onClick={() => setShowReplies(!showReplies)}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-full text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-all duration-200 font-medium hover:shadow-md"
               whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
             >
               {showReplies ? (
                 <ChevronUp className="w-4 h-4" />
               ) : (
                 <ChevronDown className="w-4 h-4" />
               )}
-              {comment.reply_count} {comment.reply_count === 1 ? 'respuesta' : 'respuestas'}
+              <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">
+                {comment.reply_count}
+              </span>
+              {comment.reply_count === 1 ? 'respuesta' : 'respuestas'}
             </motion.button>
           )}
         </div>
@@ -337,7 +367,7 @@ const Comment = ({
       {/* Formulario de respuesta */}
       <AnimatePresence>
         {showReplyForm && (
-          <div className="mt-3">
+          <div className="mt-4">
             <CommentForm
               onSubmit={handleReply}
               onCancel={() => setShowReplyForm(false)}
@@ -352,11 +382,11 @@ const Comment = ({
       <AnimatePresence>
         {showReplies && hasReplies && (
           <motion.div 
-            className="replies-container mt-4 space-y-4"
+            className="replies-container mt-6 space-y-4"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
           >
             {comment.replies.map((reply, index) => (
               <Comment
@@ -377,7 +407,7 @@ const Comment = ({
       {/* Overlay para cerrar menú al hacer click fuera */}
       {showMenu && (
         <div 
-          className="fixed inset-0 z-0"
+          className="fixed inset-0 z-10"
           onClick={() => setShowMenu(false)}
         />
       )}
