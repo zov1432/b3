@@ -223,7 +223,7 @@ const TikTokVotingCard = ({
                       transition={{ delay: 1, type: "spring", stiffness: 200 }}
                     >
                       <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                        <Crown className="w-4 h-4 text-white" />
+                        <Trophy className="w-4 h-4 text-white" />
                       </div>
                     </motion.div>
                   )}
