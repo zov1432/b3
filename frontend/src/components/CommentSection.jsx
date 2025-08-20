@@ -211,7 +211,7 @@ const CommentSection = ({
   // Formulario para nuevo comentario - Diseño moderno
   const NewCommentForm = () => (
     <motion.div
-      className="new-comment-form p-6 bg-gradient-to-r from-indigo-50/50 via-white to-purple-50/50 border-b border-gray-100 backdrop-blur-sm"
+      className="new-comment-form p-3 sm:p-6 bg-gradient-to-r from-indigo-50/50 via-white to-purple-50/50 border-b border-gray-100 backdrop-blur-sm"
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
@@ -230,35 +230,35 @@ const CommentSection = ({
             // Error ya manejado en handleCreateComment
           }
         }}
-        className="space-y-4"
+        className="space-y-3 sm:space-y-4"
       >
         <div className="relative">
           <textarea
             name="content"
             placeholder="¿Qué piensas sobre esto? Comparte tu opinión..."
-            className="w-full px-4 py-4 pr-12 border-2 border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all duration-200 placeholder:text-gray-400 bg-white/80 backdrop-blur-sm"
-            rows={4}
+            className="w-full px-3 sm:px-4 py-3 sm:py-4 pr-12 border-2 border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all duration-200 placeholder:text-gray-400 bg-white/80 backdrop-blur-sm text-sm sm:text-base"
+            rows={3}
             maxLength={500}
             required
           />
-          <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded-full">
+          <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded-full">
             500 max
           </div>
         </div>
         
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 text-xs text-gray-500">
+          <div className="hidden sm:flex items-center gap-3 text-xs text-gray-500">
             <kbd className="px-2 py-1 bg-gray-100 text-gray-600 rounded-lg font-mono">⌘ + Enter</kbd>
             <span>para enviar rápido</span>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto sm:ml-0">
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={() => setShowNewCommentForm(false)}
-              className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-xl"
+              className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-3 sm:px-4 py-2 rounded-xl text-sm"
             >
               Cancelar
             </Button>
@@ -267,16 +267,17 @@ const CommentSection = ({
               type="submit"
               size="sm"
               disabled={submitting}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-medium"
+              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 sm:px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-medium text-sm"
             >
               {submitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Enviando...
+                  <Loader2 className="w-4 h-4 mr-1 sm:mr-2 animate-spin" />
+                  <span className="hidden sm:inline">Enviando...</span>
+                  <span className="sm:hidden">...</span>
                 </>
               ) : (
                 <>
-                  <Send className="w-4 h-4 mr-2" />
+                  <Send className="w-4 h-4 mr-1 sm:mr-2" />
                   Comentar
                 </>
               )}
