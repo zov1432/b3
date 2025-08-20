@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 import { cn } from '../lib/utils';
 import { 
   Heart, MessageCircle, Send, Play, Pause, Volume2, VolumeX, 
-  Crown, CheckCircle, Flame, Zap, Star, Award, Users,
+  CheckCircle, Flame, Zap, Star, Award, Users,
   Camera, Music, Sparkles, Trophy, TrendingUp, Target
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
