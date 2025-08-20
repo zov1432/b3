@@ -111,7 +111,6 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
           <Trophy className="w-4 h-4" />
-          Ganador
         </motion.div>
       )}
 
