@@ -3,7 +3,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { 
   Heart, MessageCircle, Send, Bookmark, MoreHorizontal, 
-  Play, Pause, Volume2, VolumeX, Crown, CheckCircle,
+  Play, Pause, Volume2, VolumeX, Trophy, CheckCircle,
   Sparkles, Zap, Flame, Star
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
