@@ -403,10 +403,25 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
              paddingLeft: 'max(1rem, env(safe-area-inset-left))',
              paddingRight: 'max(1rem, env(safe-area-inset-right))'
            }}>
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <p className="text-white/90 font-semibold text-base">
             {formatNumber(poll.totalVotes)} votos
           </p>
+          
+          {/* Winner Badge - Moved to bottom area */}
+          {poll.totalVotes > 0 && (() => {
+            const winningOption = poll.options.reduce((max, option) => 
+              option.votes > (max?.votes || 0) ? option : max, null
+            );
+            const isThereWinner = winningOption && poll.totalVotes > 0;
+            
+            return isThereWinner && (
+              <div className="bg-green-600/95 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1.5 shadow-2xl backdrop-blur-sm animate-pulse">
+                <Crown className="w-4 h-4" />
+                Ganador
+              </div>
+            );
+          })()}
         </div>
 
         <div className="flex items-center justify-between gap-4">
