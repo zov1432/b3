@@ -125,19 +125,6 @@ const MediaPreview = ({ media, isWinner, isSelected, onClick, percentage, option
           </button>
         </div>
 
-        {/* Winner Badge with animation */}
-        {isWinner && totalVotes > 0 && (
-          <motion.div 
-            className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shadow-lg"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          >
-            <Crown className="w-3 h-3" />
-            Ganador
-          </motion.div>
-        )}
-
         {/* Selection Ring with pulse */}
         {isSelected && (
           <motion.div 
