@@ -512,7 +512,7 @@ const RevolutionaryMediaOption = ({
           transition={{ delay: 1.5, type: "spring", stiffness: 200 }}
         >
           <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-2xl">
-            <Crown className="w-8 h-8 text-white" />
+            <Trophy className="w-8 h-8 text-white" />
           </div>
         </motion.div>
       )}
