@@ -349,7 +349,7 @@ const AdvancedPollCard = ({
               {/* Badge de ganador - OVERLAY */}
               {isWinner && poll.totalVotes > 0 && (
                 <motion.div 
-                  className="absolute top-20 left-4 bg-green-600/95 text-white px-3 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-xl backdrop-blur-sm z-20"
+                  className="absolute top-20 left-4 bg-green-600/95 text-white p-2 rounded-full text-sm font-bold flex items-center justify-center shadow-xl backdrop-blur-sm z-20"
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", delay: 1 }}
