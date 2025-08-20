@@ -354,7 +354,7 @@ const AdvancedPollCard = ({
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", delay: 1 }}
                 >
-                  <Crown className="w-4 h-4" />
+                  <Trophy className="w-4 h-4" />
                   <span>Ganador</span>
                 </motion.div>
               )}
