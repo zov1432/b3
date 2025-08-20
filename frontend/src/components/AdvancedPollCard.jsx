@@ -355,7 +355,6 @@ const AdvancedPollCard = ({
                   transition={{ type: "spring", delay: 1 }}
                 >
                   <Trophy className="w-4 h-4" />
-                  <span>Ganador</span>
                 </motion.div>
               )}
 
