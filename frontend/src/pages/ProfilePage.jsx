@@ -25,6 +25,7 @@ const StatCard = ({ icon: Icon, label, value, color = "blue" }) => (
           color === "blue" && "bg-blue-100 text-blue-600",
           color === "green" && "bg-green-100 text-green-600",
           color === "purple" && "bg-purple-100 text-purple-600",
+          color === "pink" && "bg-pink-100 text-pink-600",
           color === "red" && "bg-red-100 text-red-600"
         )}>
           <Icon className="w-5 h-5" />
