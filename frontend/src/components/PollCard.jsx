@@ -181,6 +181,7 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
   const navigate = useNavigate();
   const { getSocialProof, socialProofData } = useAddiction();
   const [showCommentsModal, setShowCommentsModal] = useState(false);
+  const { shareModal, sharePoll, closeShareModal } = useShare();
   
   // Get social proof for this poll
   const socialProof = socialProofData[poll.id] || null;
