@@ -19,6 +19,7 @@ const FeedPage = () => {
   const { toast } = useToast();
   const { trackAction } = useAddiction();
   const { enterTikTokMode, exitTikTokMode, isTikTokMode } = useTikTok();
+  const { shareModal, sharePoll, closeShareModal } = useShare();
 
   // Detect if we're on mobile or desktop
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
