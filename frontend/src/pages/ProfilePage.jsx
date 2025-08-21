@@ -54,7 +54,7 @@ const ProfilePage = () => {
   const [tikTokPolls, setTikTokPolls] = useState([]);
   const [initialPollIndex, setInitialPollIndex] = useState(0);
   const { toast } = useToast();
-  const { user: authUser, logout, refreshUser } = useAuth();
+  const { user: authUser, refreshUser } = useAuth();
   const { userId } = useParams();
   const navigate = useNavigate();
 
