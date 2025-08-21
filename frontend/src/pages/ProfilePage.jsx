@@ -679,6 +679,13 @@ const ProfilePage = () => {
         pollAuthor={selectedPollAuthor}
       />
 
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={closeShareModal}
+        content={shareModal.content}
+      />
+
       {/* TikTok View Modal */}
       {showTikTokView && (
         <div className="fixed inset-0 bg-black z-50">
