@@ -492,7 +492,7 @@ const ProfilePage = () => {
                       className="bg-blue-500/20 border-blue-500/30 text-white hover:bg-blue-500/30"
                       onClick={handleShareProfile}
                     >
-                      <Share className="w-4 h-4 mr-2" />
+                      <Share2 className="w-4 h-4 mr-2" />
                       Compartir
                     </Button>
                   </>
