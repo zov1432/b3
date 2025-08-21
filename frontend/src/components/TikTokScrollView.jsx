@@ -335,8 +335,8 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                 optionIndex < 2 ? "bottom-6" : "top-6"
               )}>
                 <div className={cn(
-                  "flex items-center px-4 py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20",
-                  "bg-black/70"
+                  "flex items-center px-4 py-4 rounded-2xl backdrop-blur-md shadow-2xl border border-white/30",
+                  "bg-black/80"
                 )}>
                   {/* Profile Avatar - Left side */}
                   <button
