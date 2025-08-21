@@ -201,19 +201,26 @@ const ShareModal = ({ isOpen, onClose, content }) => {
               paddingBottom: `max(1.5rem, calc(1.5rem + env(safe-area-inset-bottom)))`
             } : {}}
           >
+            {/* Drag Indicator for Mobile */}
+            {isMobile && (
+              <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
+            )}
+
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-gray-900">
                 Compartir {type === 'poll' ? 'Votación' : 'Perfil'}
               </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                className="h-8 w-8 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              {!isMobile && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onClose}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </div>
 
             {/* Content Preview */}
