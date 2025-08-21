@@ -273,6 +273,13 @@ const FeedPage = () => {
         pollTitle={selectedPollTitle}
         pollAuthor={selectedPollAuthor}
       />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={closeShareModal}
+        poll={shareModal.poll}
+      />
     </div>
   );
 };
