@@ -386,7 +386,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
                   
                   {/* Title - Centered */}
                   <div className="flex-1 flex justify-center">
-                    <div className="text-white font-bold text-base leading-tight text-center">
+                    <div className="text-white font-bold text-lg leading-tight text-center px-2">
                       {option.text}
                     </div>
                   </div>
