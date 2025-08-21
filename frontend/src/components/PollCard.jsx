@@ -594,6 +594,12 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
         pollTitle={poll.title}
         pollAuthor={poll.author}
       />
+
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={closeShareModal}
+        content={shareModal.content}
+      />
     </motion.div>
   );
 };
