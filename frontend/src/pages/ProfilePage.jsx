@@ -484,11 +484,11 @@ const ProfilePage = () => {
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="bg-red-500/20 border-red-500/30 text-white hover:bg-red-500/30"
-                      onClick={handleLogout}
+                      className="bg-blue-500/20 border-blue-500/30 text-white hover:bg-blue-500/30"
+                      onClick={handleShareProfile}
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Salir
+                      <Share className="w-4 h-4 mr-2" />
+                      Compartir perfil
                     </Button>
                   </>
                 ) : (
