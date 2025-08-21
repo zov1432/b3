@@ -12,7 +12,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { Plus, X, Sparkles, Upload, Image, Video, Play, Music } from 'lucide-react';
+import { Plus, X, Sparkles, Upload, Image, Video, Play, Music, Send } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { fileToBase64 } from '../services/mockData';
 import MusicSelector from './MusicSelector';
@@ -21,7 +21,7 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
   if (!media) return null;
 
   return (
-    <div className="relative w-full h-40 rounded-xl overflow-hidden bg-gray-100 shadow-sm">
+    <div className="relative w-full h-48 rounded-2xl overflow-hidden bg-gray-50 shadow-sm border border-gray-100">
       {isVideo ? (
         <div className="relative w-full h-full">
           <img 
@@ -30,7 +30,7 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 bg-white/95 rounded-full flex items-center justify-center shadow-lg">
               <Play className="w-8 h-8 text-gray-900 ml-1" />
             </div>
           </div>
@@ -44,9 +44,9 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
       )}
       <button
         onClick={onRemove}
-        className="absolute top-3 right-3 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg"
+        className="absolute top-4 right-4 w-10 h-10 bg-white text-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 hover:text-red-500 transition-all duration-200 shadow-lg border border-gray-200"
       >
-        <X className="w-4 h-4" />
+        <X className="w-5 h-5" />
       </button>
     </div>
   );
@@ -151,7 +151,7 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
     setTimeout(() => {
       onCreatePoll({
         title: title.trim(),
-        music: selectedMusic, // Incluir música seleccionada
+        music: selectedMusic,
         options: validOptions.map(opt => ({
           text: opt.text.trim(),
           media: opt.media
@@ -159,10 +159,10 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
       });
 
       toast({
-        title: "¡Votación creada!",
+        title: "¡Contenido publicado!",
         description: selectedMusic 
-          ? `Tu votación ha sido publicada con "${selectedMusic.title}"` 
-          : "Tu votación ha sido publicada exitosamente",
+          ? `Tu contenido ha sido publicado con "${selectedMusic.title}"` 
+          : "Tu contenido ha sido publicado exitosamente",
       });
 
       // Reset form
@@ -183,54 +183,53 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-white border-0 shadow-2xl">
-        <DialogHeader className="border-b border-gray-100 pb-6">
-          <DialogTitle className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+      <DialogContent className="sm:max-w-[800px] max-h-[95vh] overflow-y-auto bg-white border-0 shadow-2xl rounded-2xl">
+        <DialogHeader className="border-b border-gray-100 pb-8 px-2">
+          <DialogTitle className="text-3xl font-bold text-gray-900 flex items-center gap-4">
+            <div className="w-14 h-14 bg-gray-800 rounded-2xl flex items-center justify-center shadow-lg">
+              <Sparkles className="w-7 h-7 text-white" />
             </div>
-            Crear Nueva Votación
+            Crear Contenido
           </DialogTitle>
-          <DialogDescription className="text-gray-600 text-base mt-2">
-            Crea una pregunta interesante y agrega imágenes o videos para cada opción.
+          <DialogDescription className="text-gray-600 text-lg mt-3 font-medium">
+            Comparte tu creatividad con el mundo
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-8 py-6">
+        <form onSubmit={handleSubmit} className="space-y-8 py-8 px-2">
           {/* Título */}
-          <div className="space-y-3">
-            <Label htmlFor="title" className="text-lg font-semibold text-gray-900">
-              ¿Cuál es tu pregunta?
+          <div className="space-y-4">
+            <Label htmlFor="title" className="text-xl font-bold text-gray-900">
+              ¿Qué quieres preguntar?
             </Label>
             <Textarea
               id="title"
-              placeholder="Ej: ¿Quién ganó el mejor outfit de hoy?"
+              placeholder="Escribe tu pregunta aquí... Sé creativo y haz que sea interesante para tu audiencia"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="min-h-[100px] resize-none border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-xl text-base p-4 bg-gray-50/50"
+              className="min-h-[120px] resize-none border-2 border-gray-200 focus:ring-2 focus:ring-gray-400 focus:border-transparent rounded-2xl text-lg p-6 bg-gray-50"
             />
           </div>
 
-          {/* Selector de Música Simplificado - Estilo TikTok */}
+          {/* Selector de Música Elegante */}
           {selectedMusic ? (
-            /* Música seleccionada - Mostrar de forma compacta */
-            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="relative w-12 h-12 rounded-xl overflow-hidden">
+            <div className="flex items-center justify-between bg-gray-50 border-2 border-gray-200 rounded-2xl p-6 hover:bg-gray-100 transition-colors">
+              <div className="flex items-center gap-5">
+                <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-lg">
                   <img 
                     src={selectedMusic.cover} 
                     alt={selectedMusic.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
-                      <Music className="w-3 h-3 text-gray-900" />
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                      <Music className="w-4 h-4 text-gray-900" />
                     </div>
                   </div>
                 </div>
                 <div>
-                  <p className="font-semibold text-base text-gray-900">{selectedMusic.title}</p>
-                  <p className="text-sm text-gray-600">{selectedMusic.artist}</p>
+                  <p className="font-bold text-lg text-gray-900">{selectedMusic.title}</p>
+                  <p className="text-base text-gray-600">{selectedMusic.artist}</p>
                 </div>
               </div>
               <Button
@@ -241,27 +240,28 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                   setSelectedMusic(null);
                   setShowMusicSelector(false);
                 }}
-                className="text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg"
+                className="w-12 h-12 text-gray-400 hover:text-red-500 hover:bg-white rounded-2xl shadow-sm border border-gray-200"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </Button>
             </div>
           ) : (
-            /* Botón para agregar música - Estilo simple */
             <Button
               type="button"
               variant="outline"
               onClick={() => setShowMusicSelector(!showMusicSelector)}
-              className="w-full h-14 border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50 text-gray-600 hover:text-purple-600 transition-colors rounded-xl"
+              className="w-full h-16 border-2 border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-all rounded-2xl"
             >
-              <Music className="w-6 h-6 mr-3" />
-              <span className="text-base font-medium">Agregar música</span>
+              <div className="w-12 h-12 bg-gray-700 rounded-2xl flex items-center justify-center mr-4 shadow-sm">
+                <Music className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-lg font-semibold">Agregar música (opcional)</span>
             </Button>
           )}
 
           {/* Selector de música expandido */}
           {showMusicSelector && !selectedMusic && (
-            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+            <div className="border-2 border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
               <MusicSelector
                 onSelectMusic={(music) => {
                   setSelectedMusic(music);
@@ -274,21 +274,21 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
           )}
 
           {/* Opciones con Media */}
-          <div className="space-y-6">
-            <Label className="text-lg font-semibold text-gray-900">
+          <div className="space-y-8">
+            <Label className="text-xl font-bold text-gray-900">
               Opciones para votar
             </Label>
             {options.map((option, index) => (
-              <div key={index} className="bg-gray-50/50 border border-gray-200 rounded-xl p-6 space-y-4 hover:shadow-sm transition-shadow">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-sm">
+              <div key={index} className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-8 space-y-6 hover:bg-gray-100 transition-colors">
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 bg-gray-800 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
                     {String.fromCharCode(65 + index)}
                   </div>
                   <Input
-                    placeholder={`Descripción opción ${index + 1}`}
+                    placeholder={`Descripción para la opción ${index + 1}`}
                     value={option.text}
                     onChange={(e) => updateOption(index, 'text', e.target.value)}
-                    className="flex-1 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-lg h-12 text-base bg-white"
+                    className="flex-1 border-2 border-gray-200 focus:ring-2 focus:ring-gray-400 focus:border-transparent rounded-2xl h-14 text-lg bg-white px-6"
                   />
                   {options.length > 2 && (
                     <Button
@@ -296,15 +296,15 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => removeOption(index)}
-                      className="hover:bg-red-100 hover:text-red-600 rounded-lg w-10 h-10"
+                      className="w-12 h-12 hover:bg-white hover:text-red-500 rounded-2xl border border-gray-200 shadow-sm"
                     >
-                      <X className="w-5 h-5" />
+                      <X className="w-6 h-6" />
                     </Button>
                   )}
                 </div>
 
-                {/* Media Upload/Preview */}
-                <div className="space-y-3">
+                {/* Media Upload/Preview Mejorado */}
+                <div className="space-y-4">
                   {option.media ? (
                     <MediaUploadPreview 
                       media={option.media}
@@ -312,21 +312,21 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                       onRemove={() => updateOption(index, 'media', null)}
                     />
                   ) : (
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200">
-                      <div className="space-y-4">
-                        <div className="flex justify-center gap-3">
-                          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <Image className="w-6 h-6 text-blue-600" />
+                    <div className="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center hover:border-gray-400 hover:bg-white transition-all duration-300">
+                      <div className="space-y-6">
+                        <div className="flex justify-center gap-4">
+                          <div className="w-16 h-16 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <Image className="w-8 h-8 text-white" />
                           </div>
-                          <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                            <Video className="w-6 h-6 text-purple-600" />
+                          <div className="w-16 h-16 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <Video className="w-8 h-8 text-white" />
                           </div>
                         </div>
                         <div>
-                          <p className="text-base font-medium text-gray-900 mb-1">
+                          <p className="text-xl font-bold text-gray-900 mb-2">
                             Sube una imagen o video
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-base text-gray-600">
                             Arrastra el archivo aquí o haz clic para seleccionar
                           </p>
                         </div>
@@ -341,8 +341,13 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                               }}
                               className="hidden"
                             />
-                            <Button type="button" variant="outline" size="default" className="text-blue-600 border-blue-300 hover:bg-blue-50 rounded-lg h-11 px-6">
-                              <Upload className="w-5 h-5 mr-2" />
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              size="default" 
+                              className="bg-white border-2 border-gray-300 hover:bg-gray-50 rounded-2xl h-14 px-8 text-lg font-semibold text-gray-700 shadow-sm"
+                            >
+                              <Upload className="w-6 h-6 mr-3" />
                               Seleccionar Archivo
                             </Button>
                           </label>
@@ -359,39 +364,39 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                 type="button"
                 variant="outline"
                 onClick={addOption}
-                className="w-full h-14 border-2 border-dashed border-blue-300 text-blue-600 hover:bg-blue-50 rounded-xl text-base font-medium"
+                className="w-full h-16 border-2 border-dashed border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 rounded-2xl text-lg font-bold"
               >
-                <Plus className="w-5 h-5 mr-3" />
+                <Plus className="w-6 h-6 mr-4" />
                 Agregar otra opción
               </Button>
             )}
           </div>
         </form>
 
-        <DialogFooter className="border-t border-gray-100 pt-6">
+        <DialogFooter className="border-t border-gray-100 pt-8 px-2 gap-4">
           <Button
             type="button"
             variant="outline"
             onClick={() => setIsOpen(false)}
             disabled={isCreating}
-            className="h-12 px-6 text-base font-medium rounded-xl"
+            className="h-14 px-8 text-lg font-semibold rounded-2xl border-2 border-gray-300 hover:bg-gray-50"
           >
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isCreating}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 h-12 px-8 text-base font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+            className="bg-black hover:bg-gray-800 text-white h-14 px-10 text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
           >
             {isCreating ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3" />
-                Creando votación...
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-4" />
+                Publicando...
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5 mr-3" />
-                Crear Votación
+                <Send className="w-6 h-6 mr-4" />
+                Publicar contenido
               </>
             )}
           </Button>
