@@ -148,14 +148,12 @@ const ProfilePage = () => {
   }, [polls]);
 
   const handleShareProfile = () => {
-    // Compartir perfil usando Web Share API o copiar al portapapeles
-    const profileUrl = window.location.href;
-    
+    // Intentar usar Web Share API primero (mejor para móviles)
     if (navigator.share) {
       navigator.share({
         title: `Perfil de ${viewedUser?.display_name || viewedUser?.username}`,
         text: `Mira el perfil de ${viewedUser?.display_name || viewedUser?.username} en nuestra plataforma`,
-        url: profileUrl,
+        url: window.location.href,
       }).then(() => {
         toast({
           title: "Perfil compartido",
@@ -163,12 +161,16 @@ const ProfilePage = () => {
         });
       }).catch((error) => {
         console.log('Error sharing:', error);
-        // Fallback to copy to clipboard
-        copyToClipboard(profileUrl);
+        // Si falla Web Share API, abrir modal
+        if (viewedUser) {
+          shareProfile(viewedUser);
+        }
       });
     } else {
-      // Fallback: copiar URL al portapapeles
-      copyToClipboard(profileUrl);
+      // Si Web Share API no está disponible, abrir modal de compartir
+      if (viewedUser) {
+        shareProfile(viewedUser);
+      }
     }
   };
 
