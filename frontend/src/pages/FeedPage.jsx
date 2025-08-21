@@ -278,7 +278,7 @@ const FeedPage = () => {
       <ShareModal
         isOpen={shareModal.isOpen}
         onClose={closeShareModal}
-        poll={shareModal.poll}
+        content={shareModal.content}
       />
     </div>
   );
