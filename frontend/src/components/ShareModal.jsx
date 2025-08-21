@@ -266,6 +266,19 @@ const ShareModal = ({ isOpen, onClose, content }) => {
                 </div>
               </motion.button>
             </div>
+
+            {/* Mobile Close Button */}
+            {isMobile && (
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <Button
+                  variant="outline"
+                  onClick={onClose}
+                  className="w-full py-3 text-gray-700 border-gray-300 hover:bg-gray-50"
+                >
+                  Cerrar
+                </Button>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}
