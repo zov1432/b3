@@ -464,11 +464,29 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
               size="sm"
               onClick={(e) => {
                 e.stopPropagation();
-                onShare(poll.id);
+                // Intentar Web Share API primero
+                if (navigator.share) {
+                  navigator.share({
+                    title: poll.question || 'Vota en esta encuesta',
+                    text: 'Mira esta increíble votación',
+                    url: `${window.location.origin}/poll/${poll.id}`,
+                  }).then(() => {
+                    onShare && onShare(poll.id);
+                  }).catch((error) => {
+                    if (error.name !== 'AbortError') {
+                      sharePoll(poll);
+                      onShare && onShare(poll.id);
+                    }
+                  });
+                } else {
+                  // Si no hay Web Share API, usar modal
+                  sharePoll(poll);
+                  onShare && onShare(poll.id);
+                }
               }}
               className="flex items-center gap-1 text-white hover:text-green-400 hover:scale-105 transition-all duration-200 h-auto p-2 rounded-lg bg-black/20 backdrop-blur-sm"
             >
-              <Send className="w-5 h-5" />
+              <Share2 className="w-5 h-5" />
               <span className="font-medium text-sm">{formatNumber(poll.shares)}</span>
             </Button>
 
