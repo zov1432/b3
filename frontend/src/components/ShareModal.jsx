@@ -5,6 +5,19 @@ import { Button } from './ui/button';
 import { toast } from '../hooks/use-toast';
 
 const ShareModal = ({ isOpen, onClose, content }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   if (!content) return null;
 
   const { type, title, description, url, imageUrl } = content;
