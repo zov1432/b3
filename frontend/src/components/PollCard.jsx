@@ -420,6 +420,20 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
             </div>
           </CardContent>
         </Card>
+
+        <CommentsModal
+          isOpen={showCommentsModal}
+          onClose={() => setShowCommentsModal(false)}
+          pollId={poll.id}
+          pollTitle={poll.title}
+          pollAuthor={poll.author}
+        />
+
+        <ShareModal
+          isOpen={shareModal.isOpen}
+          onClose={closeShareModal}
+          content={shareModal.content}
+        />
       </motion.div>
     );
   }
