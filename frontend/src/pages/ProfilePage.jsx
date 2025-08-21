@@ -488,7 +488,7 @@ const ProfilePage = () => {
                       onClick={handleShareProfile}
                     >
                       <Share className="w-4 h-4 mr-2" />
-                      Compartir perfil
+                      Compartir
                     </Button>
                   </>
                 ) : (
