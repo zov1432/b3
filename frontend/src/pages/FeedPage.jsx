@@ -100,6 +100,7 @@ const FeedPage = () => {
   };
 
   const handleShare = async (pollId) => {
+    // Actualizar el contador de shares
     setPolls(prev => prev.map(poll => {
       if (poll.id === pollId) {
         return {
@@ -112,15 +113,17 @@ const FeedPage = () => {
     
     await trackAction('share');
     
-    const shareUrl = `${window.location.origin}/poll/${pollId}`;
+    // Obtener el poll para el modal
+    const poll = polls.find(p => p.id === pollId);
+    if (!poll) return;
     
     // Intentar usar Web Share API primero (mejor para móviles)
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Vota en esta encuesta',
+          title: poll.question || 'Vota en esta encuesta',
           text: 'Mira esta increíble votación',
-          url: shareUrl,
+          url: `${window.location.origin}/poll/${pollId}`,
         });
         toast({
           title: "¡Compartido exitosamente!",
@@ -131,43 +134,13 @@ const FeedPage = () => {
         // Si el usuario cancela el share, no mostrar error
         if (err.name !== 'AbortError') {
           console.log('Error al compartir:', err);
+          // Si Web Share API falla, usar modal
+          sharePoll(poll);
         }
       }
-    }
-    
-    // Fallback: intentar copiar al portapapeles
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      toast({
-        title: "¡Enlace copiado!",
-        description: "El enlace de la votación ha sido copiado al portapapeles",
-      });
-    } catch (err) {
-      // Fallback final: crear elemento temporal para copiar
-      try {
-        const textArea = document.createElement('textarea');
-        textArea.value = shareUrl;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        
-        toast({
-          title: "¡Enlace copiado!",
-          description: "El enlace de la votación ha sido copiado al portapapeles",
-        });
-      } catch (fallbackErr) {
-        // Si todo falla, mostrar el enlace para copiar manualmente
-        toast({
-          title: "Copiar enlace",
-          description: `Copia este enlace: ${shareUrl}`,
-          duration: 8000,
-        });
-      }
+    } else {
+      // Si Web Share API no está disponible, usar modal
+      sharePoll(poll);
     }
   };
 
