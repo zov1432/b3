@@ -197,17 +197,16 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
   };
 
   const handleShare = async () => {
-    const shareUrl = `${window.location.origin}/poll/${poll.id}`;
-    
     // Intentar usar Web Share API primero (mejor para móviles)
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Vota en esta encuesta',
+          title: poll.question || 'Vota en esta encuesta',
           text: 'Mira esta increíble votación',
-          url: shareUrl,
+          url: `${window.location.origin}/poll/${poll.id}`,
         });
-        // No mostrar toast aquí porque Web Share API ya da feedback
+        // Si Web Share API funciona, también ejecutar callback para estadísticas
+        onShare && onShare(poll.id);
         return;
       } catch (err) {
         // Si el usuario cancela el share, no mostrar error
@@ -217,8 +216,10 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
       }
     }
     
-    // Ejecutar la función de callback principal
-    onShare(poll.id);
+    // Si Web Share API no está disponible, abrir modal de compartir
+    sharePoll(poll);
+    // También ejecutar callback para estadísticas
+    onShare && onShare(poll.id);
   };
 
   const handleSave = async () => {
