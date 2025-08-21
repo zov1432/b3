@@ -170,11 +170,36 @@ const ShareModal = ({ isOpen, onClose, content }) => {
           onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+            initial={
+              isMobile 
+                ? { y: "100%", opacity: 1 }
+                : { scale: 0.95, opacity: 0 }
+            }
+            animate={
+              isMobile 
+                ? { y: "0%", opacity: 1 }
+                : { scale: 1, opacity: 1 }
+            }
+            exit={
+              isMobile 
+                ? { y: "100%", opacity: 1 }
+                : { scale: 0.95, opacity: 0 }
+            }
+            transition={{ 
+              type: "spring", 
+              damping: 25, 
+              stiffness: 300,
+              duration: 0.3
+            }}
+            className={
+              isMobile
+                ? "bg-white rounded-t-3xl p-6 w-full fixed bottom-0 left-0 right-0 max-h-[60vh] overflow-y-auto"
+                : "bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+            }
             onClick={(e) => e.stopPropagation()}
+            style={isMobile ? { 
+              paddingBottom: `max(1.5rem, calc(1.5rem + env(safe-area-inset-bottom)))`
+            } : {}}
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
