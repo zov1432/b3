@@ -59,6 +59,7 @@ const ProfilePage = () => {
   const { user: authUser, refreshUser } = useAuth();
   const { userId } = useParams();
   const navigate = useNavigate();
+  const { shareModal, shareProfile, closeShareModal } = useShare();
 
   // Create a comprehensive user database from poll options AND poll authors
   const allUsers = [
