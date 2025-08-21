@@ -540,6 +540,13 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
         pollTitle={poll.title}
         pollAuthor={poll.author}
       />
+
+      {/* Modal de compartir */}
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={closeShareModal}
+        content={shareModal.content}
+      />
     </div>
   );
 };
