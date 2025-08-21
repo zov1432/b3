@@ -8,12 +8,14 @@ import { Badge } from '../components/ui/badge';
 import PollCard from '../components/PollCard';
 import EditProfileModal from '../components/EditProfileModal';
 import CommentsModal from '../components/CommentsModal';
+import ShareModal from '../components/ShareModal';
 import TikTokProfileGrid from '../components/TikTokProfileGrid';
 import TikTokScrollView from '../components/TikTokScrollView';
-import { Settings, Users, Vote, Trophy, Heart, Share, ArrowLeft, AtSign, Bookmark, Grid3X3, Check } from 'lucide-react';
+import { Settings, Users, Vote, Trophy, Heart, Share, ArrowLeft, AtSign, Bookmark, Grid3X3, Check, Share2 } from 'lucide-react';
 import { mockPolls, voteOnPoll, toggleLike } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { useShare } from '../hooks/useShare';
 import { cn } from '../lib/utils';
 
 const StatCard = ({ icon: Icon, label, value, color = "blue" }) => (
