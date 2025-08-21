@@ -69,6 +69,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
   const { followUser, unfollowUser, isFollowing, getFollowStatus } = useFollow();
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
+  const { shareModal, sharePoll, closeShareModal } = useShare();
 
   // Get user ID from poll author
   const getAuthorUserId = () => {
