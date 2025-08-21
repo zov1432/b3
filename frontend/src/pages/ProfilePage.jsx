@@ -144,12 +144,67 @@ const ProfilePage = () => {
     setSavedPolls(mockSavedPolls);
   }, [polls]);
 
-  const handleLogout = () => {
-    logout();
-    toast({
-      title: "Sesión cerrada",
-      description: "Has cerrado sesión exitosamente",
-    });
+  const handleShareProfile = () => {
+    // Compartir perfil usando Web Share API o copiar al portapapeles
+    const profileUrl = window.location.href;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: `Perfil de ${viewedUser?.display_name || viewedUser?.username}`,
+        text: `Mira el perfil de ${viewedUser?.display_name || viewedUser?.username} en nuestra plataforma`,
+        url: profileUrl,
+      }).then(() => {
+        toast({
+          title: "Perfil compartido",
+          description: "El perfil ha sido compartido exitosamente",
+        });
+      }).catch((error) => {
+        console.log('Error sharing:', error);
+        // Fallback to copy to clipboard
+        copyToClipboard(profileUrl);
+      });
+    } else {
+      // Fallback: copiar URL al portapapeles
+      copyToClipboard(profileUrl);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        toast({
+          title: "URL copiada",
+          description: "La URL del perfil ha sido copiada al portapapeles",
+        });
+      }).catch(() => {
+        // Fallback más básico
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  };
+
+  const fallbackCopy = (text) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      toast({
+        title: "URL copiada",
+        description: "La URL del perfil ha sido copiada al portapapeles",
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "No se pudo copiar la URL del perfil",
+        variant: "destructive"
+      });
+    }
+    document.body.removeChild(textArea);
   };
 
   const handleBack = () => {
