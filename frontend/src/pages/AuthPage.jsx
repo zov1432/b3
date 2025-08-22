@@ -393,10 +393,25 @@ const RegisterPage = ({ onSwitchToLogin }) => {
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
+
+    // Real-time validation
+    if (name === 'email') {
+      setEmailValid(value.length > 0 ? validateEmail(value) : null);
+    } else if (name === 'username') {
+      setUsernameValid(value.length > 0 ? validateUsername(value) : null);
+    } else if (name === 'password') {
+      setPasswordStrength(checkPasswordStrength(value));
+      if (formData.confirmPassword) {
+        setPasswordMatch(value === formData.confirmPassword);
+      }
+    } else if (name === 'confirmPassword') {
+      setPasswordMatch(formData.password === value);
+    }
   };
 
   const handleSubmit = async (e) => {
