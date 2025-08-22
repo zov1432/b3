@@ -9,8 +9,53 @@ const LoginPage = ({ onSwitchToRegister }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [particles, setParticles] = useState([]);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [emailValid, setEmailValid] = useState(null);
+  const [passwordStrength, setPasswordStrength] = useState('');
   const { login } = useAuth();
   const { toast } = useToast();
+
+  // Real-time email validation
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Real-time password strength checker
+  const checkPasswordStrength = (password) => {
+    if (password.length === 0) return '';
+    if (password.length < 6) return 'weak';
+    if (password.length >= 6 && /(?=.*[a-z])(?=.*[A-Z])/.test(password)) return 'strong';
+    if (password.length >= 6) return 'medium';
+    return 'weak';
+  };
+
+  // Handle email change with real-time validation
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    
+    if (value.length > 0) {
+      setEmailValid(validateEmail(value));
+    } else {
+      setEmailValid(null);
+    }
+  };
+
+  // Handle password change with strength indicator
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    setPasswordStrength(checkPasswordStrength(value));
+  };
+
+  // Google OAuth login
+  const handleGoogleLogin = () => {
+    const currentUrl = window.location.origin;
+    const redirectUrl = `${currentUrl}/profile`;
+    const googleAuthUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    window.location.href = googleAuthUrl;
+  };
 
   // Generate floating particles for background animation
   useEffect(() => {
