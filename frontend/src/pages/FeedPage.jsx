@@ -279,13 +279,21 @@ const FeedPage = () => {
 
   // Renderizado desktop (Web layout similar a TikTok web)
   return (
-    <div className="min-h-screen bg-gray-50 pt-6 relative">
-      {/* Logo personalizado en esquina superior derecha - DESKTOP */}
-      <div className="fixed top-6 right-6 z-[9999] flex items-center justify-center w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border border-gray-200 shadow-2xl">
-        <CustomLogo size={28} className="text-gray-800" />
+    <>
+      {/* Logo fijo SIEMPRE VISIBLE - Desktop Mode */}
+      <div 
+        className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-12 h-12 rounded-full bg-white/95 backdrop-blur-md border-2 border-gray-200/60 shadow-2xl"
+        style={{ 
+          position: 'fixed',
+          top: '16px',
+          right: '16px',
+          zIndex: 9999,
+        }}
+      >
+        <CustomLogo size={28} />
       </div>
-
-      <div className="max-w-4xl mx-auto px-4">
+      
+      <div className="min-h-screen bg-gray-50 pt-6 relative">
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Para ti</h1>
