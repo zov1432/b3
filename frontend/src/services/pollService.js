@@ -140,12 +140,13 @@ class PollService {
     return {
       id: backendPoll.id,
       title: backendPoll.title,
-      author: backendPoll.author.display_name || backendPoll.author.username,
+      author: backendPoll.author?.display_name || backendPoll.author?.username,
       authorUser: {
-        username: backendPoll.author.username,
-        displayName: backendPoll.author.display_name,
-        avatar: backendPoll.author.avatar_url,
-        verified: backendPoll.author.is_verified,
+        id: backendPoll.author?.id,
+        username: backendPoll.author?.username,
+        displayName: backendPoll.author?.display_name,
+        avatar: backendPoll.author?.avatar_url,
+        verified: backendPoll.author?.is_verified,
         followers: '1K' // Placeholder for now
       },
       timeAgo: backendPoll.time_ago,
