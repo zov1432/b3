@@ -95,64 +95,64 @@ const LoginPage = ({ onSwitchToRegister }) => {
       <div className="w-full max-w-md relative z-10">
         {/* Header with Enhanced Animation */}
         <div className="text-center mb-8 animate-fadeInUp">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full mb-6 relative group transition-all duration-500 hover:scale-110 hover:rotate-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full mb-6 relative group transition-all duration-500 hover:scale-110 hover:rotate-12 shadow-lg">
             <Sparkles className="w-10 h-10 text-white animate-pulse" />
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3 animate-slideInLeft">
+          <h1 className="text-4xl font-bold text-gray-800 mb-3 animate-slideInLeft">
             ¡Bienvenido de vuelta!
           </h1>
-          <p className="text-white text-lg animate-slideInRight">Inicia sesión para continuar tu experiencia adictiva</p>
+          <p className="text-gray-600 text-lg animate-slideInRight">Inicia sesión para continuar tu experiencia adictiva</p>
         </div>
 
         {/* Enhanced Login Form */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-500 animate-fadeInUp relative overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-gray-200/50 shadow-xl hover:bg-white/90 hover:shadow-2xl transition-all duration-500 animate-fadeInUp relative overflow-hidden">
           {/* Form Glow Effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-indigo-500/10 rounded-3xl blur-xl opacity-50"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-50/50 via-pink-50/50 to-indigo-50/50 rounded-3xl blur-xl opacity-50"></div>
           
           <form onSubmit={handleSubmit} className="space-y-8 relative">
             {/* Enhanced Email Field */}
             <div className="group">
-              <label className="block text-white text-sm font-medium mb-3 transition-all duration-300 group-hover:text-white">
+              <label className="block text-gray-700 text-sm font-medium mb-3 transition-all duration-300 group-hover:text-gray-900">
                 Correo electrónico
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-4 w-5 h-5 text-white/70 transition-all duration-300 group-hover:text-white group-focus-within:text-white" />
+                <Mail className="absolute left-4 top-4 w-5 h-5 text-gray-500 transition-all duration-300 group-hover:text-gray-700 group-focus-within:text-purple-500" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent hover:bg-white/15 transition-all duration-300 backdrop-blur-sm"
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300 backdrop-blur-sm"
                   placeholder="tu@email.com"
                   required
                 />
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-100/30 to-pink-100/30 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
 
             {/* Enhanced Password Field */}
             <div className="group">
-              <label className="block text-white text-sm font-medium mb-3 transition-all duration-300 group-hover:text-white">
+              <label className="block text-gray-700 text-sm font-medium mb-3 transition-all duration-300 group-hover:text-gray-900">
                 Contraseña
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-4 w-5 h-5 text-white/70 transition-all duration-300 group-hover:text-white group-focus-within:text-white" />
+                <Lock className="absolute left-4 top-4 w-5 h-5 text-gray-500 transition-all duration-300 group-hover:text-gray-700 group-focus-within:text-purple-500" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-14 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent hover:bg-white/15 transition-all duration-300 backdrop-blur-sm"
+                  className="w-full pl-12 pr-14 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300 backdrop-blur-sm"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-4 text-white/70 hover:text-white transition-all duration-300 transform hover:scale-110"
+                  className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 focus:text-purple-500 transition-all duration-300 transform hover:scale-110"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-100/30 to-pink-100/30 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
 
@@ -160,7 +160,7 @@ const LoginPage = ({ onSwitchToRegister }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-white/90 via-white to-white/90 text-gray-900 font-bold py-4 px-8 rounded-2xl hover:from-white hover:via-white hover:to-white focus:outline-none focus:ring-4 focus:ring-white/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              className="w-full bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 text-white font-bold py-4 px-8 rounded-2xl hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-purple-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               {loading ? (
@@ -179,11 +179,11 @@ const LoginPage = ({ onSwitchToRegister }) => {
 
           {/* Enhanced Switch to Register */}
           <div className="text-center mt-8 animate-fadeIn">
-            <p className="text-gray-300">
+            <p className="text-gray-600">
               ¿No tienes cuenta?{' '}
               <button
                 onClick={onSwitchToRegister}
-                className="text-purple-300 hover:text-white font-medium transition-all duration-300 hover:underline transform hover:scale-105 inline-block"
+                className="text-purple-600 hover:text-purple-800 font-medium transition-all duration-300 hover:underline transform hover:scale-105 inline-block"
               >
                 Regístrate aquí
               </button>
