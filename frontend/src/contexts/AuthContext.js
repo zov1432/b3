@@ -222,6 +222,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async (updateData) => {
+    if (!token) {
+      throw new Error('Not authenticated');
+    }
+
+    try {
+      const updatedUser = await apiRequest('/api/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      setUser(updatedUser);
+      localStorage.setItem('authUser', JSON.stringify(updatedUser));
+      
+      return updatedUser;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
+  };
+
   const value = {
     isAuthenticated,
     user,
@@ -232,7 +256,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     getAuthHeaders,
     apiRequest,
-    refreshUser
+    refreshUser,
+    updateUser
   };
 
   return (
