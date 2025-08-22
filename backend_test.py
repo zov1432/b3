@@ -3216,6 +3216,230 @@ def test_poll_creation_with_images(base_url):
     print(f"\nPoll Creation with Images Tests Summary: {success_count}/8 tests passed")
     return success_count >= 6  # At least 6 out of 8 tests should pass
 
+def test_static_file_serving_system(base_url):
+    """Test comprehensive static file serving system for mobile image fix"""
+    print("\n=== Testing Static File Serving System ===")
+    
+    if not auth_tokens:
+        print("❌ No auth tokens available for static file serving tests")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    success_count = 0
+    uploaded_files = []
+    
+    # Test 1: Upload a test image file
+    print("Testing file upload for static serving...")
+    try:
+        # Create a simple test image (1x1 pixel PNG)
+        import base64
+        import io
+        from PIL import Image
+        
+        # Create a small test image
+        img = Image.new('RGB', (100, 100), color='red')
+        img_buffer = io.BytesIO()
+        img.save(img_buffer, format='PNG')
+        img_buffer.seek(0)
+        
+        # Upload the file
+        files = {'file': ('test_image.png', img_buffer, 'image/png')}
+        data = {'upload_type': 'general'}
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+        print(f"Upload Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            upload_data = response.json()
+            print(f"✅ File uploaded successfully")
+            print(f"File ID: {upload_data['id']}")
+            print(f"Public URL: {upload_data['public_url']}")
+            print(f"File Format: {upload_data['file_format']}")
+            print(f"File Size: {upload_data['file_size']} bytes")
+            print(f"Dimensions: {upload_data['width']}x{upload_data['height']}")
+            
+            uploaded_files.append(upload_data)
+            success_count += 1
+            
+            # Verify URL format uses /api/uploads/
+            if upload_data['public_url'].startswith('/api/uploads/'):
+                print("✅ Upload URL uses correct /api/uploads/ format")
+                success_count += 1
+            else:
+                print(f"❌ Upload URL should use /api/uploads/ format, got: {upload_data['public_url']}")
+        else:
+            print(f"❌ File upload failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ File upload error: {e}")
+    
+    # Test 2: Test new static file serving endpoint GET /api/uploads/{category}/{filename}
+    if uploaded_files:
+        print("\nTesting GET /api/uploads/{category}/{filename} endpoint...")
+        try:
+            upload_data = uploaded_files[0]
+            public_url = upload_data['public_url']
+            
+            # Extract category and filename from URL
+            # URL format: /api/uploads/{category}/{filename}
+            url_parts = public_url.split('/')
+            if len(url_parts) >= 4:
+                category = url_parts[3]  # general
+                filename = url_parts[4]  # uuid.png
+                
+                print(f"Testing: GET {public_url}")
+                print(f"Category: {category}, Filename: {filename}")
+                
+                response = requests.get(f"{base_url}/uploads/{category}/{filename}", timeout=10)
+                print(f"Static File Serve Status Code: {response.status_code}")
+                
+                if response.status_code == 200:
+                    print(f"✅ Static file served successfully")
+                    print(f"Content-Type: {response.headers.get('content-type', 'N/A')}")
+                    print(f"Content-Length: {response.headers.get('content-length', 'N/A')} bytes")
+                    
+                    # Verify content type is correct for PNG
+                    content_type = response.headers.get('content-type', '')
+                    if 'image/png' in content_type:
+                        print("✅ Correct content-type: image/png")
+                        success_count += 1
+                    else:
+                        print(f"❌ Expected image/png content-type, got: {content_type}")
+                    
+                    # Verify file content is not empty
+                    if len(response.content) > 0:
+                        print(f"✅ File content received: {len(response.content)} bytes")
+                        success_count += 1
+                    else:
+                        print("❌ File content is empty")
+                        
+                else:
+                    print(f"❌ Static file serve failed: {response.status_code}")
+                    print(f"Response: {response.text}")
+            else:
+                print(f"❌ Invalid public URL format: {public_url}")
+                
+        except Exception as e:
+            print(f"❌ Static file serve error: {e}")
+    
+    # Test 3: Test error handling - invalid category
+    print("\nTesting error handling - invalid category...")
+    try:
+        response = requests.get(f"{base_url}/uploads/invalid_category/test.jpg", timeout=10)
+        print(f"Invalid Category Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Invalid category properly rejected with 404")
+            success_count += 1
+        else:
+            print(f"❌ Should return 404 for invalid category, got: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Invalid category test error: {e}")
+    
+    # Test 4: Test error handling - non-existent file
+    print("\nTesting error handling - non-existent file...")
+    try:
+        response = requests.get(f"{base_url}/uploads/general/nonexistent_file.jpg", timeout=10)
+        print(f"Non-existent File Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Non-existent file properly rejected with 404")
+            success_count += 1
+        else:
+            print(f"❌ Should return 404 for non-existent file, got: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Non-existent file test error: {e}")
+    
+    # Test 5: Test different file formats (JPG)
+    print("\nTesting JPG file upload and serving...")
+    try:
+        # Create a small test JPG image
+        img = Image.new('RGB', (50, 50), color='blue')
+        img_buffer = io.BytesIO()
+        img.save(img_buffer, format='JPEG')
+        img_buffer.seek(0)
+        
+        # Upload JPG file
+        files = {'file': ('test_image.jpg', img_buffer, 'image/jpeg')}
+        data = {'upload_type': 'general'}
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+        print(f"JPG Upload Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            jpg_data = response.json()
+            print(f"✅ JPG file uploaded successfully")
+            print(f"JPG Public URL: {jpg_data['public_url']}")
+            
+            # Test serving the JPG file
+            url_parts = jpg_data['public_url'].split('/')
+            if len(url_parts) >= 4:
+                category = url_parts[3]
+                filename = url_parts[4]
+                
+                response = requests.get(f"{base_url}/uploads/{category}/{filename}", timeout=10)
+                if response.status_code == 200:
+                    content_type = response.headers.get('content-type', '')
+                    if 'image/jpeg' in content_type:
+                        print("✅ JPG file served with correct content-type: image/jpeg")
+                        success_count += 1
+                    else:
+                        print(f"❌ Expected image/jpeg content-type, got: {content_type}")
+                else:
+                    print(f"❌ JPG file serve failed: {response.status_code}")
+            
+            uploaded_files.append(jpg_data)
+        else:
+            print(f"❌ JPG upload failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ JPG upload/serve error: {e}")
+    
+    # Test 6: Test external URL access (production URL)
+    print("\nTesting external URL access...")
+    try:
+        # Get the production URL from frontend .env
+        with open('/app/frontend/.env', 'r') as f:
+            for line in f:
+                if line.startswith('REACT_APP_BACKEND_URL='):
+                    external_base_url = line.split('=', 1)[1].strip()
+                    break
+        
+        if uploaded_files and external_base_url:
+            # Test the first uploaded file via external URL
+            upload_data = uploaded_files[0]
+            public_url = upload_data['public_url']
+            external_url = f"{external_base_url}{public_url}"
+            
+            print(f"Testing external URL: {external_url}")
+            
+            response = requests.get(external_url, timeout=15)
+            print(f"External URL Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                content_type = response.headers.get('content-type', '')
+                print(f"✅ External URL access successful")
+                print(f"Content-Type: {content_type}")
+                
+                if 'image/' in content_type:
+                    print("✅ External URL serves image with correct content-type")
+                    success_count += 1
+                else:
+                    print(f"❌ Expected image content-type, got: {content_type}")
+            else:
+                print(f"❌ External URL access failed: {response.status_code}")
+                print(f"Response: {response.text[:200]}...")
+        else:
+            print("⚠️ Skipping external URL test - no uploaded files or external URL")
+            
+    except Exception as e:
+        print(f"❌ External URL test error: {e}")
+    
+    print(f"\nStatic File Serving System Tests Summary: {success_count}/10+ tests passed")
+    return success_count >= 8  # At least 8 tests should pass
+
 def main():
     """Main test execution function"""
     print("🚀 Starting Backend API Testing - Focus on Image Upload System...")
