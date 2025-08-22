@@ -235,9 +235,9 @@ backend:
     implemented: true
     working: false
     file: "/app/backend/server.py, /app/frontend/src/services/uploadService.js, /app/frontend/src/services/pollService.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "main"
