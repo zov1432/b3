@@ -277,10 +277,17 @@ async def get_api_info():
 # =============  AUTHENTICATION ENDPOINTS =============
 
 @api_router.post("/auth/register", response_model=Token)
-async def register(user_data: UserCreate):
-    """Register a new user"""
+async def register(user_data: UserCreate, request: Request):
+    """Register a new user with enhanced security"""
+    ip_address = get_client_ip(request)
+    user_agent = request.headers.get("user-agent", "")
+    
     # Check if email exists
     if await db.users.find_one({"email": user_data.email}):
+        await track_login_attempt(
+            user_data.email, ip_address, user_agent,
+            False, "Email already registered"
+        )
         raise HTTPException(
             status_code=400,
             detail="Email already registered"
@@ -312,8 +319,29 @@ async def register(user_data: UserCreate):
     )
     await db.user_profiles.insert_one(profile.dict())
     
+    # Get or create device for registration
+    device = await get_or_create_device(user.id, ip_address, user_agent)
+    
+    # Track successful registration
+    await track_login_attempt(user_data.email, ip_address, user_agent, True)
+    
     # Generate token
     access_token = create_access_token(data={"sub": user.id})
+    
+    # Create session
+    session_token = await create_session(user.id, device.id, ip_address, user_agent)
+    
+    # Create welcome notification
+    await create_security_notification(
+        user.id,
+        "account_created",
+        "Welcome!",
+        f"Your account has been created successfully from {device.device_name}",
+        {
+            "device_id": device.id,
+            "ip_address": ip_address
+        }
+    )
     
     return Token(
         access_token=access_token,
