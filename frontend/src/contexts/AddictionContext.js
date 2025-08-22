@@ -204,7 +204,7 @@ export const AddictionProvider = ({ children }) => {
     }
   };
 
-  // Action tracking with dopamine hits
+  // Action tracking with dopamine hits - TEMPORARILY DISABLED
   const trackAction = async (actionType, context = {}) => {
     if (!isAuthenticated || !user) {
       console.log('Not authenticated, skipping action tracking');
@@ -212,40 +212,23 @@ export const AddictionProvider = ({ children }) => {
     }
 
     try {
-      // Track with behavior tracker
-      switch (actionType) {
-        case 'vote':
-          behaviorTracker.trackVote();
-          break;
-        case 'create':
-          behaviorTracker.trackPollCreation();
-          break;
-        case 'like':
-          behaviorTracker.trackLike();
-          break;
-        case 'share':
-          behaviorTracker.trackShare();
-          break;
-        case 'view':
-          behaviorTracker.trackPollView();
-          break;
-      }
-
-      // Track action and get rewards
-      const result = await apiRequest('/api/user/action', {
-        method: 'POST',
-        body: JSON.stringify({
-          action_type: actionType,
-          context: context
-        })
-      });
+      // Temporarily disable behavior tracking to avoid 404 errors
+      // TODO: Re-enable when behavior tracking endpoints are implemented
+      console.log(`Action tracked locally: ${actionType}`, context);
       
-      if (result.success) {
-        // Update user profile
-        setUserProfile(result.profile);
-        setLevel(result.profile.level);
-        setXp(result.profile.xp);
-        setStreak(result.profile.current_streak);
+      // Simple local tracking without API calls
+      setDopamineHits(prev => prev + 1);
+      
+      // Simulate basic XP gain without backend
+      setXp(prev => prev + 10);
+      
+      return { success: true, xp_gained: 10 };
+      
+    } catch (error) {
+      console.error('Failed to track action:', error);
+      return { success: false, error: error.message };
+    }
+  };
         
         // Show reward popup
         if (result.reward) {
