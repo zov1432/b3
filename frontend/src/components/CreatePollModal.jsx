@@ -207,9 +207,11 @@ const CreatePollModal = ({ onCreatePoll, children, isOpen: externalIsOpen, onClo
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+      {children && (
+        <DialogTrigger asChild>
+          {children}
+        </DialogTrigger>
+      )}
       <DialogContent className="w-[95vw] max-w-[800px] h-[95vh] sm:h-auto max-h-[95vh] overflow-y-auto bg-white border-0 shadow-2xl rounded-2xl sm:rounded-2xl">
         <DialogHeader className="border-b border-gray-100 pb-4 sm:pb-8 px-2">
           <DialogTitle className="text-xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-4">
