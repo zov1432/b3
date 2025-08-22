@@ -47,14 +47,14 @@ const SimpleMusicCard = ({ music, isSelected, isPlaying, onSelect, onPlay }) => 
   return (
     <div 
       className={`
-        flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50
+        flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50
         ${isSelected ? 'bg-blue-50 border-l-4 border-blue-500' : ''}
       `}
       onClick={() => onSelect(music)}
     >
       {/* Cover with play button */}
       <div 
-        className="relative w-12 h-12 rounded-lg overflow-hidden bg-gradient-to-br from-pink-500 to-purple-600 flex-shrink-0"
+        className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden bg-gradient-to-br from-pink-500 to-purple-600 flex-shrink-0"
         onClick={(e) => {
           e.stopPropagation();
           onPlay(music);
@@ -66,11 +66,11 @@ const SimpleMusicCard = ({ music, isSelected, isPlaying, onSelect, onPlay }) => 
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-          <div className={`w-6 h-6 rounded-full bg-white/90 flex items-center justify-center transition-all ${isPlaying ? 'scale-110' : ''}`}>
+          <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/90 flex items-center justify-center transition-all ${isPlaying ? 'scale-110' : ''}`}>
             {isPlaying ? (
-              <div className="w-2 h-2 bg-black rounded-full animate-pulse" />
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full animate-pulse" />
             ) : (
-              <Play className="w-3 h-3 text-black ml-0.5" />
+              <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-black ml-0.5" />
             )}
           </div>
         </div>
@@ -78,7 +78,7 @@ const SimpleMusicCard = ({ music, isSelected, isPlaying, onSelect, onPlay }) => 
 
       {/* Music info */}
       <div className="flex-1 min-w-0">
-        <h4 className="font-semibold text-sm text-gray-900 truncate">
+        <h4 className="font-semibold text-xs sm:text-sm text-gray-900 truncate">
           {music.title}
         </h4>
         <p className="text-xs text-gray-500 truncate">
@@ -86,8 +86,8 @@ const SimpleMusicCard = ({ music, isSelected, isPlaying, onSelect, onPlay }) => 
         </p>
       </div>
 
-      {/* Simple waveform indicator */}
-      <div className="flex items-center gap-0.5">
+      {/* Simple waveform indicator - Hidden on very small screens */}
+      <div className="hidden sm:flex items-center gap-0.5">
         {music.waveform.slice(0, 4).map((height, index) => (
           <div
             key={index}
@@ -104,8 +104,8 @@ const SimpleMusicCard = ({ music, isSelected, isPlaying, onSelect, onPlay }) => 
 
       {/* Selected indicator */}
       {isSelected && (
-        <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center">
-          <Check className="w-3 h-3" />
+        <div className="w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
+          <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
         </div>
       )}
     </div>
