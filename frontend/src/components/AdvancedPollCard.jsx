@@ -464,14 +464,6 @@ const AdvancedPollCard = ({
               Seguir
             </motion.button>
           </div>
-          
-          {/* Logo personalizado */}
-          <motion.div
-            className="p-3 bg-black/40 backdrop-blur-md rounded-full ml-3 flex-shrink-0 active:bg-black/60 transition-colors touch-manipulation shadow-lg flex items-center justify-center"
-            whileTap={{ scale: 0.88 }}
-          >
-            <CustomLogo size={20} className="text-white" />
-          </motion.div>
         </div>
 
         {/* Información de la encuesta - OVERLAY */}
