@@ -1483,6 +1483,10 @@ async def get_polls(
                 }
                 options.append(option_dict)
         
+        # Skip polls without valid options or without title
+        if not options or not poll_data.get("title"):
+            continue
+        
         poll_response = PollResponse(
             id=poll_data["id"],
             title=poll_data["title"],
