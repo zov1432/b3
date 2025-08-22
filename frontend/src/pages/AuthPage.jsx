@@ -358,8 +358,39 @@ const RegisterPage = ({ onSwitchToLogin }) => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [emailValid, setEmailValid] = useState(null);
+  const [usernameValid, setUsernameValid] = useState(null);
+  const [passwordStrength, setPasswordStrength] = useState('');
+  const [passwordMatch, setPasswordMatch] = useState(null);
   const { register } = useAuth();
   const { toast } = useToast();
+
+  // Validation functions
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateUsername = (username) => {
+    return username.length >= 3 && /^[a-zA-Z0-9_]+$/.test(username);
+  };
+
+  const checkPasswordStrength = (password) => {
+    if (password.length === 0) return '';
+    if (password.length < 6) return 'weak';
+    if (password.length >= 8 && /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) return 'strong';
+    if (password.length >= 6) return 'medium';
+    return 'weak';
+  };
+
+  // Google OAuth registration
+  const handleGoogleSignUp = () => {
+    const currentUrl = window.location.origin;
+    const redirectUrl = `${currentUrl}/profile`;
+    const googleAuthUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    window.location.href = googleAuthUrl;
+  };
 
   const handleChange = (e) => {
     setFormData(prev => ({
