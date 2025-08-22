@@ -44,10 +44,11 @@ const StatCard = ({ icon: Icon, label, value, color = "blue" }) => (
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("polls");
-  const [polls, setPolls] = useState(mockPolls);
+  const [polls, setPolls] = useState([]);
   const [viewedUser, setViewedUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [savedPolls, setSavedPolls] = useState([]);
+  const [pollsLoading, setPollsLoading] = useState(true);
   const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [selectedPollId, setSelectedPollId] = useState(null);
