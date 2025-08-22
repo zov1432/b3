@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PollCard from './PollCard';
 import MusicPlayer from './MusicPlayer';
+import CustomLogo from './CustomLogo';
 import CreatePollModal from './CreatePollModal';
 import CommentsModal from './CommentsModal';
 import ShareModal from './ShareModal';
