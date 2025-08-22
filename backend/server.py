@@ -456,6 +456,180 @@ async def get_me(current_user: UserResponse = Depends(get_current_user)):
     """Get current user information"""
     return current_user
 
+# =============  GOOGLE OAUTH ENDPOINTS =============
+
+@api_router.post("/auth/oauth/google", response_model=Token)
+async def oauth_google_callback(session_id: str, request: Request):
+    """Handle Google OAuth callback with session ID"""
+    ip_address = get_client_ip(request)
+    user_agent = request.headers.get("user-agent", "")
+    
+    try:
+        # Get user data from Emergent Auth API
+        oauth_data = await get_oauth_user_data(session_id)
+        
+        # Create or get existing user
+        user = await create_or_get_oauth_user(oauth_data, ip_address, user_agent)
+        
+        # Get or create device
+        device = await get_or_create_device(user.id, ip_address, user_agent)
+        
+        # Check if this is a new device
+        if not device.is_trusted:
+            await create_security_notification(
+                user.id,
+                "new_device",
+                "New Device Login",
+                f"Google login from new device: {device.device_name} ({device.browser})",
+                {
+                    "device_id": device.id,
+                    "ip_address": ip_address,
+                    "oauth_provider": "google"
+                }
+            )
+        
+        # Track successful login
+        await track_login_attempt(user.email, ip_address, user_agent, True)
+        
+        # Generate JWT token
+        access_token = create_access_token(data={"sub": user.id})
+        
+        # Create session
+        session_token = await create_session(user.id, device.id, ip_address, user_agent)
+        
+        # Create login notification
+        await create_security_notification(
+            user.id,
+            "new_login", 
+            "Google Login",
+            f"Successful Google login from {device.device_name} ({device.browser})",
+            {
+                "device_id": device.id,
+                "ip_address": ip_address,
+                "oauth_provider": "google",
+                "session_token": session_token
+            }
+        )
+        
+        return Token(
+            access_token=access_token,
+            token_type="bearer",
+            expires_in=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            user=UserResponse(**user.dict())
+        )
+        
+    except Exception as e:
+        await track_login_attempt(
+            "unknown", ip_address, user_agent,
+            False, f"OAuth error: {str(e)}"
+        )
+        raise HTTPException(
+            status_code=400,
+            detail=f"OAuth authentication failed: {str(e)}"
+        )
+
+# =============  SECURITY ENDPOINTS =============
+
+@api_router.get("/auth/security/notifications")
+async def get_security_notifications(
+    current_user: UserResponse = Depends(get_current_user),
+    limit: int = 20,
+    offset: int = 0
+):
+    """Get user's security notifications"""
+    notifications = await db.security_notifications.find({
+        "user_id": current_user.id
+    }).sort("created_at", -1).skip(offset).limit(limit).to_list(limit)
+    
+    return notifications
+
+@api_router.put("/auth/security/notifications/{notification_id}/read")
+async def mark_notification_read(
+    notification_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Mark a security notification as read"""
+    result = await db.security_notifications.update_one(
+        {
+            "id": notification_id,
+            "user_id": current_user.id
+        },
+        {"$set": {"is_read": True}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    
+    return {"message": "Notification marked as read"}
+
+@api_router.get("/auth/security/devices")
+async def get_user_devices(current_user: UserResponse = Depends(get_current_user)):
+    """Get user's trusted devices"""
+    devices = await db.user_devices.find({
+        "user_id": current_user.id
+    }).sort("last_used", -1).to_list(50)
+    
+    return devices
+
+@api_router.put("/auth/security/devices/{device_id}/trust")
+async def trust_device(
+    device_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Mark a device as trusted"""
+    result = await db.user_devices.update_one(
+        {
+            "id": device_id,
+            "user_id": current_user.id
+        },
+        {"$set": {"is_trusted": True}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Device not found")
+    
+    return {"message": "Device marked as trusted"}
+
+@api_router.delete("/auth/security/devices/{device_id}")
+async def remove_device(
+    device_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Remove a device and invalidate its sessions"""
+    # Remove device
+    device_result = await db.user_devices.delete_one({
+        "id": device_id,
+        "user_id": current_user.id
+    })
+    
+    if device_result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Device not found")
+    
+    # Invalidate sessions for this device
+    await db.user_sessions.update_many(
+        {
+            "device_id": device_id,
+            "user_id": current_user.id
+        },
+        {"$set": {"is_active": False}}
+    )
+    
+    return {"message": "Device removed and sessions invalidated"}
+
+@api_router.get("/auth/security/login-history")
+async def get_login_history(
+    current_user: UserResponse = Depends(get_current_user),
+    limit: int = 50,
+    offset: int = 0
+):
+    """Get user's recent login history"""
+    attempts = await db.login_attempts.find({
+        "email": current_user.email,
+        "success": True
+    }).sort("created_at", -1).skip(offset).limit(limit).to_list(limit)
+    
+    return attempts
+
 # =============  USER UPDATE ENDPOINTS =============
 
 @api_router.put("/auth/profile", response_model=UserResponse)
