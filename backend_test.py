@@ -3807,7 +3807,10 @@ def main():
     test_results['user_login'] = test_user_login(base_url)
     test_results['get_current_user'] = test_get_current_user(base_url)
     
-    # PRIORITY TESTS FOR IMAGE UPLOAD ISSUE - MAIN FOCUS
+    # PRIORITY TESTS FOR PROFILE SYSTEM CORRECTIONS - MAIN FOCUS
+    test_results['profile_system_corrections'] = test_profile_system_corrections(base_url)
+    
+    # Additional image upload tests
     test_results['static_file_serving'] = test_static_file_serving_system(base_url)
     test_results['image_upload_static_files'] = test_image_upload_and_static_files(base_url)
     test_results['poll_creation_with_images'] = test_poll_creation_with_images(base_url)
