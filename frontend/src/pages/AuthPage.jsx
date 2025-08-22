@@ -99,10 +99,10 @@ const LoginPage = ({ onSwitchToRegister }) => {
             <Sparkles className="w-10 h-10 text-white animate-pulse" />
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-3 animate-slideInLeft">
+          <h1 className="text-4xl font-bold text-white mb-3 animate-slideInLeft">
             ¡Bienvenido de vuelta!
           </h1>
-          <p className="text-gray-300 text-lg animate-slideInRight">Inicia sesión para continuar tu experiencia adictiva</p>
+          <p className="text-white text-lg animate-slideInRight">Inicia sesión para continuar tu experiencia adictiva</p>
         </div>
 
         {/* Enhanced Login Form */}
