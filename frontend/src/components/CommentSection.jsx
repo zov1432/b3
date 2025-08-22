@@ -160,25 +160,24 @@ const CommentSection = ({
 
   // Editar comentario
   const handleEditComment = async (commentId, content) => {
-    if (!user) return;
+    if (!isAuthenticated) return;
     
     try {
-      const response = await apiRequest(`/api/comments/${commentId}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          content: content
-        })
+      await commentService.updateComment(commentId, content);
+      // Recargar comentarios para mostrar la edición
+      loadComments(0, false);
+      toast({
+        title: "Comentario editado",
+        description: "Tu comentario se ha actualizado correctamente",
       });
-      
-      if (response.ok) {
-        // Recargar comentarios para mostrar la edición
-        loadComments(0, false);
-      } else {
-        throw new Error('Failed to edit comment');
-      }
     } catch (err) {
       console.error('Error editing comment:', err);
-      throw new Error('Error al editar comentario');
+      toast({
+        title: "Error al editar comentario",
+        description: err.message || "No se pudo editar el comentario. Intenta de nuevo.",
+        variant: "destructive",
+      });
+      throw err;
     }
   };
 
