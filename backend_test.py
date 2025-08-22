@@ -2425,6 +2425,7 @@ def main():
     test_results['nested_comments'] = test_nested_comments_system(base_url)
     test_results['follow_system'] = test_follow_system(base_url)
     test_results['follow_system_usernames'] = test_follow_system_with_usernames(base_url)
+    test_results['poll_endpoints'] = test_poll_endpoints(base_url)
     test_results['tiktok_profile_grid_backend'] = test_tiktok_profile_grid_backend_support(base_url)
     test_results['complete_flow'] = test_complete_user_flow(base_url)
     
