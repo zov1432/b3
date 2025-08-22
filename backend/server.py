@@ -1476,6 +1476,36 @@ async def save_upload_file(file: UploadFile, file_path: Path) -> int:
     
     return file_size
 
+# =============  FILE SERVING ENDPOINTS =============
+
+@api_router.get("/uploads/{category}/{filename}")
+async def get_upload_file(category: str, filename: str):
+    """Serve uploaded files through API endpoint"""
+    
+    # Validate category
+    allowed_categories = ["avatars", "poll_options", "poll_backgrounds", "general"]
+    if category not in allowed_categories:
+        raise HTTPException(status_code=404, detail="Invalid category")
+    
+    # Construct file path
+    file_path = UPLOAD_DIR / category / filename
+    
+    # Check if file exists
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    # Get MIME type
+    mime_type, _ = mimetypes.guess_type(str(file_path))
+    if not mime_type:
+        mime_type = "application/octet-stream"
+    
+    # Return the file
+    return FileResponse(
+        path=file_path,
+        media_type=mime_type,
+        filename=filename
+    )
+
 # =============  FILE UPLOAD ENDPOINTS =============
 
 @api_router.post("/upload", response_model=UploadResponse)
