@@ -83,48 +83,148 @@ const FeedPage = () => {
   }, [isMobile, enterTikTokMode, exitTikTokMode]);
 
   const handleVote = async (pollId, optionId) => {
-    setPolls(prev => prev.map(poll => {
-      if (poll.id === pollId && !poll.userVote) {
-        return {
-          ...poll,
-          userVote: optionId,
-          options: poll.options.map(opt => ({
-            ...opt,
-            votes: opt.id === optionId ? opt.votes + 1 : opt.votes
-          })),
-          totalVotes: poll.totalVotes + 1
-        };
+    if (!isAuthenticated) {
+      toast({
+        title: "Inicia sesión",
+        description: "Necesitas iniciar sesión para votar",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Optimistic update
+      setPolls(prev => prev.map(poll => {
+        if (poll.id === pollId) {
+          // Don't allow multiple votes
+          if (poll.userVote) return poll;
+          
+          return {
+            ...poll,
+            userVote: optionId,
+            options: poll.options.map(opt => ({
+              ...opt,
+              votes: opt.id === optionId ? opt.votes + 1 : opt.votes
+            })),
+            totalVotes: poll.totalVotes + 1
+          };
+        }
+        return poll;
+      }));
+
+      // Send vote to backend
+      await pollService.voteOnPoll(pollId, optionId);
+      
+      // Track action for addiction system
+      await trackAction('vote');
+      
+      toast({
+        title: "¡Voto registrado!",
+        description: "Tu voto ha sido contabilizado exitosamente",
+      });
+      
+      // Refresh poll data to get accurate counts
+      const updatedPoll = await pollService.refreshPoll(pollId);
+      if (updatedPoll) {
+        setPolls(prev => prev.map(poll => 
+          poll.id === pollId ? updatedPoll : poll
+        ));
       }
-      return poll;
-    }));
-    
-    await trackAction('vote');
-    toast({
-      title: "¡Voto registrado!",
-      description: "Tu voto ha sido contabilizado exitosamente",
-    });
+    } catch (error) {
+      console.error('Error voting:', error);
+      
+      // Revert optimistic update
+      setPolls(prev => prev.map(poll => {
+        if (poll.id === pollId && poll.userVote === optionId) {
+          return {
+            ...poll,
+            userVote: null,
+            options: poll.options.map(opt => ({
+              ...opt,
+              votes: opt.id === optionId ? opt.votes - 1 : opt.votes
+            })),
+            totalVotes: poll.totalVotes - 1
+          };
+        }
+        return poll;
+      }));
+      
+      toast({
+        title: "Error al votar",
+        description: error.message || "No se pudo registrar tu voto. Intenta de nuevo.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleLike = async (pollId) => {
-    let currentPoll = null;
-    
-    setPolls(prev => prev.map(poll => {
-      if (poll.id === pollId) {
-        currentPoll = poll;
-        return {
-          ...poll,
-          userLiked: !poll.userLiked,
-          likes: poll.userLiked ? poll.likes - 1 : poll.likes + 1
-        };
-      }
-      return poll;
-    }));
-    
-    await trackAction('like');
-    toast({
-      title: currentPoll?.userLiked ? "Like removido" : "¡Te gusta!",
-      description: currentPoll?.userLiked ? "Ya no te gusta esta votación" : "Has dado like a esta votación",
-    });
+    if (!isAuthenticated) {
+      toast({
+        title: "Inicia sesión",
+        description: "Necesitas iniciar sesión para dar like",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Optimistic update
+      let wasLiked = false;
+      setPolls(prev => prev.map(poll => {
+        if (poll.id === pollId) {
+          wasLiked = poll.userLiked;
+          return {
+            ...poll,
+            userLiked: !poll.userLiked,
+            likes: poll.userLiked ? poll.likes - 1 : poll.likes + 1
+          };
+        }
+        return poll;
+      }));
+
+      // Send like to backend
+      const result = await pollService.toggleLike(pollId);
+      
+      // Track action for addiction system
+      await trackAction('like');
+      
+      // Update with actual server response
+      setPolls(prev => prev.map(poll => {
+        if (poll.id === pollId) {
+          return {
+            ...poll,
+            userLiked: result.liked,
+            likes: result.likes
+          };
+        }
+        return poll;
+      }));
+      
+      toast({
+        title: result.liked ? "¡Te gusta!" : "Like removido",
+        description: result.liked ? "Has dado like a esta votación" : "Ya no te gusta esta votación",
+      });
+    } catch (error) {
+      console.error('Error liking poll:', error);
+      
+      // Revert optimistic update
+      setPolls(prev => prev.map(poll => {
+        if (poll.id === pollId) {
+          return {
+            ...poll,
+            userLiked: !poll.userLiked,
+            likes: poll.userLiked ? poll.likes + 1 : poll.likes - 1
+          };
+        }
+        return poll;
+      }));
+      
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo procesar el like. Intenta de nuevo.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleShare = async (pollId) => {
