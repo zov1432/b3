@@ -183,22 +183,24 @@ const CommentSection = ({
 
   // Eliminar comentario
   const handleDeleteComment = async (commentId) => {
-    if (!user) return;
+    if (!isAuthenticated) return;
     
     try {
-      const response = await apiRequest(`/api/comments/${commentId}`, {
-        method: 'DELETE'
+      await commentService.deleteComment(commentId);
+      // Recargar comentarios para actualizar la vista
+      loadComments(0, false);
+      toast({
+        title: "Comentario eliminado",
+        description: "El comentario se ha eliminado correctamente",
       });
-      
-      if (response.ok) {
-        // Recargar comentarios para actualizar la vista
-        loadComments(0, false);
-      } else {
-        throw new Error('Failed to delete comment');
-      }
     } catch (err) {
       console.error('Error deleting comment:', err);
-      throw new Error('Error al eliminar comentario');
+      toast({
+        title: "Error al eliminar comentario",
+        description: err.message || "No se pudo eliminar el comentario. Intenta de nuevo.",
+        variant: "destructive",
+      });
+      throw err;
     }
   };
 
