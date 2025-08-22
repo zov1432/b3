@@ -666,13 +666,24 @@ async def update_profile(
 @api_router.put("/auth/password")
 async def change_password(
     password_data: PasswordChange,
-    current_user: UserResponse = Depends(get_current_user)
+    current_user: UserResponse = Depends(get_current_user),
+    request: Request = None
 ):
-    """Change user password"""
+    """Change user password with security tracking"""
+    ip_address = get_client_ip(request)
+    user_agent = request.headers.get("user-agent", "")
+    
     # Get current user with password
     user_data = await db.users.find_one({"id": current_user.id})
     if not user_data:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if user has a password (not OAuth-only user)
+    if not user_data.get("hashed_password"):
+        raise HTTPException(
+            status_code=400, 
+            detail="Cannot change password for OAuth-only accounts"
+        )
     
     # Verify current password
     if not verify_password(password_data.current_password, user_data["hashed_password"]):
@@ -690,7 +701,28 @@ async def change_password(
     if result.modified_count == 0:
         raise HTTPException(status_code=500, detail="Failed to update password")
     
-    return {"message": "Password updated successfully"}
+    # Get device info
+    device = await get_or_create_device(current_user.id, ip_address, user_agent)
+    
+    # Create security notification
+    await create_security_notification(
+        current_user.id,
+        "password_change",
+        "Password Changed",
+        f"Your password was changed from {device.device_name} ({device.browser})",
+        {
+            "device_id": device.id,
+            "ip_address": ip_address
+        }
+    )
+    
+    # Invalidate all other sessions for security
+    await db.user_sessions.update_many(
+        {"user_id": current_user.id},
+        {"$set": {"is_active": False}}
+    )
+    
+    return {"message": "Password updated successfully. Please log in again on other devices."}
 
 @api_router.put("/auth/settings", response_model=UserResponse)
 async def update_settings(
