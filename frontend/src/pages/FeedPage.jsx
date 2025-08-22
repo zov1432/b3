@@ -4,11 +4,12 @@ import PollCard from '../components/PollCard';
 import CommentsModal from '../components/CommentsModal';
 import ShareModal from '../components/ShareModal';
 import CustomLogo from '../components/CustomLogo';
-import { mockPolls, createPoll } from '../services/mockData';
+import pollService from '../services/pollService';
 import { useToast } from '../hooks/use-toast';
 import { useAddiction } from '../contexts/AddictionContext';
 import { useTikTok } from '../contexts/TikTokContext';
 import { useShare } from '../hooks/useShare';
+import { useAuth } from '../contexts/AuthContext';
 
 const FeedPage = () => {
   const [polls, setPolls] = useState(mockPolls);
