@@ -2394,6 +2394,370 @@ def test_poll_endpoints(base_url):
     print(f"\nPoll Endpoints Tests Summary: {success_count}/20 tests passed")
     return success_count >= 16  # At least 16 out of 20 tests should pass
 
+def test_file_upload_endpoints(base_url):
+    """Test comprehensive file upload system endpoints"""
+    print("\n=== Testing File Upload System ===")
+    
+    if not auth_tokens:
+        print("❌ No auth tokens available for file upload testing")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    success_count = 0
+    uploaded_files = []
+    
+    # Test 1: Upload image file (JPG)
+    print("Testing POST /api/upload - Upload JPG image...")
+    try:
+        # Create a simple test image file
+        import io
+        from PIL import Image
+        
+        # Create a small test image
+        img = Image.new('RGB', (100, 100), color='red')
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='JPEG')
+        img_bytes.seek(0)
+        
+        files = {'file': ('test_image.jpg', img_bytes, 'image/jpeg')}
+        data = {'upload_type': 'general'}
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+        print(f"Upload JPG Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            upload_data = response.json()
+            print(f"✅ JPG image uploaded successfully")
+            print(f"File ID: {upload_data['id']}")
+            print(f"Filename: {upload_data['filename']}")
+            print(f"File Type: {upload_data['file_type']}")
+            print(f"File Size: {upload_data['file_size']} bytes")
+            print(f"Public URL: {upload_data['public_url']}")
+            print(f"Dimensions: {upload_data.get('width', 'N/A')}x{upload_data.get('height', 'N/A')}")
+            uploaded_files.append(upload_data)
+            success_count += 1
+        else:
+            print(f"❌ JPG upload failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ JPG upload error: {e}")
+    
+    # Test 2: Upload PNG image with different upload_type
+    print("\nTesting POST /api/upload - Upload PNG image with avatar type...")
+    try:
+        # Create a PNG test image
+        img = Image.new('RGBA', (150, 150), color=(0, 255, 0, 128))
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='PNG')
+        img_bytes.seek(0)
+        
+        files = {'file': ('test_avatar.png', img_bytes, 'image/png')}
+        data = {'upload_type': 'avatar'}
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+        print(f"Upload PNG Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            upload_data = response.json()
+            print(f"✅ PNG avatar uploaded successfully")
+            print(f"File ID: {upload_data['id']}")
+            print(f"Upload Type: avatar")
+            print(f"Public URL: {upload_data['public_url']}")
+            uploaded_files.append(upload_data)
+            success_count += 1
+        else:
+            print(f"❌ PNG upload failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ PNG upload error: {e}")
+    
+    # Test 3: Test different upload types
+    print("\nTesting different upload_type values...")
+    upload_types = ['poll_option', 'poll_background', 'general']
+    
+    for upload_type in upload_types:
+        try:
+            # Create a small test image for each type
+            img = Image.new('RGB', (80, 80), color='blue')
+            img_bytes = io.BytesIO()
+            img.save(img_bytes, format='JPEG')
+            img_bytes.seek(0)
+            
+            files = {'file': (f'test_{upload_type}.jpg', img_bytes, 'image/jpeg')}
+            data = {'upload_type': upload_type}
+            
+            response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+            print(f"Upload {upload_type} Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                upload_data = response.json()
+                print(f"✅ {upload_type} upload successful - ID: {upload_data['id']}")
+                uploaded_files.append(upload_data)
+                success_count += 1
+            else:
+                print(f"❌ {upload_type} upload failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ {upload_type} upload error: {e}")
+    
+    # Test 4: Test unsupported file format
+    print("\nTesting unsupported file format (should fail)...")
+    try:
+        # Create a text file (unsupported)
+        text_content = b"This is a test text file"
+        files = {'file': ('test.txt', io.BytesIO(text_content), 'text/plain')}
+        data = {'upload_type': 'general'}
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+        print(f"Unsupported Format Status Code: {response.status_code}")
+        
+        if response.status_code == 400:
+            print("✅ Unsupported file format properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject unsupported format, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Unsupported format test error: {e}")
+    
+    # Test 5: Test file size validation (create large file)
+    print("\nTesting file size validation...")
+    try:
+        # Create a large image (should be rejected if over limit)
+        large_img = Image.new('RGB', (2000, 2000), color='yellow')
+        img_bytes = io.BytesIO()
+        large_img.save(img_bytes, format='JPEG', quality=100)
+        img_bytes.seek(0)
+        
+        # Check file size
+        file_size = len(img_bytes.getvalue())
+        print(f"Test file size: {file_size / (1024*1024):.2f} MB")
+        
+        files = {'file': ('large_test.jpg', img_bytes, 'image/jpeg')}
+        data = {'upload_type': 'general'}
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+        print(f"Large File Status Code: {response.status_code}")
+        
+        # If file is within limits, it should succeed; if over limits, should fail
+        if response.status_code == 200:
+            upload_data = response.json()
+            print(f"✅ Large file upload successful (within limits)")
+            uploaded_files.append(upload_data)
+            success_count += 1
+        elif response.status_code == 400:
+            print("✅ Large file properly rejected (over size limit)")
+            success_count += 1
+        else:
+            print(f"❌ Unexpected response for large file: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ File size validation error: {e}")
+    
+    # Test 6: Test upload without authentication (should fail)
+    print("\nTesting upload without authentication (should fail)...")
+    try:
+        img = Image.new('RGB', (50, 50), color='black')
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='JPEG')
+        img_bytes.seek(0)
+        
+        files = {'file': ('unauth_test.jpg', img_bytes, 'image/jpeg')}
+        data = {'upload_type': 'general'}
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, timeout=30)
+        print(f"Unauthorized Upload Status Code: {response.status_code}")
+        
+        if response.status_code in [401, 403]:
+            print("✅ Unauthorized upload properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject unauthorized upload, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Unauthorized upload test error: {e}")
+    
+    # Test 7: Get file info for uploaded files
+    if uploaded_files:
+        print(f"\nTesting GET /api/upload/{{file_id}} - Get file info...")
+        try:
+            file_id = uploaded_files[0]['id']
+            response = requests.get(f"{base_url}/upload/{file_id}", headers=headers, timeout=10)
+            print(f"Get File Info Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                file_info = response.json()
+                print(f"✅ File info retrieved successfully")
+                print(f"File ID: {file_info['id']}")
+                print(f"Original Filename: {file_info['original_filename']}")
+                print(f"File Type: {file_info['file_type']}")
+                print(f"Created At: {file_info['created_at']}")
+                success_count += 1
+            else:
+                print(f"❌ Get file info failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Get file info error: {e}")
+    
+    # Test 8: Get file info for non-existent file (should return 404)
+    print("\nTesting GET /api/upload/{{file_id}} - Non-existent file...")
+    try:
+        fake_file_id = "non_existent_file_id_12345"
+        response = requests.get(f"{base_url}/upload/{fake_file_id}", headers=headers, timeout=10)
+        print(f"Non-existent File Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Non-existent file properly returns 404")
+            success_count += 1
+        else:
+            print(f"❌ Should return 404 for non-existent file, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Non-existent file test error: {e}")
+    
+    # Test 9: Get user's uploaded files
+    print("\nTesting GET /api/uploads/user - Get user's files...")
+    try:
+        response = requests.get(f"{base_url}/uploads/user", headers=headers, timeout=10)
+        print(f"Get User Files Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            user_files = response.json()
+            print(f"✅ User files retrieved successfully")
+            print(f"Total files: {len(user_files)}")
+            if user_files:
+                print(f"First file: {user_files[0]['original_filename']} ({user_files[0]['file_type']})")
+            success_count += 1
+        else:
+            print(f"❌ Get user files failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get user files error: {e}")
+    
+    # Test 10: Get user's files with upload_type filter
+    print("\nTesting GET /api/uploads/user with upload_type filter...")
+    try:
+        response = requests.get(f"{base_url}/uploads/user?upload_type=avatar", headers=headers, timeout=10)
+        print(f"Filtered User Files Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            filtered_files = response.json()
+            print(f"✅ Filtered user files retrieved successfully")
+            print(f"Avatar files: {len(filtered_files)}")
+            success_count += 1
+        else:
+            print(f"❌ Filtered user files failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Filtered user files error: {e}")
+    
+    # Test 11: Test pagination for user files
+    print("\nTesting GET /api/uploads/user with pagination...")
+    try:
+        response = requests.get(f"{base_url}/uploads/user?limit=2&offset=0", headers=headers, timeout=10)
+        print(f"Paginated User Files Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            paginated_files = response.json()
+            print(f"✅ Paginated user files retrieved successfully")
+            print(f"Files returned: {len(paginated_files)} (limit=2)")
+            success_count += 1
+        else:
+            print(f"❌ Paginated user files failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Paginated user files error: {e}")
+    
+    # Test 12: Test static file serving (access uploaded file via public URL)
+    if uploaded_files:
+        print("\nTesting static file serving - Access uploaded file via public URL...")
+        try:
+            public_url = uploaded_files[0]['public_url']
+            # Remove /api prefix and construct full URL
+            file_url = base_url.replace('/api', '') + public_url
+            print(f"Testing access to: {file_url}")
+            
+            response = requests.get(file_url, timeout=10)
+            print(f"Static File Access Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                print(f"✅ Static file accessible via public URL")
+                print(f"Content-Type: {response.headers.get('content-type', 'N/A')}")
+                print(f"Content-Length: {response.headers.get('content-length', 'N/A')} bytes")
+                success_count += 1
+            else:
+                print(f"❌ Static file access failed: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Static file access error: {e}")
+    
+    # Test 13: Delete uploaded file (own file)
+    if uploaded_files:
+        print("\nTesting DELETE /api/upload/{{file_id}} - Delete own file...")
+        try:
+            file_to_delete = uploaded_files[-1]  # Delete last uploaded file
+            file_id = file_to_delete['id']
+            
+            response = requests.delete(f"{base_url}/upload/{file_id}", headers=headers, timeout=10)
+            print(f"Delete File Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                delete_result = response.json()
+                print(f"✅ File deleted successfully")
+                print(f"Message: {delete_result['message']}")
+                
+                # Verify file is deleted by trying to get info
+                verify_response = requests.get(f"{base_url}/upload/{file_id}", headers=headers, timeout=10)
+                if verify_response.status_code == 404:
+                    print("✅ File deletion verified - file no longer exists")
+                    success_count += 1
+                else:
+                    print("❌ File should be deleted but still exists")
+            else:
+                print(f"❌ File deletion failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ File deletion error: {e}")
+    
+    # Test 14: Try to delete non-existent file (should return 404)
+    print("\nTesting DELETE /api/upload/{{file_id}} - Delete non-existent file...")
+    try:
+        fake_file_id = "non_existent_file_id_12345"
+        response = requests.delete(f"{base_url}/upload/{fake_file_id}", headers=headers, timeout=10)
+        print(f"Delete Non-existent File Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Delete non-existent file properly returns 404")
+            success_count += 1
+        else:
+            print(f"❌ Should return 404 for non-existent file deletion, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Delete non-existent file test error: {e}")
+    
+    # Test 15: Try to delete another user's file (should return 403)
+    if len(auth_tokens) >= 2 and uploaded_files:
+        print("\nTesting DELETE /api/upload/{{file_id}} - Try to delete another user's file...")
+        try:
+            # Use second user's token to try to delete first user's file
+            headers2 = {"Authorization": f"Bearer {auth_tokens[1]}"}
+            file_id = uploaded_files[0]['id']  # First user's file
+            
+            response = requests.delete(f"{base_url}/upload/{file_id}", headers=headers2, timeout=10)
+            print(f"Delete Other User's File Status Code: {response.status_code}")
+            
+            if response.status_code == 403:
+                print("✅ Delete other user's file properly returns 403 (Forbidden)")
+                success_count += 1
+            else:
+                print(f"❌ Should return 403 for deleting other user's file, got status: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Delete other user's file test error: {e}")
+    
+    print(f"\nFile Upload System Tests Summary: {success_count}/15 tests passed")
+    return success_count >= 12  # At least 12 out of 15 tests should pass
+
 def main():
     """Main test execution function"""
     print("🚀 Starting Backend API Testing for TikTok Profile Grid Implementation")
