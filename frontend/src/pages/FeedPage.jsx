@@ -12,8 +12,9 @@ import { useShare } from '../hooks/useShare';
 import { useAuth } from '../contexts/AuthContext';
 
 const FeedPage = () => {
-  const [polls, setPolls] = useState(mockPolls);
+  const [polls, setPolls] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [selectedPollId, setSelectedPollId] = useState(null);
   const [selectedPollTitle, setSelectedPollTitle] = useState('');
@@ -22,9 +23,39 @@ const FeedPage = () => {
   const { trackAction } = useAddiction();
   const { enterTikTokMode, exitTikTokMode, isTikTokMode } = useTikTok();
   const { shareModal, sharePoll, closeShareModal } = useShare();
+  const { isAuthenticated, user } = useAuth();
 
   // Detect if we're on mobile or desktop
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
+  // Load polls from backend
+  useEffect(() => {
+    const loadPolls = async () => {
+      if (!isAuthenticated) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError(null);
+        const pollsData = await pollService.getPollsForFrontend({ limit: 30 });
+        setPolls(pollsData);
+      } catch (err) {
+        console.error('Error loading polls:', err);
+        setError(err.message);
+        toast({
+          title: "Error al cargar votaciones",
+          description: "No se pudieron cargar las votaciones. Intenta recargar la página.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPolls();
+  }, [isAuthenticated, toast]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,11 +73,6 @@ const FeedPage = () => {
     } else {
       exitTikTokMode();
     }
-    
-    // Simular carga inicial
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
     
     // Limpiar al desmontar
     return () => {
