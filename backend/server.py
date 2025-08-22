@@ -1389,6 +1389,230 @@ async def get_comment(
         user_liked=bool(user_like)
     )
 
+# =============  FILE UPLOAD UTILITIES =============
+
+# Supported file types
+SUPPORTED_IMAGE_FORMATS = {"jpg", "jpeg", "png", "gif", "webp"}
+SUPPORTED_VIDEO_FORMATS = {"mp4", "webm", "mov"}
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB for images
+MAX_VIDEO_SIZE = 50 * 1024 * 1024  # 50MB for videos
+
+def get_file_format(filename: str) -> str:
+    """Extract file format from filename"""
+    return Path(filename).suffix.lower().lstrip('.')
+
+def is_image_file(file_format: str) -> bool:
+    """Check if file format is a supported image"""
+    return file_format.lower() in SUPPORTED_IMAGE_FORMATS
+
+def is_video_file(file_format: str) -> bool:
+    """Check if file format is a supported video"""
+    return file_format.lower() in SUPPORTED_VIDEO_FORMATS
+
+def validate_file(file: UploadFile, upload_type: UploadType) -> tuple[bool, str, FileType]:
+    """Validate uploaded file"""
+    if not file.filename:
+        return False, "No filename provided", FileType.IMAGE
+    
+    file_format = get_file_format(file.filename)
+    
+    # Check if supported format
+    if not (is_image_file(file_format) or is_video_file(file_format)):
+        supported_formats = list(SUPPORTED_IMAGE_FORMATS) + list(SUPPORTED_VIDEO_FORMATS)
+        return False, f"Unsupported file format. Supported: {', '.join(supported_formats)}", FileType.IMAGE
+    
+    # Determine file type
+    file_type = FileType.IMAGE if is_image_file(file_format) else FileType.VIDEO
+    
+    # Check file size
+    max_size = MAX_IMAGE_SIZE if file_type == FileType.IMAGE else MAX_VIDEO_SIZE
+    if hasattr(file, 'size') and file.size > max_size:
+        max_mb = max_size // (1024 * 1024)
+        return False, f"File too large. Maximum size: {max_mb}MB", file_type
+    
+    return True, "", file_type
+
+def get_upload_path(upload_type: UploadType, file_format: str, filename: str) -> tuple[Path, str]:
+    """Get the upload path and public URL for a file"""
+    # Create unique filename to avoid conflicts
+    unique_filename = f"{uuid.uuid4()}.{file_format}"
+    
+    # Determine subdirectory based on upload type
+    subdir = {
+        UploadType.AVATAR: "avatars",
+        UploadType.POLL_OPTION: "poll_options", 
+        UploadType.POLL_BACKGROUND: "poll_backgrounds",
+        UploadType.GENERAL: "general"
+    }[upload_type]
+    
+    file_path = UPLOAD_DIR / subdir / unique_filename
+    public_url = f"/uploads/{subdir}/{unique_filename}"
+    
+    return file_path, public_url
+
+async def get_image_dimensions(file_path: Path) -> tuple[Optional[int], Optional[int]]:
+    """Get image dimensions using PIL"""
+    try:
+        with Image.open(file_path) as img:
+            return img.width, img.height
+    except Exception as e:
+        print(f"Error getting image dimensions: {e}")
+        return None, None
+
+async def get_video_info(file_path: Path) -> tuple[Optional[int], Optional[int], Optional[float]]:
+    """Get basic video info - placeholder for now"""
+    # For now, return None values - in a full implementation, you'd use ffprobe or similar
+    return None, None, None
+
+async def save_upload_file(file: UploadFile, file_path: Path) -> int:
+    """Save uploaded file to disk and return file size"""
+    file_size = 0
+    
+    async with aiofiles.open(file_path, 'wb') as f:
+        while chunk := await file.read(1024 * 1024):  # Read in 1MB chunks
+            file_size += len(chunk)
+            await f.write(chunk)
+    
+    return file_size
+
+# =============  FILE UPLOAD ENDPOINTS =============
+
+@api_router.post("/upload", response_model=UploadResponse)
+async def upload_file(
+    file: UploadFile = File(...),
+    upload_type: UploadType = UploadType.GENERAL,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Upload a file (image or video)"""
+    
+    # Validate file
+    is_valid, error_message, file_type = validate_file(file, upload_type)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error_message)
+    
+    try:
+        # Get file info
+        file_format = get_file_format(file.filename)
+        file_path, public_url = get_upload_path(upload_type, file_format, file.filename)
+        
+        # Save file
+        file_size = await save_upload_file(file, file_path)
+        
+        # Get dimensions/duration based on file type
+        width = height = duration = None
+        if file_type == FileType.IMAGE:
+            width, height = await get_image_dimensions(file_path)
+        elif file_type == FileType.VIDEO:
+            width, height, duration = await get_video_info(file_path)
+        
+        # Create database record
+        uploaded_file = UploadedFile(
+            filename=file_path.name,
+            original_filename=file.filename,
+            file_type=file_type,
+            file_format=file_format,
+            file_size=file_size,
+            upload_type=upload_type,
+            uploader_id=current_user.id,
+            file_path=str(file_path),
+            public_url=public_url,
+            width=width,
+            height=height,
+            duration=duration
+        )
+        
+        # Save to database
+        await db.uploaded_files.insert_one(uploaded_file.dict())
+        
+        return UploadResponse(
+            id=uploaded_file.id,
+            filename=uploaded_file.filename,
+            original_filename=uploaded_file.original_filename,
+            file_type=uploaded_file.file_type,
+            file_format=uploaded_file.file_format,
+            file_size=uploaded_file.file_size,
+            public_url=uploaded_file.public_url,
+            width=uploaded_file.width,
+            height=uploaded_file.height,
+            duration=uploaded_file.duration,
+            created_at=uploaded_file.created_at
+        )
+        
+    except Exception as e:
+        # Clean up file if database save fails
+        if file_path.exists():
+            file_path.unlink()
+        
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to upload file: {str(e)}"
+        )
+
+@api_router.get("/upload/{file_id}", response_model=UploadResponse)
+async def get_upload_info(
+    file_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Get information about an uploaded file"""
+    
+    file_data = await db.uploaded_files.find_one({"id": file_id})
+    if not file_data:
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    return UploadResponse(**file_data)
+
+@api_router.delete("/upload/{file_id}")
+async def delete_upload(
+    file_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Delete an uploaded file"""
+    
+    # Get file info
+    file_data = await db.uploaded_files.find_one({"id": file_id})
+    if not file_data:
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    # Check if user owns the file
+    if file_data["uploader_id"] != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this file")
+    
+    try:
+        # Delete physical file
+        file_path = Path(file_data["file_path"])
+        if file_path.exists():
+            file_path.unlink()
+        
+        # Delete database record
+        await db.uploaded_files.delete_one({"id": file_id})
+        
+        return {"message": "File deleted successfully"}
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to delete file: {str(e)}"
+        )
+
+@api_router.get("/uploads/user", response_model=List[UploadResponse])
+async def get_user_uploads(
+    upload_type: Optional[UploadType] = None,
+    limit: int = 20,
+    offset: int = 0,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Get user's uploaded files"""
+    
+    filter_query = {"uploader_id": current_user.id}
+    if upload_type:
+        filter_query["upload_type"] = upload_type
+    
+    files_cursor = db.uploaded_files.find(filter_query).sort("created_at", -1).skip(offset).limit(limit)
+    files = await files_cursor.to_list(limit)
+    
+    return [UploadResponse(**file_data) for file_data in files]
+
 # =============  POLL ENDPOINTS =============
 
 def calculate_time_ago(created_at: datetime) -> str:
