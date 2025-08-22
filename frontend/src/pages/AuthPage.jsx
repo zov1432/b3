@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Sparkles } from 'lucide-react';
-import CustomLogo from '../components/CustomLogo';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
 
