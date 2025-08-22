@@ -323,21 +323,69 @@ async def register(user_data: UserCreate):
     )
 
 @api_router.post("/auth/login", response_model=Token)
-async def login(login_data: UserLogin):
-    """Login user"""
+async def login(login_data: UserLogin, request: Request):
+    """Login user with enhanced security"""
+    ip_address = get_client_ip(request)
+    user_agent = request.headers.get("user-agent", "")
+    
+    # Check rate limiting
+    if not await check_rate_limit(login_data.email, ip_address):
+        await track_login_attempt(
+            login_data.email, ip_address, user_agent, 
+            False, "Rate limit exceeded"
+        )
+        raise HTTPException(
+            status_code=429,
+            detail="Too many failed login attempts. Please try again later."
+        )
+    
     # Find user
     user_data = await db.users.find_one({"email": login_data.email})
     if not user_data:
+        await track_login_attempt(
+            login_data.email, ip_address, user_agent,
+            False, "Email not found"
+        )
         raise HTTPException(
             status_code=400,
             detail="Incorrect email or password"
         )
     
-    # Verify password
-    if not verify_password(login_data.password, user_data["hashed_password"]):
+    # Verify password (skip for OAuth users)
+    if user_data.get("hashed_password") and not verify_password(login_data.password, user_data["hashed_password"]):
+        await track_login_attempt(
+            login_data.email, ip_address, user_agent,
+            False, "Invalid password"
+        )
         raise HTTPException(
             status_code=400,
             detail="Incorrect email or password"
+        )
+    elif not user_data.get("hashed_password"):
+        await track_login_attempt(
+            login_data.email, ip_address, user_agent,
+            False, "OAuth user attempted regular login"
+        )
+        raise HTTPException(
+            status_code=400,
+            detail="This account uses social login. Please use Google sign-in."
+        )
+    
+    # Get or create device
+    device = await get_or_create_device(user_data["id"], ip_address, user_agent)
+    
+    # Check if this is a new device
+    if not device.is_trusted:
+        await create_security_notification(
+            user_data["id"],
+            "new_device",
+            "New Device Login",
+            f"Login detected from new device: {device.device_name} ({device.browser})",
+            {
+                "device_id": device.id,
+                "ip_address": ip_address,
+                "location": "Unknown"  # You could add IP geolocation here
+            }
         )
     
     # Update last login
@@ -346,8 +394,27 @@ async def login(login_data: UserLogin):
         {"$set": {"last_login": datetime.utcnow()}}
     )
     
+    # Track successful login
+    await track_login_attempt(login_data.email, ip_address, user_agent, True)
+    
     # Generate token
     access_token = create_access_token(data={"sub": user_data["id"]})
+    
+    # Create session
+    session_token = await create_session(user_data["id"], device.id, ip_address, user_agent)
+    
+    # Create login notification
+    await create_security_notification(
+        user_data["id"],
+        "new_login",
+        "New Login",
+        f"Successful login from {device.device_name} ({device.browser})",
+        {
+            "device_id": device.id,
+            "ip_address": ip_address,
+            "session_token": session_token
+        }
+    )
     
     return Token(
         access_token=access_token,
