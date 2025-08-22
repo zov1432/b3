@@ -303,7 +303,7 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                   )}
                 </div>
 
-                {/* Media Upload/Preview Mejorado */}
+                {/* Media Upload/Preview Mejorado - Mobile Optimized */}
                 <div className="space-y-4">
                   {option.media ? (
                     <MediaUploadPreview 
@@ -312,21 +312,21 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                       onRemove={() => updateOption(index, 'media', null)}
                     />
                   ) : (
-                    <div className="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center hover:border-gray-400 hover:bg-white transition-all duration-300">
-                      <div className="space-y-6">
-                        <div className="flex justify-center gap-4">
-                          <div className="w-16 h-16 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
-                            <Image className="w-8 h-8 text-white" />
+                    <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6 sm:p-10 text-center hover:border-gray-400 hover:bg-white transition-all duration-300">
+                      <div className="space-y-4 sm:space-y-6">
+                        <div className="flex justify-center gap-2 sm:gap-4">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <Image className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                           </div>
-                          <div className="w-16 h-16 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
-                            <Video className="w-8 h-8 text-white" />
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
+                            <Video className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                           </div>
                         </div>
                         <div>
-                          <p className="text-xl font-bold text-gray-900 mb-2">
+                          <p className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
                             Sube una imagen o video
                           </p>
-                          <p className="text-base text-gray-600">
+                          <p className="text-sm sm:text-base text-gray-600">
                             Arrastra el archivo aquí o haz clic para seleccionar
                           </p>
                         </div>
@@ -345,9 +345,9 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                               type="button" 
                               variant="outline" 
                               size="default" 
-                              className="bg-white border-2 border-gray-300 hover:bg-gray-50 rounded-2xl h-14 px-8 text-lg font-semibold text-gray-700 shadow-sm"
+                              className="bg-white border-2 border-gray-300 hover:bg-gray-50 rounded-2xl h-10 sm:h-14 px-4 sm:px-8 text-sm sm:text-lg font-semibold text-gray-700 shadow-sm"
                             >
-                              <Upload className="w-6 h-6 mr-3" />
+                              <Upload className="w-4 h-4 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
                               Seleccionar Archivo
                             </Button>
                           </label>
@@ -364,38 +364,38 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                 type="button"
                 variant="outline"
                 onClick={addOption}
-                className="w-full h-16 border-2 border-dashed border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 rounded-2xl text-lg font-bold"
+                className="w-full h-12 sm:h-16 border-2 border-dashed border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 rounded-2xl text-sm sm:text-lg font-bold"
               >
-                <Plus className="w-6 h-6 mr-4" />
+                <Plus className="w-4 h-4 sm:w-6 sm:h-6 mr-2 sm:mr-4" />
                 Agregar otra opción
               </Button>
             )}
           </div>
         </form>
 
-        <DialogFooter className="border-t border-gray-100 pt-8 px-2 gap-4">
+        <DialogFooter className="border-t border-gray-100 pt-4 sm:pt-8 px-2 gap-2 sm:gap-4 flex-col sm:flex-row space-y-2 sm:space-y-0">
           <Button
             type="button"
             variant="outline"
             onClick={() => setIsOpen(false)}
             disabled={isCreating}
-            className="h-14 px-8 text-lg font-semibold rounded-2xl border-2 border-gray-300 hover:bg-gray-50"
+            className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-semibold rounded-2xl border-2 border-gray-300 hover:bg-gray-50"
           >
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isCreating}
-            className="bg-black hover:bg-gray-800 text-white h-14 px-10 text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
+            className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
           >
             {isCreating ? (
               <>
-                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-4" />
+                <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 sm:mr-4" />
                 Publicando...
               </>
             ) : (
               <>
-                <Send className="w-6 h-6 mr-4" />
+                <Send className="w-4 h-4 sm:w-6 sm:h-6 mr-2 sm:mr-4" />
                 Publicar contenido
               </>
             )}
