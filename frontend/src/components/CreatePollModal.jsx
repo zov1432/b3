@@ -21,7 +21,7 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
   if (!media) return null;
 
   return (
-    <div className="relative w-full h-48 rounded-2xl overflow-hidden bg-gray-50 shadow-sm border border-gray-100">
+    <div className="relative w-full h-32 sm:h-48 rounded-2xl overflow-hidden bg-gray-50 shadow-sm border border-gray-100">
       {isVideo ? (
         <div className="relative w-full h-full">
           <img 
@@ -30,8 +30,8 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <div className="w-16 h-16 bg-white/95 rounded-full flex items-center justify-center shadow-lg">
-              <Play className="w-8 h-8 text-gray-900 ml-1" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/95 rounded-full flex items-center justify-center shadow-lg">
+              <Play className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 ml-1" />
             </div>
           </div>
         </div>
@@ -44,9 +44,9 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
       )}
       <button
         onClick={onRemove}
-        className="absolute top-4 right-4 w-10 h-10 bg-white text-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 hover:text-red-500 transition-all duration-200 shadow-lg border border-gray-200"
+        className="absolute top-2 right-2 sm:top-4 sm:right-4 w-8 h-8 sm:w-10 sm:h-10 bg-white text-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 hover:text-red-500 transition-all duration-200 shadow-lg border border-gray-200"
       >
-        <X className="w-5 h-5" />
+        <X className="w-4 h-4 sm:w-5 sm:h-5" />
       </button>
     </div>
   );
