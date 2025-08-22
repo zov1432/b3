@@ -204,45 +204,7 @@ const CommentSection = ({
     }
   };
 
-  // Toggle like en comentario
-  const handleLikeComment = async (commentId) => {
-    if (!user) return;
-    
-    try {
-      const response = await apiRequest(`/api/comments/${commentId}/like`, {
-        method: 'POST'
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        
-        // Actualizar el like localmente para UX inmediata
-        setComments(prev => updateCommentLikeInTree(prev, commentId, result.liked, result.likes));
-      } else {
-        throw new Error('Failed to toggle like');
-      }
-    } catch (err) {
-      console.error('Error toggling like:', err);
-    }
-  };
 
-  // Función auxiliar para actualizar likes en el árbol de comentarios
-  const updateCommentLikeInTree = (comments, targetId, liked, likes) => {
-    return comments.map(comment => {
-      if (comment.id === targetId) {
-        return { ...comment, user_liked: liked, likes };
-      }
-      
-      if (comment.replies && comment.replies.length > 0) {
-        return {
-          ...comment,
-          replies: updateCommentLikeInTree(comment.replies, targetId, liked, likes)
-        };
-      }
-      
-      return comment;
-    });
-  };
 
   // Cargar comentarios al montar el componente
   useEffect(() => {
