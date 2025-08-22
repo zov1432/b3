@@ -1487,6 +1487,7 @@ async def get_polls(
         
         # Skip polls without valid options or without title
         if not options or not poll_data.get("title"):
+            print(f"DEBUG: Skipping poll '{poll_data.get('title', 'No title')}' - options: {len(options)}")
             continue
         
         poll_response = PollResponse(
