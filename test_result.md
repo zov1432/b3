@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: REDISEÑO COMPLETO DE TABS DE PERFIL: 1) Cambiar "Votaciones" por "Publicaciones" en tabs y estadísticas, 2) Mantener iconos actuales para Me gusta, Menciones y Guardados, 3) Eliminar tab "Actividad" del perfil (mover a ajustes), 4) Actualizar terminología en todo el perfil para mejor UX.
+user_problem_statement: GESTIÓN DE LOGO EN DISPOSITIVOS MÓVILES: El logo superior derecha del feed de la página de inicio (Dispositivos móviles): 1) **FeedPage** (línea 221) - AQUÍ SÍ debe aparecer el logo, 2) **ProfilePage** (línea 692) - AQUÍ NO debe aparecer el logo. Implementar visibilidad condicional del logo en la vista móvil TikTok según la página actual.
 
 backend:
   - task: "Sistema de Autenticación JWT"
