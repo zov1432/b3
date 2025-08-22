@@ -13,7 +13,7 @@ const PollModal = ({ isOpen, onClose, poll, onVote, onLike, onShare, onComment }
 
   if (!poll) return null;
 
-  const totalVotes = poll.totalVotes || poll.options?.reduce((sum, option) => sum + option.votes, 0) || 0;
+  const totalVotes = poll.totalVotes || (poll.options && poll.options.length > 0 ? poll.options.reduce((sum, option) => sum + option.votes, 0) : 0) || 0;
 
   const handleVote = (optionId) => {
     setSelectedOption(optionId);
