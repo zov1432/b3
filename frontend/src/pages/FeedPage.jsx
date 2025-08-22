@@ -3,6 +3,7 @@ import TikTokScrollView from '../components/TikTokScrollView';
 import PollCard from '../components/PollCard';
 import CommentsModal from '../components/CommentsModal';
 import ShareModal from '../components/ShareModal';
+import CustomLogo from '../components/CustomLogo';
 import { mockPolls, createPoll } from '../services/mockData';
 import { useToast } from '../hooks/use-toast';
 import { useAddiction } from '../contexts/AddictionContext';
