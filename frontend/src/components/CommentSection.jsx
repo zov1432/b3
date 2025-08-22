@@ -54,10 +54,6 @@ const CommentSection = ({
       setLoading(false);
     }
   };
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Cargar más comentarios
   const loadMoreComments = () => {
