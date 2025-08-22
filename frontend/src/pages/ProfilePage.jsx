@@ -66,13 +66,13 @@ const ProfilePage = () => {
   // Load user's polls
   useEffect(() => {
     const loadUserPolls = async () => {
-      if (!user?.id && !userId) return;
+      if (!authUser?.id && !userId) return;
       
       setPollsLoading(true);
       try {
         // Get all polls and filter by author (for now, until we have a dedicated endpoint)
         const allPolls = await pollService.getPollsForFrontend({ limit: 50 });
-        const targetUserId = userId || user?.id;
+        const targetUserId = userId || authUser?.id;
         
         // Filter polls by the target user
         const userPolls = allPolls.filter(poll => 
@@ -94,19 +94,19 @@ const ProfilePage = () => {
     };
 
     loadUserPolls();
-  }, [user?.id, userId, toast]);
+  }, [authUser?.id, userId, toast]);
 
   // Create a comprehensive user database from actual polls
   const allUsers = [
     // Add current authenticated user
-    ...(user ? [{
-      id: user.id,
-      username: user.username,
-      displayName: user.display_name,
-      avatar: user.avatar_url,
-      verified: user.is_verified || false,
+    ...(authUser ? [{
+      id: authUser.id,
+      username: authUser.username,
+      displayName: authUser.display_name,
+      avatar: authUser.avatar_url,
+      verified: authUser.is_verified || false,
       followers: '1K', // Placeholder
-      bio: user.bio || ''
+      bio: authUser.bio || ''
     }] : []),
     // Add users from polls
     ...polls.flatMap(poll => [
