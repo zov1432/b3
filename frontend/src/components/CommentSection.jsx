@@ -14,7 +14,8 @@ const CommentSection = ({
   maxHeight = "600px",
   showHeader = true 
 }) => {
-  const { user, apiRequest } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,31 +26,34 @@ const CommentSection = ({
 
   // Cargar comentarios
   const loadComments = async (pageNum = 0, append = false) => {
-    if (!pollId || loading) return;
+    if (!pollId || loading || !isAuthenticated) return;
     
     setLoading(true);
     setError(null);
     
     try {
-      const response = await apiRequest(`/api/polls/${pollId}/comments?limit=20&offset=${pageNum * 20}`);
+      const newComments = await commentService.getCommentsForFrontend(pollId, 20, pageNum * 20);
       
-      if (response.ok) {
-        const newComments = await response.json();
-        
-        if (append) {
-          setComments(prev => [...prev, ...newComments]);
-        } else {
-          setComments(newComments);
-        }
-        
-        setHasMore(newComments.length === 20);
-        setPage(pageNum);
+      if (append) {
+        setComments(prev => [...prev, ...newComments]);
       } else {
-        throw new Error('Failed to load comments');
+        setComments(newComments);
       }
+      
+      setHasMore(newComments.length === 20);
+      setPage(pageNum);
     } catch (err) {
       console.error('Error loading comments:', err);
       setError('Error al cargar comentarios. Intenta nuevamente.');
+      toast({
+        title: "Error al cargar comentarios",
+        description: err.message || "Intenta recargar la página",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
     } finally {
       setLoading(false);
     }
