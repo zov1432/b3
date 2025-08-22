@@ -320,18 +320,38 @@ const FeedPage = () => {
   };
 
   const handleCreatePoll = async (pollData) => {
-    const newPoll = createPoll(pollData);
-    
-    // Agregar la nueva votación al inicio de la lista
-    setPolls(prev => [newPoll, ...prev]);
-    
-    // Trigger addiction system
-    await trackAction('create');
-    
-    toast({
-      title: "¡Votación creada!",
-      description: "Tu votación ha sido publicada exitosamente",
-    });
+    if (!isAuthenticated) {
+      toast({
+        title: "Inicia sesión",
+        description: "Necesitas iniciar sesión para crear votaciones",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Create poll on backend
+      const newPoll = await pollService.createPoll(pollData);
+      const transformedPoll = pollService.transformPollData(newPoll);
+      
+      // Agregar la nueva votación al inicio de la lista
+      setPolls(prev => [transformedPoll, ...prev]);
+      
+      // Trigger addiction system
+      await trackAction('create');
+      
+      toast({
+        title: "¡Votación creada!",
+        description: "Tu votación ha sido publicada exitosamente",
+      });
+    } catch (error) {
+      console.error('Error creating poll:', error);
+      toast({
+        title: "Error al crear votación",
+        description: error.message || "No se pudo crear la votación. Intenta de nuevo.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) {
