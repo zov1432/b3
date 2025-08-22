@@ -697,6 +697,7 @@ const ProfilePage = () => {
             onComment={handleComment}
             initialIndex={initialPollIndex}
             onClose={() => setShowTikTokView(false)}
+            showLogo={false}
           />
         </div>
       )}
