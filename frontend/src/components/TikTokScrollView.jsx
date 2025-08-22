@@ -551,7 +551,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
   );
 };
 
-const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onSave, onExitTikTok, onCreatePoll }) => {
+const TikTokScrollView = ({ polls, onVote, onLike, onShare, onComment, onSave, onExitTikTok, onCreatePoll, showLogo = true }) => {
   const containerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
