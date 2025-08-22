@@ -319,7 +319,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Sistema de Polls CRUD Endpoints"
+    - "Corrección URLs de Imágenes Subidas"
+    - "Sistema de Archivos Estáticos"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
