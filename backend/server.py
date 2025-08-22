@@ -1706,11 +1706,8 @@ async def get_polls(
         for option in poll_data.get("options", []):
             option_user = option_users_dict.get(option["user_id"])
             if option_user:
-                # Unify media format - ensure we use absolute URLs
+                # Keep media_url as relative path for frontend to handle
                 media_url = option.get("media_url")
-                if media_url and not media_url.startswith('http'):
-                    # Convert relative URL to absolute
-                    media_url = f"{os.environ.get('BACKEND_URL', 'http://localhost:8001')}{media_url}"
                 
                 option_dict = {
                     "id": option["id"],
