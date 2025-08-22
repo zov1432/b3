@@ -324,5 +324,47 @@ class Music(BaseModel):
     waveform: List[float] = []  # Visualization data
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+# =============  FILE UPLOAD MODELS =============
+
+class UploadType(str, Enum):
+    AVATAR = "avatar"
+    POLL_OPTION = "poll_option"
+    POLL_BACKGROUND = "poll_background"
+    GENERAL = "general"
+
+class FileType(str, Enum):
+    IMAGE = "image"
+    VIDEO = "video"
+
+class UploadedFile(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    filename: str
+    original_filename: str
+    file_type: FileType  # "image" or "video"
+    file_format: str  # jpg, png, mp4, etc.
+    file_size: int  # in bytes
+    upload_type: UploadType
+    uploader_id: str  # User who uploaded
+    file_path: str  # Local file path
+    public_url: str  # URL to access file
+    width: Optional[int] = None  # For images/videos
+    height: Optional[int] = None  # For images/videos
+    duration: Optional[float] = None  # For videos in seconds
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class UploadResponse(BaseModel):
+    id: str
+    filename: str
+    original_filename: str
+    file_type: FileType
+    file_format: str
+    file_size: int
+    public_url: str
+    width: Optional[int] = None
+    height: Optional[int] = None
+    duration: Optional[float] = None
+    created_at: datetime
+
 # Necesario para resolver referencia circular
 CommentResponse.model_rebuild()
