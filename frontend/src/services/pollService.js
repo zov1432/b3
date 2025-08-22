@@ -165,7 +165,11 @@ class PollService {
         user: option.user,
         text: option.text,
         votes: option.votes,
-        media: option.media
+        media: option.media ? {
+          ...option.media,
+          url: this.normalizeMediaUrl(option.media.url),
+          thumbnail: this.normalizeMediaUrl(option.media.thumbnail || option.media.url)
+        } : null
       })),
       totalVotes: backendPoll.total_votes,
       likes: backendPoll.likes,
@@ -177,6 +181,24 @@ class PollService {
       tags: backendPoll.tags || [],
       is_featured: backendPoll.is_featured
     };
+  }
+
+  // Normalize media URLs - convert relative to absolute
+  normalizeMediaUrl(url) {
+    if (!url) return null;
+    
+    // If already absolute, return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // If relative path starting with /uploads/, prepend BACKEND_URL
+    if (url.startsWith('/uploads/')) {
+      return `${BACKEND_URL}${url}`;
+    }
+    
+    // Default fallback
+    return url;
   }
 
   // Get polls in the format expected by the frontend components
