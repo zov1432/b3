@@ -192,9 +192,14 @@ class PollService {
       return url;
     }
     
-    // If relative path starting with /uploads/, prepend BACKEND_URL
-    if (url.startsWith('/uploads/')) {
+    // If new API path format, prepend BACKEND_URL
+    if (url.startsWith('/api/uploads/')) {
       return `${BACKEND_URL}${url}`;
+    }
+    
+    // If legacy /uploads/ path, convert to API format
+    if (url.startsWith('/uploads/')) {
+      return `${BACKEND_URL}/api${url}`;
     }
     
     // Default fallback
