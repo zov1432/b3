@@ -25,7 +25,7 @@ class User(BaseModel):
     email: EmailStr
     username: str
     display_name: str
-    hashed_password: str
+    hashed_password: Optional[str] = None  # Allow None for OAuth users
     avatar_url: Optional[str] = None
     bio: Optional[str] = None
     is_verified: bool = False
@@ -35,17 +35,20 @@ class User(BaseModel):
     # Privacy settings
     is_public: bool = True
     allow_messages: bool = True
+    # OAuth fields
+    oauth_provider: Optional[str] = None  # "google", "facebook", etc.
+    oauth_id: Optional[str] = None
     
 class UserCreate(BaseModel):
     email: EmailStr
     username: str
     display_name: str
     password: str
-    
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
-    
+
 class UserResponse(BaseModel):
     id: str
     email: str
@@ -77,6 +80,51 @@ class PasswordChange(BaseModel):
 class UserSettings(BaseModel):
     is_public: Optional[bool] = None
     allow_messages: Optional[bool] = None
+
+# =============  SECURITY MODELS =============
+
+class LoginAttempt(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    ip_address: str
+    user_agent: str
+    success: bool
+    failure_reason: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class UserDevice(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    device_name: str
+    device_type: str  # "desktop", "mobile", "tablet"
+    browser: str
+    os: str
+    ip_address: str
+    user_agent: str
+    last_used: datetime = Field(default_factory=datetime.utcnow)
+    is_trusted: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class UserSession(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    session_token: str
+    device_id: Optional[str] = None
+    ip_address: str
+    user_agent: str
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    is_active: bool = True
+
+class SecurityNotification(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    notification_type: str  # "new_login", "password_change", "new_device"
+    title: str
+    message: str
+    metadata: Dict[str, Any] = {}
+    is_read: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 # =============  MESSAGING MODELS =============
 
