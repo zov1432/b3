@@ -257,7 +257,7 @@ const ProfilePage = () => {
     following: 567,
     totalVotes: 89,
     pollsCreated: 23,
-    totalPolls: mockPolls.length,
+    totalPolls: polls.length,
     verified: authUser?.is_verified || false
   } : viewedUser || {
     id: 'default_user',
