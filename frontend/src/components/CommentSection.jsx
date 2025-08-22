@@ -62,33 +62,94 @@ const CommentSection = ({
     }
   };
 
-  // Crear nuevo comentario
-  const handleCreateComment = async (content) => {
-    if (!user || submitting) return;
+  // Agregar nuevo comentario
+  const handleAddComment = async (content, parentId = null) => {
+    if (!content.trim() || submitting || !isAuthenticated) return;
     
     setSubmitting(true);
+    
     try {
-      const response = await apiRequest(`/api/polls/${pollId}/comments`, {
-        method: 'POST',
-        body: JSON.stringify({
-          poll_id: pollId,
-          content: content,
-          parent_comment_id: null
-        })
-      });
+      const newComment = await commentService.addCommentForFrontend(pollId, content.trim(), parentId);
       
-      if (response.ok) {
-        const newComment = await response.json();
-        setComments(prev => [newComment, ...prev]);
-        setShowNewCommentForm(false);
+      if (parentId) {
+        // Si es una respuesta, agregar a las replies del comentario padre
+        setComments(prev => prev.map(comment => {
+          if (comment.id === parentId) {
+            return {
+              ...comment,
+              replies: [...comment.replies, newComment]
+            };
+          }
+          return comment;
+        }));
       } else {
-        throw new Error('Failed to create comment');
+        // Si es un comentario principal, agregar al inicio
+        setComments(prev => [newComment, ...prev]);
       }
+      
+      setShowNewCommentForm(false);
+      
+      toast({
+        title: "Comentario agregado",
+        description: "Tu comentario se ha publicado correctamente",
+      });
     } catch (err) {
-      console.error('Error creating comment:', err);
-      throw new Error('Error al enviar comentario');
+      console.error('Error adding comment:', err);
+      toast({
+        title: "Error al agregar comentario",
+        description: err.message || "No se pudo agregar el comentario. Intenta de nuevo.",
+        variant: "destructive",
+      });
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Manejar like de comentario
+  const handleCommentLike = async (commentId) => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Inicia sesión",
+        description: "Necesitas iniciar sesión para dar like",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const result = await commentService.toggleCommentLike(commentId);
+      
+      // Actualizar el estado local
+      setComments(prev => prev.map(comment => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            userLiked: result.liked,
+            likes: result.likes
+          };
+        }
+        // También actualizar en replies
+        return {
+          ...comment,
+          replies: comment.replies.map(reply => 
+            reply.id === commentId 
+              ? { ...reply, userLiked: result.liked, likes: result.likes }
+              : reply
+          )
+        };
+      }));
+      
+      toast({
+        title: result.liked ? "¡Te gusta!" : "Like removido",
+        description: result.liked ? "Has dado like a este comentario" : "Ya no te gusta este comentario",
+      });
+    } catch (err) {
+      console.error('Error liking comment:', err);
+      toast({
+        title: "Error",
+        description: err.message || "No se pudo procesar el like. Intenta de nuevo.",
+        variant: "destructive",
+      });
     }
   };
 
