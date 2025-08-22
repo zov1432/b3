@@ -191,7 +191,7 @@ const FeedPage = () => {
       <>
         {/* Logo fijo SIEMPRE VISIBLE - Loading */}
         <div 
-          className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-8 h-8 rounded-full bg-white/95 backdrop-blur-md border border-white/60 shadow-lg"
+          className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-10 h-10 rounded-full bg-white/95 backdrop-blur-md border border-white/60 shadow-lg"
           style={{ 
             position: 'fixed',
             top: '16px',
@@ -199,7 +199,7 @@ const FeedPage = () => {
             zIndex: 9999,
           }}
         >
-          <CustomLogo size={20} />
+          <CustomLogo size={24} />
         </div>
         
         <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
