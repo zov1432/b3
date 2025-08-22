@@ -417,6 +417,29 @@ const RegisterPage = ({ onSwitchToLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Client-side validation
+    const errors = {};
+    if (!validateEmail(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    if (!validateUsername(formData.username)) {
+      errors.username = 'Username must be at least 3 characters and contain only letters, numbers, and underscores';
+    }
+    if (formData.display_name.trim().length < 2) {
+      errors.display_name = 'Display name must be at least 2 characters';
+    }
+    if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       toast({
         title: "Error",
