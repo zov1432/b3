@@ -3233,11 +3233,17 @@ def main():
     # Test results tracking
     test_results = {}
     
-    # Run all tests
+    # Run essential tests first
     test_results['health_check'] = test_health_check(base_url)
     test_results['user_registration'] = test_user_registration(base_url)
     test_results['user_login'] = test_user_login(base_url)
     test_results['get_current_user'] = test_get_current_user(base_url)
+    
+    # PRIORITY TESTS FOR IMAGE UPLOAD ISSUE - MAIN FOCUS
+    test_results['image_upload_static_files'] = test_image_upload_and_static_files(base_url)
+    test_results['poll_creation_with_images'] = test_poll_creation_with_images(base_url)
+    
+    # Additional comprehensive tests
     test_results['jwt_validation'] = test_jwt_validation(base_url)
     test_results['user_search'] = test_user_search(base_url)
     test_results['messaging_system'] = test_messaging_system(base_url)
@@ -3269,14 +3275,27 @@ def main():
     print("=" * 80)
     print(f"📈 OVERALL RESULTS: {passed_tests}/{total_tests} tests passed ({(passed_tests/total_tests)*100:.1f}%)")
     
+    # Special focus on image upload results
+    print("\n🖼️  IMAGE UPLOAD SYSTEM RESULTS (MAIN FOCUS):")
+    image_tests = ['image_upload_static_files', 'poll_creation_with_images']
+    image_passed = sum(1 for test in image_tests if test_results.get(test, False))
+    print(f"Image Upload Tests: {image_passed}/{len(image_tests)} passed")
+    
+    if image_passed == len(image_tests):
+        print("🎉 Image upload system is working correctly!")
+        print("✅ Mobile image display issue should be resolved")
+    else:
+        print("⚠️  Image upload system has issues that need attention.")
+        print("❌ Mobile image display issue may persist")
+    
     if passed_tests == total_tests:
-        print("🎉 ALL TESTS PASSED! Backend is ready for TikTok Profile Grid implementation.")
+        print("\n🎉 ALL TESTS PASSED! Backend is ready for production.")
         return 0
     elif passed_tests >= total_tests * 0.8:
-        print("⚠️  MOST TESTS PASSED. Backend is mostly functional with minor issues.")
+        print("\n⚠️  MOST TESTS PASSED. Backend is mostly functional with minor issues.")
         return 0
     else:
-        print("🚨 MULTIPLE TEST FAILURES. Backend needs attention before TikTok Profile Grid can work properly.")
+        print("\n🚨 MULTIPLE TEST FAILURES. Backend needs attention before deployment.")
         return 1
 
 if __name__ == "__main__":
