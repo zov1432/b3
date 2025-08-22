@@ -319,7 +319,7 @@ const LoginPage = ({ onSwitchToRegister }) => {
 
         {/* Enhanced Features Preview */}
         <div className="mt-10 text-center animate-fadeInUp">
-          <p className="text-gray-500 text-sm mb-6">Únete a la experiencia más adictiva:</p>
+          <p className="text-gray-500 text-sm mb-6">Únete a la mejor plataforma social:</p>
           <div className="flex justify-center space-x-8">
             <div className="text-center group transform hover:scale-110 transition-all duration-300 cursor-pointer">
               <div className="w-14 h-14 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center mb-3 mx-auto backdrop-blur-sm border border-gray-200 group-hover:bg-purple-200/80 group-hover:border-purple-300 transition-all duration-300 shadow-sm hover:shadow-md">
