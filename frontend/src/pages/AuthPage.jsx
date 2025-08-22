@@ -78,6 +78,22 @@ const LoginPage = ({ onSwitchToRegister }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Client-side validation
+    const errors = {};
+    if (!validateEmail(email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+    
+    setValidationErrors({});
     setLoading(true);
 
     try {
