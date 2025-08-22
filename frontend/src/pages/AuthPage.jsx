@@ -132,11 +132,11 @@ const LoginPage = ({ onSwitchToRegister }) => {
 
             {/* Enhanced Password Field */}
             <div className="group">
-              <label className="block text-white text-sm font-medium mb-3 transition-all duration-300 group-hover:text-purple-200">
+              <label className="block text-white text-sm font-medium mb-3 transition-all duration-300 group-hover:text-white">
                 Contraseña
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-4 w-5 h-5 text-gray-400 transition-all duration-300 group-hover:text-purple-300 group-focus-within:text-purple-400" />
+                <Lock className="absolute left-4 top-4 w-5 h-5 text-white/70 transition-all duration-300 group-hover:text-white group-focus-within:text-white" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
