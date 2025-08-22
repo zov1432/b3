@@ -1447,7 +1447,8 @@ def get_upload_path(upload_type: UploadType, file_format: str, filename: str) ->
     }[upload_type]
     
     file_path = UPLOAD_DIR / subdir / unique_filename
-    public_url = f"/uploads/{subdir}/{unique_filename}"
+    # Use API endpoint URL instead of direct static file URL
+    public_url = f"/api/uploads/{subdir}/{unique_filename}"
     
     return file_path, public_url
 
