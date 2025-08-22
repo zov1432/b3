@@ -227,6 +227,7 @@ const FeedPage = () => {
         onSave={handleSave}
         onExitTikTok={handleExitTikTok}
         onCreatePoll={handleCreatePoll}
+        showLogo={true}
       />
     );
   }
