@@ -21,6 +21,44 @@ export const AuthProvider = ({ children }) => {
   // Load auth state from localStorage and verify token
   useEffect(() => {
     const initializeAuth = async () => {
+      // Check for OAuth session in URL fragment first
+      const fragment = window.location.hash.substring(1);
+      const params = new URLSearchParams(fragment);
+      const sessionId = params.get('session_id');
+      
+      if (sessionId) {
+        // Handle OAuth login
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/auth/oauth/google`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ session_id: sessionId }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            
+            // Save auth data
+            localStorage.setItem('authToken', data.access_token);
+            localStorage.setItem('authUser', JSON.stringify(data.user));
+            
+            setToken(data.access_token);
+            setUser(data.user);
+            setIsAuthenticated(true);
+            
+            // Clear the hash from URL
+            window.location.hash = '';
+            
+            setLoading(false);
+            return;
+          }
+        } catch (error) {
+          console.error('OAuth authentication error:', error);
+        }
+      }
+      
       const savedToken = localStorage.getItem('authToken');
       const savedUser = localStorage.getItem('authUser');
       
