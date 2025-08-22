@@ -73,6 +73,196 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     
     return UserResponse(**user_data)
 
+# =============  SECURITY UTILITIES =============
+
+async def track_login_attempt(email: str, ip_address: str, user_agent: str, success: bool, failure_reason: Optional[str] = None):
+    """Track login attempts for security monitoring"""
+    attempt = LoginAttempt(
+        email=email,
+        ip_address=ip_address,
+        user_agent=user_agent,
+        success=success,
+        failure_reason=failure_reason
+    )
+    await db.login_attempts.insert_one(attempt.dict())
+
+async def check_rate_limit(email: str, ip_address: str) -> bool:
+    """Check if user has exceeded login attempt limits"""
+    # Check failed attempts in last 15 minutes
+    time_threshold = datetime.utcnow() - timedelta(minutes=15)
+    
+    # Count failed attempts by email
+    email_failures = await db.login_attempts.count_documents({
+        "email": email,
+        "success": False,
+        "created_at": {"$gte": time_threshold}
+    })
+    
+    # Count failed attempts by IP
+    ip_failures = await db.login_attempts.count_documents({
+        "ip_address": ip_address,
+        "success": False,
+        "created_at": {"$gte": time_threshold}
+    })
+    
+    # Rate limits: 5 attempts per email, 10 per IP in 15 minutes
+    return email_failures < 5 and ip_failures < 10
+
+def parse_user_agent(user_agent_string: str) -> Dict[str, str]:
+    """Parse user agent string to extract device information"""
+    user_agent = parse(user_agent_string)
+    return {
+        "browser": f"{user_agent.browser.family} {user_agent.browser.version_string}",
+        "os": f"{user_agent.os.family} {user_agent.os.version_string}",
+        "device_type": "mobile" if user_agent.is_mobile else "tablet" if user_agent.is_tablet else "desktop",
+        "device_name": user_agent.device.family
+    }
+
+async def get_or_create_device(user_id: str, ip_address: str, user_agent: str) -> UserDevice:
+    """Get existing device or create new one"""
+    device_info = parse_user_agent(user_agent)
+    
+    # Create device fingerprint
+    device_fingerprint = hashlib.md5(
+        f"{device_info['browser']}{device_info['os']}{user_agent}".encode()
+    ).hexdigest()
+    
+    # Try to find existing device
+    existing_device = await db.user_devices.find_one({
+        "user_id": user_id,
+        "id": device_fingerprint  # Use fingerprint as device ID
+    })
+    
+    if existing_device:
+        # Update last used
+        await db.user_devices.update_one(
+            {"id": device_fingerprint},
+            {"$set": {"last_used": datetime.utcnow(), "ip_address": ip_address}}
+        )
+        return UserDevice(**existing_device)
+    else:
+        # Create new device
+        device = UserDevice(
+            id=device_fingerprint,
+            user_id=user_id,
+            device_name=device_info["device_name"],
+            device_type=device_info["device_type"],
+            browser=device_info["browser"],
+            os=device_info["os"],
+            ip_address=ip_address,
+            user_agent=user_agent,
+            is_trusted=False  # New devices are not trusted by default
+        )
+        
+        await db.user_devices.insert_one(device.dict())
+        return device
+
+async def create_security_notification(user_id: str, notification_type: str, title: str, message: str, metadata: Dict = None):
+    """Create a security notification for the user"""
+    notification = SecurityNotification(
+        user_id=user_id,
+        notification_type=notification_type,
+        title=title,
+        message=message,
+        metadata=metadata or {}
+    )
+    await db.security_notifications.insert_one(notification.dict())
+
+async def create_session(user_id: str, device_id: str, ip_address: str, user_agent: str) -> str:
+    """Create a new user session"""
+    session_token = str(uuid.uuid4())
+    expires_at = datetime.utcnow() + timedelta(days=7)  # 7 days expiry
+    
+    session = UserSession(
+        user_id=user_id,
+        session_token=session_token,
+        device_id=device_id,
+        ip_address=ip_address,
+        user_agent=user_agent,
+        expires_at=expires_at
+    )
+    
+    await db.user_sessions.insert_one(session.dict())
+    return session_token
+
+def get_client_ip(request: Request) -> str:
+    """Get client IP address from request"""
+    x_forwarded_for = request.headers.get('x-forwarded-for')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0]
+    return request.client.host
+
+# =============  GOOGLE OAUTH UTILITIES =============
+
+async def get_oauth_user_data(session_id: str) -> Dict:
+    """Get user data from Emergent Auth API"""
+    url = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
+    headers = {"X-Session-ID": session_id}
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                raise HTTPException(
+                    status_code=400, 
+                    detail="Invalid session ID or OAuth authentication failed"
+                )
+
+async def create_or_get_oauth_user(oauth_data: Dict, ip_address: str, user_agent: str) -> User:
+    """Create new user or get existing user from OAuth data"""
+    email = oauth_data.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email not provided by OAuth provider")
+    
+    # Check if user exists
+    existing_user = await db.users.find_one({"email": email})
+    
+    if existing_user:
+        # Update OAuth info if needed
+        update_data = {}
+        if not existing_user.get("oauth_provider"):
+            update_data["oauth_provider"] = "google"
+            update_data["oauth_id"] = oauth_data.get("id")
+            update_data["avatar_url"] = oauth_data.get("picture")
+        
+        update_data["last_login"] = datetime.utcnow()
+        
+        if update_data:
+            await db.users.update_one({"id": existing_user["id"]}, {"$set": update_data})
+            
+        # Get updated user data
+        user_data = await db.users.find_one({"id": existing_user["id"]})
+        return User(**user_data)
+    else:
+        # Create new user from OAuth data
+        username = email.split("@")[0]  # Use email prefix as username
+        
+        # Ensure username is unique
+        counter = 1
+        original_username = username
+        while await db.users.find_one({"username": username}):
+            username = f"{original_username}{counter}"
+            counter += 1
+        
+        user = User(
+            email=email,
+            username=username,
+            display_name=oauth_data.get("name", email),
+            avatar_url=oauth_data.get("picture"),
+            oauth_provider="google",
+            oauth_id=oauth_data.get("id"),
+            is_verified=True  # OAuth users are considered verified
+        )
+        
+        await db.users.insert_one(user.dict())
+        
+        # Create user profile
+        profile = UserProfile(id=user.id, username=user.username)
+        await db.user_profiles.insert_one(profile.dict())
+        
+        return user
+
 # Basic API endpoint
 @api_router.get("/")
 async def get_api_info():
