@@ -178,17 +178,37 @@ const LoginPage = ({ onSwitchToRegister }) => {
                 Correo electrónico
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-4 w-5 h-5 text-gray-500 transition-all duration-300 group-hover:text-gray-700 group-focus-within:text-purple-500" />
+                <Mail className={`absolute left-4 top-4 w-5 h-5 transition-all duration-300 ${
+                  emailValid === true ? 'text-green-500' : 
+                  emailValid === false ? 'text-red-500' : 
+                  'text-gray-500 group-hover:text-gray-700 group-focus-within:text-purple-500'
+                }`} />
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300 backdrop-blur-sm"
+                  onChange={handleEmailChange}
+                  className={`w-full pl-12 pr-12 py-4 bg-gray-50/80 border rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 hover:bg-gray-50 transition-all duration-300 backdrop-blur-sm ${
+                    emailValid === true ? 'border-green-300 bg-green-50/50' :
+                    emailValid === false ? 'border-red-300 bg-red-50/50' :
+                    'border-gray-200 focus:border-purple-400'
+                  }`}
                   placeholder="tu@email.com"
                   required
                 />
+                {emailValid === true && (
+                  <CheckCircle className="absolute right-4 top-4 w-5 h-5 text-green-500" />
+                )}
+                {emailValid === false && (
+                  <AlertTriangle className="absolute right-4 top-4 w-5 h-5 text-red-500" />
+                )}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-100/30 to-pink-100/30 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
+              {validationErrors.email && (
+                <p className="mt-2 text-sm text-red-500 flex items-center animate-fadeIn">
+                  <AlertTriangle className="w-4 h-4 mr-1" />
+                  {validationErrors.email}
+                </p>
+              )}
             </div>
 
             {/* Enhanced Password Field */}
@@ -201,8 +221,10 @@ const LoginPage = ({ onSwitchToRegister }) => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-14 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300 backdrop-blur-sm"
+                  onChange={handlePasswordChange}
+                  className={`w-full pl-12 pr-14 py-4 bg-gray-50/80 border rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 hover:bg-gray-50 transition-all duration-300 backdrop-blur-sm ${
+                    validationErrors.password ? 'border-red-300 bg-red-50/50' : 'border-gray-200 focus:border-purple-400'
+                  }`}
                   placeholder="••••••••"
                   required
                 />
@@ -215,6 +237,24 @@ const LoginPage = ({ onSwitchToRegister }) => {
                 </button>
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-100/30 to-pink-100/30 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
+              {validationErrors.password && (
+                <p className="mt-2 text-sm text-red-500 flex items-center animate-fadeIn">
+                  <AlertTriangle className="w-4 h-4 mr-1" />
+                  {validationErrors.password}
+                </p>
+              )}
+              {passwordStrength && (
+                <div className="mt-2">
+                  <div className={`text-xs px-2 py-1 rounded-full inline-flex items-center ${
+                    passwordStrength === 'weak' ? 'text-red-600 bg-red-100' :
+                    passwordStrength === 'medium' ? 'text-yellow-600 bg-yellow-100' :
+                    'text-green-600 bg-green-100'
+                  }`}>
+                    <Shield className="w-3 h-3 mr-1" />
+                    Seguridad: {passwordStrength === 'weak' ? 'Débil' : passwordStrength === 'medium' ? 'Media' : 'Fuerte'}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Enhanced Submit Button */}
