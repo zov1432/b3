@@ -160,7 +160,7 @@ const LoginPage = ({ onSwitchToRegister }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white font-bold py-4 px-8 rounded-2xl hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-purple-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              className="w-full bg-gradient-to-r from-white/90 via-white to-white/90 text-gray-900 font-bold py-4 px-8 rounded-2xl hover:from-white hover:via-white hover:to-white focus:outline-none focus:ring-4 focus:ring-white/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               {loading ? (
