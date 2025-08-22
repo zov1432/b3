@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Loader2, AlertCircle, RefreshCw, Send, Plus } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../hooks/use-toast';
+import commentService from '../services/commentService';
 import { cn } from '../lib/utils';
 import Comment from './Comment';
 
