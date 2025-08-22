@@ -3,6 +3,7 @@ import TikTokScrollView from '../components/TikTokScrollView';
 import PollCard from '../components/PollCard';
 import CommentsModal from '../components/CommentsModal';
 import ShareModal from '../components/ShareModal';
+import CreatePollModal from '../components/CreatePollModal';
 import CustomLogo from '../components/CustomLogo';
 import pollService from '../services/pollService';
 import { useToast } from '../hooks/use-toast';
@@ -10,6 +11,7 @@ import { useAddiction } from '../contexts/AddictionContext';
 import { useTikTok } from '../contexts/TikTokContext';
 import { useShare } from '../hooks/useShare';
 import { useAuth } from '../contexts/AuthContext';
+import { Plus } from 'lucide-react';
 
 const FeedPage = () => {
   const [polls, setPolls] = useState([]);
