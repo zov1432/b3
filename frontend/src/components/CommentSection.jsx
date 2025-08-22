@@ -287,10 +287,10 @@ const CommentSection = ({
           if (!content) return;
           
           try {
-            await handleCreateComment(content);
+            await handleAddComment(content);
             e.target.reset();
           } catch (error) {
-            // Error ya manejado en handleCreateComment
+            // Error ya manejado en handleAddComment
           }
         }}
         className="space-y-3 sm:space-y-4"
