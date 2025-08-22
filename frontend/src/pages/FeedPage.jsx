@@ -340,7 +340,7 @@ const FeedPage = () => {
         onClose={closeShareModal}
         content={shareModal.content}
       />
-    </div>
+    </>
   );
 };
 
