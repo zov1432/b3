@@ -585,6 +585,28 @@ const FeedPage = () => {
         onClose={closeShareModal}
         content={shareModal.content}
       />
+
+      {/* Create Poll Modal */}
+      <CreatePollModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onPollCreated={(newPoll) => {
+          // Add the new poll to the beginning of the list
+          const transformedPoll = pollService.transformPollData(newPoll);
+          setPolls(prev => [transformedPoll, ...prev]);
+        }}
+      />
+
+      {/* Floating Create Button */}
+      {isAuthenticated && !isLoading && (
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className={`fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-40 ${isMobile ? 'bottom-20' : 'bottom-6'}`}
+          aria-label="Crear nueva votación"
+        >
+          <Plus className="w-7 h-7" />
+        </button>
+      )}
     </>
   );
 };
