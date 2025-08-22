@@ -307,7 +307,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "TikTok Profile Grid Component"
+    - "Sistema de Polls CRUD Endpoints"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
