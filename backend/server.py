@@ -1371,6 +1371,438 @@ async def get_comment(
         user_liked=bool(user_like)
     )
 
+# =============  POLL ENDPOINTS =============
+
+def calculate_time_ago(created_at: datetime) -> str:
+    """Calculate time ago string from datetime"""
+    now = datetime.utcnow()
+    diff = now - created_at
+    
+    if diff.days > 0:
+        if diff.days == 1:
+            return "hace 1 día"
+        elif diff.days < 30:
+            return f"hace {diff.days} días"
+        elif diff.days < 365:
+            months = diff.days // 30
+            return f"hace {months} {'mes' if months == 1 else 'meses'}"
+        else:
+            years = diff.days // 365
+            return f"hace {years} {'año' if years == 1 else 'años'}"
+    
+    hours = diff.seconds // 3600
+    if hours > 0:
+        return f"hace {hours} {'hora' if hours == 1 else 'horas'}"
+    
+    minutes = diff.seconds // 60
+    if minutes > 0:
+        return f"hace {minutes} {'minuto' if minutes == 1 else 'minutos'}"
+    
+    return "hace unos momentos"
+
+@api_router.get("/polls", response_model=List[PollResponse])
+async def get_polls(
+    limit: int = 20,
+    offset: int = 0,
+    category: Optional[str] = None,
+    featured: Optional[bool] = None,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Get polls with pagination and filters"""
+    
+    # Build filter query
+    filter_query = {"is_active": True}
+    if category:
+        filter_query["category"] = category
+    if featured is not None:
+        filter_query["is_featured"] = featured
+    
+    # Get polls
+    polls_cursor = db.polls.find(filter_query).sort("created_at", -1).skip(offset).limit(limit)
+    polls = await polls_cursor.to_list(limit)
+    
+    if not polls:
+        return []
+    
+    # Get all author IDs
+    author_ids = list(set(poll["author_id"] for poll in polls))
+    authors_cursor = db.users.find({"id": {"$in": author_ids}})
+    authors_list = await authors_cursor.to_list(len(author_ids))
+    authors_dict = {user["id"]: UserResponse(**user) for user in authors_list}
+    
+    # Get user votes and likes
+    poll_ids = [poll["id"] for poll in polls]
+    
+    user_votes_cursor = db.votes.find({
+        "poll_id": {"$in": poll_ids},
+        "user_id": current_user.id
+    })
+    user_votes = await user_votes_cursor.to_list(len(poll_ids))
+    user_votes_dict = {vote["poll_id"]: vote["option_id"] for vote in user_votes}
+    
+    user_likes_cursor = db.poll_likes.find({
+        "poll_id": {"$in": poll_ids},
+        "user_id": current_user.id
+    })
+    user_likes = await user_likes_cursor.to_list(len(poll_ids))
+    liked_poll_ids = set(like["poll_id"] for like in user_likes)
+    
+    # Build response
+    result = []
+    for poll_data in polls:
+        # Get option users
+        option_user_ids = [option["user_id"] for option in poll_data.get("options", [])]
+        if option_user_ids:
+            option_users_cursor = db.users.find({"id": {"$in": option_user_ids}})
+            option_users_list = await option_users_cursor.to_list(len(option_user_ids))
+            option_users_dict = {user["id"]: user for user in option_users_list}
+        else:
+            option_users_dict = {}
+        
+        # Process options
+        options = []
+        for option in poll_data.get("options", []):
+            option_user = option_users_dict.get(option["user_id"])
+            if option_user:
+                option_dict = {
+                    "id": option["id"],
+                    "text": option["text"],
+                    "votes": option["votes"],
+                    "user": {
+                        "username": option_user["username"],
+                        "displayName": option_user["display_name"],
+                        "avatar": option_user.get("avatar_url"),
+                        "verified": option_user.get("is_verified", False),
+                        "followers": "1K"  # Placeholder
+                    },
+                    "media": {
+                        "type": option.get("media_type"),
+                        "url": option.get("media_url"),
+                        "thumbnail": option.get("thumbnail_url")
+                    } if option.get("media_url") else None
+                }
+                options.append(option_dict)
+        
+        poll_response = PollResponse(
+            id=poll_data["id"],
+            title=poll_data["title"],
+            author=authors_dict.get(poll_data["author_id"]),
+            description=poll_data.get("description"),
+            options=options,
+            total_votes=poll_data["total_votes"],
+            likes=poll_data["likes"],
+            shares=poll_data["shares"],
+            comments_count=poll_data["comments_count"],
+            music=None,  # TODO: Implement music system
+            user_vote=user_votes_dict.get(poll_data["id"]),
+            user_liked=poll_data["id"] in liked_poll_ids,
+            is_featured=poll_data["is_featured"],
+            tags=poll_data.get("tags", []),
+            category=poll_data.get("category"),
+            created_at=poll_data["created_at"],
+            time_ago=calculate_time_ago(poll_data["created_at"])
+        )
+        result.append(poll_response)
+    
+    return result
+
+@api_router.post("/polls", response_model=PollResponse)
+async def create_poll(
+    poll_data: PollCreate,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Create a new poll"""
+    
+    # Create poll options
+    options = []
+    for i, option_data in enumerate(poll_data.options):
+        option = PollOption(
+            user_id=current_user.id,  # For now, creator adds all options
+            text=option_data["text"],
+            media_type=option_data.get("media_type"),
+            media_url=option_data.get("media_url"),
+            thumbnail_url=option_data.get("thumbnail_url")
+        )
+        options.append(option)
+    
+    # Create poll
+    poll = Poll(
+        title=poll_data.title,
+        author_id=current_user.id,
+        description=poll_data.description,
+        options=[opt.dict() for opt in options],  # Store as dict in MongoDB
+        music_id=poll_data.music_id,
+        tags=poll_data.tags,
+        category=poll_data.category
+    )
+    
+    # Insert into database
+    await db.polls.insert_one(poll.dict())
+    
+    # Return poll response
+    options_response = []
+    for option in options:
+        option_dict = {
+            "id": option.id,
+            "text": option.text,
+            "votes": option.votes,
+            "user": {
+                "username": current_user.username,
+                "displayName": current_user.display_name,
+                "avatar": current_user.avatar_url,
+                "verified": current_user.is_verified,
+                "followers": "1K"  # Placeholder
+            },
+            "media": {
+                "type": option.media_type,
+                "url": option.media_url,
+                "thumbnail": option.thumbnail_url
+            } if option.media_url else None
+        }
+        options_response.append(option_dict)
+    
+    return PollResponse(
+        id=poll.id,
+        title=poll.title,
+        author=current_user,
+        description=poll.description,
+        options=options_response,
+        total_votes=poll.total_votes,
+        likes=poll.likes,
+        shares=poll.shares,
+        comments_count=poll.comments_count,
+        music=None,
+        user_vote=None,
+        user_liked=False,
+        is_featured=poll.is_featured,
+        tags=poll.tags,
+        category=poll.category,
+        created_at=poll.created_at,
+        time_ago=calculate_time_ago(poll.created_at)
+    )
+
+@api_router.post("/polls/{poll_id}/vote")
+async def vote_on_poll(
+    poll_id: str,
+    vote_data: VoteCreate,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Vote on a poll"""
+    
+    # Check if poll exists
+    poll = await db.polls.find_one({"id": poll_id, "is_active": True})
+    if not poll:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    # Check if user already voted
+    existing_vote = await db.votes.find_one({
+        "poll_id": poll_id,
+        "user_id": current_user.id
+    })
+    
+    if existing_vote:
+        # Update existing vote
+        # First, decrease vote count from previous option
+        await db.polls.update_one(
+            {"id": poll_id, "options.id": existing_vote["option_id"]},
+            {"$inc": {"options.$.votes": -1, "total_votes": -1}}
+        )
+        
+        # Update vote record
+        await db.votes.update_one(
+            {"id": existing_vote["id"]},
+            {"$set": {"option_id": vote_data.option_id}}
+        )
+    else:
+        # Create new vote
+        vote = Vote(
+            poll_id=poll_id,
+            option_id=vote_data.option_id,
+            user_id=current_user.id
+        )
+        await db.votes.insert_one(vote.dict())
+    
+    # Increment vote count for new option
+    result = await db.polls.update_one(
+        {"id": poll_id, "options.id": vote_data.option_id},
+        {"$inc": {"options.$.votes": 1, "total_votes": 1}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=400, detail="Invalid option ID")
+    
+    return {"message": "Vote recorded successfully"}
+
+@api_router.post("/polls/{poll_id}/like")
+async def toggle_poll_like(
+    poll_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Toggle like on a poll"""
+    
+    # Check if poll exists
+    poll = await db.polls.find_one({"id": poll_id, "is_active": True})
+    if not poll:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    # Check if user already liked
+    existing_like = await db.poll_likes.find_one({
+        "poll_id": poll_id,
+        "user_id": current_user.id
+    })
+    
+    if existing_like:
+        # Remove like
+        await db.poll_likes.delete_one({
+            "poll_id": poll_id,
+            "user_id": current_user.id
+        })
+        
+        # Decrement like count
+        await db.polls.update_one(
+            {"id": poll_id},
+            {"$inc": {"likes": -1}}
+        )
+        
+        # Get updated count
+        updated_poll = await db.polls.find_one({"id": poll_id})
+        
+        return {
+            "liked": False,
+            "likes": updated_poll["likes"]
+        }
+    else:
+        # Add like
+        like = PollLike(
+            poll_id=poll_id,
+            user_id=current_user.id
+        )
+        
+        await db.poll_likes.insert_one(like.dict())
+        
+        # Increment like count
+        await db.polls.update_one(
+            {"id": poll_id},
+            {"$inc": {"likes": 1}}
+        )
+        
+        # Get updated count
+        updated_poll = await db.polls.find_one({"id": poll_id})
+        
+        return {
+            "liked": True,
+            "likes": updated_poll["likes"]
+        }
+
+@api_router.post("/polls/{poll_id}/share")
+async def share_poll(
+    poll_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Increment share count for a poll"""
+    
+    # Check if poll exists
+    poll = await db.polls.find_one({"id": poll_id, "is_active": True})
+    if not poll:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    # Increment share count
+    result = await db.polls.update_one(
+        {"id": poll_id},
+        {"$inc": {"shares": 1}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to update share count")
+    
+    # Get updated count
+    updated_poll = await db.polls.find_one({"id": poll_id})
+    
+    return {
+        "shares": updated_poll["shares"]
+    }
+
+@api_router.get("/polls/{poll_id}", response_model=PollResponse)
+async def get_poll_by_id(
+    poll_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Get a specific poll by ID"""
+    
+    # Get poll
+    poll = await db.polls.find_one({"id": poll_id, "is_active": True})
+    if not poll:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    # Get author info
+    author_data = await db.users.find_one({"id": poll["author_id"]})
+    if not author_data:
+        raise HTTPException(status_code=404, detail="Author not found")
+    author = UserResponse(**author_data)
+    
+    # Get option users
+    option_user_ids = [option["user_id"] for option in poll.get("options", [])]
+    option_users_dict = {}
+    if option_user_ids:
+        option_users_cursor = db.users.find({"id": {"$in": option_user_ids}})
+        option_users_list = await option_users_cursor.to_list(len(option_user_ids))
+        option_users_dict = {user["id"]: user for user in option_users_list}
+    
+    # Get user vote and like
+    user_vote = await db.votes.find_one({
+        "poll_id": poll_id,
+        "user_id": current_user.id
+    })
+    
+    user_like = await db.poll_likes.find_one({
+        "poll_id": poll_id,
+        "user_id": current_user.id
+    })
+    
+    # Process options
+    options = []
+    for option in poll.get("options", []):
+        option_user = option_users_dict.get(option["user_id"])
+        if option_user:
+            option_dict = {
+                "id": option["id"],
+                "text": option["text"],
+                "votes": option["votes"],
+                "user": {
+                    "username": option_user["username"],
+                    "displayName": option_user["display_name"],
+                    "avatar": option_user.get("avatar_url"),
+                    "verified": option_user.get("is_verified", False),
+                    "followers": "1K"  # Placeholder
+                },
+                "media": {
+                    "type": option.get("media_type"),
+                    "url": option.get("media_url"),
+                    "thumbnail": option.get("thumbnail_url")
+                } if option.get("media_url") else None
+            }
+            options.append(option_dict)
+    
+    return PollResponse(
+        id=poll["id"],
+        title=poll["title"],
+        author=author,
+        description=poll.get("description"),
+        options=options,
+        total_votes=poll["total_votes"],
+        likes=poll["likes"],
+        shares=poll["shares"],
+        comments_count=poll["comments_count"],
+        music=None,  # TODO: Implement music system
+        user_vote=user_vote["option_id"] if user_vote else None,
+        user_liked=bool(user_like),
+        is_featured=poll["is_featured"],
+        tags=poll.get("tags", []),
+        category=poll.get("category"),
+        created_at=poll["created_at"],
+        time_ago=calculate_time_ago(poll["created_at"])
+    )
+
 # Add the API router to the main app
 app.include_router(api_router)
 
