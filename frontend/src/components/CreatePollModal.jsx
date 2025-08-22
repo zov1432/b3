@@ -183,23 +183,23 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[800px] max-h-[95vh] overflow-y-auto bg-white border-0 shadow-2xl rounded-2xl">
-        <DialogHeader className="border-b border-gray-100 pb-8 px-2">
-          <DialogTitle className="text-3xl font-bold text-gray-900 flex items-center gap-4">
-            <div className="w-14 h-14 bg-gray-800 rounded-2xl flex items-center justify-center shadow-lg">
-              <Sparkles className="w-7 h-7 text-white" />
+      <DialogContent className="w-[95vw] max-w-[800px] h-[95vh] sm:h-auto max-h-[95vh] overflow-y-auto bg-white border-0 shadow-2xl rounded-2xl sm:rounded-2xl">
+        <DialogHeader className="border-b border-gray-100 pb-4 sm:pb-8 px-2">
+          <DialogTitle className="text-xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-4">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gray-800 rounded-2xl flex items-center justify-center shadow-lg">
+              <Sparkles className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
             </div>
             Crear Contenido
           </DialogTitle>
-          <DialogDescription className="text-gray-600 text-lg mt-3 font-medium">
+          <DialogDescription className="text-sm sm:text-lg mt-2 sm:mt-3 text-gray-600 font-medium">
             Comparte tu creatividad con el mundo
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-8 py-8 px-2">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-8 py-4 sm:py-8 px-2">
           {/* Título */}
-          <div className="space-y-4">
-            <Label htmlFor="title" className="text-xl font-bold text-gray-900">
+          <div className="space-y-2 sm:space-y-4">
+            <Label htmlFor="title" className="text-lg sm:text-xl font-bold text-gray-900">
               ¿Qué quieres preguntar?
             </Label>
             <Textarea
@@ -207,29 +207,29 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
               placeholder="Escribe tu pregunta aquí... Sé creativo y haz que sea interesante para tu audiencia"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="min-h-[120px] resize-none border-2 border-gray-200 focus:ring-2 focus:ring-gray-400 focus:border-transparent rounded-2xl text-lg p-6 bg-gray-50"
+              className="min-h-[100px] sm:min-h-[120px] resize-none border-2 border-gray-200 focus:ring-2 focus:ring-gray-400 focus:border-transparent rounded-2xl text-base sm:text-lg p-4 sm:p-6 bg-gray-50"
             />
           </div>
 
-          {/* Selector de Música Elegante */}
+          {/* Selector de Música Elegante - Responsive */}
           {selectedMusic ? (
-            <div className="flex items-center justify-between bg-gray-50 border-2 border-gray-200 rounded-2xl p-6 hover:bg-gray-100 transition-colors">
-              <div className="flex items-center gap-5">
-                <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-lg">
+            <div className="flex items-center justify-between bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 sm:p-6 hover:bg-gray-100 transition-colors">
+              <div className="flex items-center gap-3 sm:gap-5 flex-1 min-w-0">
+                <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
                   <img 
                     src={selectedMusic.cover} 
                     alt={selectedMusic.title}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
-                      <Music className="w-4 h-4 text-gray-900" />
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                      <Music className="w-3 h-3 sm:w-4 sm:h-4 text-gray-900" />
                     </div>
                   </div>
                 </div>
-                <div>
-                  <p className="font-bold text-lg text-gray-900">{selectedMusic.title}</p>
-                  <p className="text-base text-gray-600">{selectedMusic.artist}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-sm sm:text-lg text-gray-900 truncate">{selectedMusic.title}</p>
+                  <p className="text-xs sm:text-base text-gray-600 truncate">{selectedMusic.artist}</p>
                 </div>
               </div>
               <Button
@@ -240,9 +240,9 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                   setSelectedMusic(null);
                   setShowMusicSelector(false);
                 }}
-                className="w-12 h-12 text-gray-400 hover:text-red-500 hover:bg-white rounded-2xl shadow-sm border border-gray-200"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 hover:text-red-500 hover:bg-white rounded-2xl shadow-sm border border-gray-200 flex-shrink-0 ml-2"
               >
-                <X className="w-6 h-6" />
+                <X className="w-4 h-4 sm:w-6 sm:h-6" />
               </Button>
             </div>
           ) : (
@@ -250,12 +250,12 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
               type="button"
               variant="outline"
               onClick={() => setShowMusicSelector(!showMusicSelector)}
-              className="w-full h-16 border-2 border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-all rounded-2xl"
+              className="w-full h-12 sm:h-16 border-2 border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-all rounded-2xl"
             >
-              <div className="w-12 h-12 bg-gray-700 rounded-2xl flex items-center justify-center mr-4 shadow-sm">
-                <Music className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-700 rounded-2xl flex items-center justify-center mr-2 sm:mr-4 shadow-sm">
+                <Music className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <span className="text-lg font-semibold">Agregar música (opcional)</span>
+              <span className="text-sm sm:text-lg font-semibold">Agregar música (opcional)</span>
             </Button>
           )}
 
@@ -273,22 +273,22 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
             </div>
           )}
 
-          {/* Opciones con Media */}
-          <div className="space-y-8">
-            <Label className="text-xl font-bold text-gray-900">
+          {/* Opciones con Media - Mobile Optimized */}
+          <div className="space-y-4 sm:space-y-8">
+            <Label className="text-lg sm:text-xl font-bold text-gray-900">
               Opciones para votar
             </Label>
             {options.map((option, index) => (
-              <div key={index} className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-8 space-y-6 hover:bg-gray-100 transition-colors">
-                <div className="flex items-center gap-5">
-                  <div className="w-14 h-14 bg-gray-800 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+              <div key={index} className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 sm:p-8 space-y-4 sm:space-y-6 hover:bg-gray-100 transition-colors">
+                <div className="flex items-center gap-3 sm:gap-5">
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gray-800 rounded-2xl flex items-center justify-center text-white font-bold text-sm sm:text-xl shadow-lg flex-shrink-0">
                     {String.fromCharCode(65 + index)}
                   </div>
                   <Input
                     placeholder={`Descripción para la opción ${index + 1}`}
                     value={option.text}
                     onChange={(e) => updateOption(index, 'text', e.target.value)}
-                    className="flex-1 border-2 border-gray-200 focus:ring-2 focus:ring-gray-400 focus:border-transparent rounded-2xl h-14 text-lg bg-white px-6"
+                    className="flex-1 border-2 border-gray-200 focus:ring-2 focus:ring-gray-400 focus:border-transparent rounded-2xl h-10 sm:h-14 text-sm sm:text-lg bg-white px-3 sm:px-6"
                   />
                   {options.length > 2 && (
                     <Button
@@ -296,9 +296,9 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => removeOption(index)}
-                      className="w-12 h-12 hover:bg-white hover:text-red-500 rounded-2xl border border-gray-200 shadow-sm"
+                      className="w-10 h-10 sm:w-12 sm:h-12 hover:bg-white hover:text-red-500 rounded-2xl border border-gray-200 shadow-sm flex-shrink-0"
                     >
-                      <X className="w-6 h-6" />
+                      <X className="w-4 h-4 sm:w-6 sm:h-6" />
                     </Button>
                   )}
                 </div>
