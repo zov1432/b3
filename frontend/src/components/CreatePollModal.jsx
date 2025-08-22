@@ -16,6 +16,8 @@ import { Plus, X, Sparkles, Upload, Image, Video, Play, Music, Send } from 'luci
 import { useToast } from '../hooks/use-toast';
 import { fileToBase64 } from '../services/mockData';
 import MusicSelector from './MusicSelector';
+import PollOptionUpload from './PollOptionUpload';
+import UploadWidget from './UploadWidget';
 
 const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
   if (!media) return null;
