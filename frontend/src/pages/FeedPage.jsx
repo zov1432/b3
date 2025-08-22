@@ -228,47 +228,68 @@ const FeedPage = () => {
   };
 
   const handleShare = async (pollId) => {
-    // Actualizar el contador de shares
-    setPolls(prev => prev.map(poll => {
-      if (poll.id === pollId) {
-        return {
-          ...poll,
-          shares: poll.shares + 1
-        };
-      }
-      return poll;
-    }));
-    
-    await trackAction('share');
-    
-    // Obtener el poll para el modal
-    const poll = polls.find(p => p.id === pollId);
-    if (!poll) return;
-    
-    // Intentar usar Web Share API primero (mejor para móviles)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: poll.question || 'Vota en esta encuesta',
-          text: 'Mira esta increíble votación',
-          url: `${window.location.origin}/poll/${pollId}`,
-        });
-        toast({
-          title: "¡Compartido exitosamente!",
-          description: "La votación ha sido compartida",
-        });
-        return;
-      } catch (err) {
-        // Si el usuario cancela el share, no mostrar error
-        if (err.name !== 'AbortError') {
-          console.log('Error al compartir:', err);
-          // Si Web Share API falla, usar modal
-          sharePoll(poll);
+    if (!isAuthenticated) {
+      toast({
+        title: "Inicia sesión",
+        description: "Necesitas iniciar sesión para compartir",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Increment share count on backend
+      const result = await pollService.sharePoll(pollId);
+      
+      // Update local state
+      setPolls(prev => prev.map(poll => {
+        if (poll.id === pollId) {
+          return {
+            ...poll,
+            shares: result.shares
+          };
         }
+        return poll;
+      }));
+      
+      await trackAction('share');
+      
+      // Obtener el poll para el modal
+      const poll = polls.find(p => p.id === pollId);
+      if (!poll) return;
+      
+      // Intentar usar Web Share API primero (mejor para móviles)
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: poll.title || 'Vota en esta encuesta',
+            text: 'Mira esta increíble votación',
+            url: `${window.location.origin}/poll/${pollId}`,
+          });
+          toast({
+            title: "¡Compartido exitosamente!",
+            description: "La votación ha sido compartida",
+          });
+          return;
+        } catch (err) {
+          // Si el usuario cancela el share, no mostrar error
+          if (err.name !== 'AbortError') {
+            console.log('Error al compartir:', err);
+            // Si Web Share API falla, usar modal
+            sharePoll(poll);
+          }
+        }
+      } else {
+        // Si Web Share API no está disponible, usar modal
+        sharePoll(poll);
       }
-    } else {
-      // Si Web Share API no está disponible, usar modal
-      sharePoll(poll);
+    } catch (error) {
+      console.error('Error sharing poll:', error);
+      toast({
+        title: "Error al compartir",
+        description: error.message || "No se pudo compartir la votación. Intenta de nuevo.",
+        variant: "destructive",
+      });
     }
   };
 
