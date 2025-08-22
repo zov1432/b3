@@ -26,7 +26,8 @@ from models import (
     UserUpdate, PasswordChange, UserSettings,
     Comment, CommentCreate, CommentUpdate, CommentResponse, CommentLike,
     Follow, FollowCreate, FollowResponse, FollowStatus, FollowingList, FollowersList,
-    LoginAttempt, UserDevice, UserSession, SecurityNotification
+    LoginAttempt, UserDevice, UserSession, SecurityNotification,
+    Poll, PollCreate, PollResponse, PollOption, Vote, VoteCreate, PollLike, Music
 )
 from auth import (
     verify_password, get_password_hash, create_access_token, 
