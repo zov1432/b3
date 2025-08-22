@@ -239,9 +239,11 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
             </div>
           </div>
           {/* Logo personalizado en esquina superior derecha */}
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-            <CustomLogo size={24} className="text-white" />
-          </div>
+          {showLogo && (
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+              <CustomLogo size={24} className="text-white" />
+            </div>
+          )}
         </div>
         
         <div className="mt-3">
