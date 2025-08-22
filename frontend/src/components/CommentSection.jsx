@@ -433,7 +433,7 @@ const CommentSection = ({
                   onReply={handleReplyToComment}
                   onEdit={handleEditComment}
                   onDelete={handleDeleteComment}
-                  onLike={handleLikeComment}
+                  onLike={handleCommentLike}
                   depth={0}
                   maxDepth={3}
                 />
