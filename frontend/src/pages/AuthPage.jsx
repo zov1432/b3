@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, Sparkles, Stars, Zap, Heart, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Stars, Zap, Heart, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
 
