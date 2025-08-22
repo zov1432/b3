@@ -55,8 +55,8 @@ const MediaUploadPreview = ({ media, onRemove, isVideo = false }) => {
   );
 };
 
-const CreatePollModal = ({ onCreatePoll, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const CreatePollModal = ({ onCreatePoll, children, isOpen: externalIsOpen, onClose: externalOnClose }) => {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [options, setOptions] = useState([
     { text: '', media: null },
@@ -66,6 +66,12 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
   const [showMusicSelector, setShowMusicSelector] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
+
+  // Use external control if provided, otherwise use internal state
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  const setIsOpen = externalOnClose ? (open) => {
+    if (!open) externalOnClose();
+  } : setInternalIsOpen;
 
   const addOption = () => {
     if (options.length < 4) {
