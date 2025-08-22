@@ -450,12 +450,30 @@ const ProfilePage = () => {
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <div className="relative">
-                <Avatar className="w-24 h-24 ring-4 ring-white/20">
-                  <AvatarImage src={displayUser.avatar} alt={displayUser.displayName} />
-                  <AvatarFallback className="bg-white/20 text-white text-2xl font-bold">
-                    {((displayUser?.displayName || displayUser?.username || 'U') + '').charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                {isOwnProfile ? (
+                  <AvatarUpload
+                    currentAvatar={displayUser.avatar}
+                    onAvatarUpdate={(result, avatarUrl) => {
+                      // Update the displayed user's avatar
+                      setViewedUser(prev => ({ ...prev, avatar: avatarUrl }));
+                      
+                      toast({
+                        title: "Avatar actualizado",
+                        description: "Tu foto de perfil se actualizó correctamente",
+                      });
+                    }}
+                    size="xl"
+                    showUploadButton={false}
+                    className="ring-4 ring-white/20"
+                  />
+                ) : (
+                  <Avatar className="w-32 h-32 ring-4 ring-white/20">
+                    <AvatarImage src={displayUser.avatar} alt={displayUser.displayName} />
+                    <AvatarFallback className="bg-white/20 text-white text-2xl font-bold">
+                      {((displayUser?.displayName || displayUser?.username || 'U') + '').charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                )}
                 {displayUser.verified && (
                   <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center ring-4 ring-white">
                     <Trophy className="w-4 h-4 text-white" />
