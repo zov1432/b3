@@ -70,16 +70,26 @@ const ProfilePage = () => {
       
       setPollsLoading(true);
       try {
-        // Get all polls and filter by author (for now, until we have a dedicated endpoint)
-        const allPolls = await pollService.getPollsForFrontend({ limit: 50 });
+        // Get all polls first
+        const allPolls = await pollService.getPollsForFrontend({ limit: 100 });
         const targetUserId = userId || authUser?.id;
+        const targetUsername = userId || authUser?.username;
         
-        // Filter polls by the target user
-        const userPolls = allPolls.filter(poll => 
-          poll.authorUser?.id === targetUserId || 
-          poll.authorUser?.username === targetUserId
-        );
+        console.log('Target user ID:', targetUserId);
+        console.log('Target username:', targetUsername);
+        console.log('All polls:', allPolls.length);
         
+        // Filter polls by the target user (check both ID and username)
+        const userPolls = allPolls.filter(poll => {
+          const authorMatches = poll.authorUser?.id === targetUserId || 
+                               poll.authorUser?.username === targetUserId ||
+                               poll.authorUser?.username === targetUsername;
+                               
+          console.log(`Poll "${poll.title}" by ${poll.authorUser?.username} (${poll.authorUser?.id}) - matches: ${authorMatches}`);
+          return authorMatches;
+        });
+        
+        console.log('Filtered user polls:', userPolls.length);
         setPolls(userPolls);
       } catch (error) {
         console.error('Error loading user polls:', error);
@@ -94,7 +104,7 @@ const ProfilePage = () => {
     };
 
     loadUserPolls();
-  }, [authUser?.id, userId, toast]);
+  }, [authUser?.id, authUser?.username, userId, toast]);
 
   // Create a comprehensive user database from actual polls
   const allUsers = [
