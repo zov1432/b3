@@ -248,6 +248,9 @@ const PollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, fullScreen
   };
 
   const getWinningOption = () => {
+    if (!poll.options || poll.options.length === 0) {
+      return null;
+    }
     return poll.options.reduce((max, option) => 
       option.votes > max.votes ? option : max
     );
