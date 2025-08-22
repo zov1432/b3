@@ -619,7 +619,7 @@ const ProfilePage = () => {
           <StatCard
             icon={Heart}
             label="Me gusta"
-            value={displayUser.totalVotes.toLocaleString()}
+            value={displayUser.totalLikes || 0}
             color="pink"
           />
           <StatCard
