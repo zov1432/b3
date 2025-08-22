@@ -237,5 +237,92 @@ class CommentLike(BaseModel):
     user_id: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+# =============  POLL MODELS =============
+
+class PollOption(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str  # Usuario que creó esta opción
+    text: str
+    votes: int = 0
+    media_type: Optional[str] = None  # "image", "video", None
+    media_url: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class Poll(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    author_id: str  # Usuario que creó el poll
+    description: Optional[str] = None
+    options: List[PollOption] = []
+    total_votes: int = 0
+    likes: int = 0
+    shares: int = 0
+    comments_count: int = 0
+    music_id: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    # Metadata
+    tags: List[str] = []
+    category: Optional[str] = None
+    is_featured: bool = False
+
+class PollCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    options: List[dict]  # [{text: str, media_url?: str, media_type?: str}]
+    music_id: Optional[str] = None
+    tags: List[str] = []
+    category: Optional[str] = None
+
+class PollResponse(BaseModel):
+    id: str
+    title: str
+    author: UserResponse  # Información del autor
+    description: Optional[str] = None
+    options: List[dict]  # Incluirá información del usuario de cada opción
+    total_votes: int
+    likes: int
+    shares: int
+    comments_count: int
+    music: Optional[dict] = None  # Información de la música
+    user_vote: Optional[str] = None  # ID de la opción votada por el usuario actual
+    user_liked: bool = False
+    is_featured: bool
+    tags: List[str]
+    category: Optional[str]
+    created_at: datetime
+    time_ago: str  # Campo calculado como "hace 2 horas"
+
+class Vote(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    poll_id: str
+    option_id: str
+    user_id: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class VoteCreate(BaseModel):
+    option_id: str
+
+class PollLike(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    poll_id: str
+    user_id: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# =============  MUSIC MODELS =============
+
+class Music(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    artist: str
+    duration: int  # in seconds
+    url: str
+    cover_url: Optional[str] = None
+    is_original: bool = False
+    waveform: List[float] = []  # Visualization data
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
 # Necesario para resolver referencia circular
 CommentResponse.model_rebuild()
