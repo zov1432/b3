@@ -220,8 +220,8 @@ const FeedPage = () => {
     return (
       <div className="relative">
         {/* Logo fijo en la parte superior de la pantalla */}
-        <div className="fixed top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-          <CustomLogo size={24} className="text-white" />
+        <div className="fixed top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg">
+          <CustomLogo size={24} />
         </div>
         
         <TikTokScrollView
