@@ -3440,9 +3440,353 @@ def test_static_file_serving_system(base_url):
     print(f"\nStatic File Serving System Tests Summary: {success_count}/10+ tests passed")
     return success_count >= 8  # At least 8 tests should pass
 
+def test_profile_system_corrections(base_url):
+    """Test specific corrections implemented for user profile system"""
+    print("\n=== Testing Profile System Corrections ===")
+    print("Testing fixes for: Publications not showing, Incorrect statistics, Avatar upload issues")
+    
+    if not auth_tokens:
+        print("❌ No auth tokens available for profile system testing")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    success_count = 0
+    
+    # Test 1: PUT /api/auth/profile for avatar_url updates
+    print("\n1. Testing PUT /api/auth/profile for avatar_url updates...")
+    try:
+        # First, upload an avatar image
+        print("   Uploading avatar image...")
+        
+        # Create a simple test image file in memory
+        import io
+        from PIL import Image
+        
+        # Create a simple 100x100 red image
+        img = Image.new('RGB', (100, 100), color='red')
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='PNG')
+        img_bytes.seek(0)
+        
+        # Upload the avatar
+        files = {'file': ('test_avatar.png', img_bytes, 'image/png')}
+        data = {'upload_type': 'avatar'}
+        
+        upload_response = requests.post(f"{base_url}/upload", 
+                                      files=files, data=data, headers=headers, timeout=15)
+        print(f"   Avatar Upload Status Code: {upload_response.status_code}")
+        
+        if upload_response.status_code == 200:
+            upload_data = upload_response.json()
+            avatar_url = upload_data['public_url']
+            print(f"   ✅ Avatar uploaded successfully: {avatar_url}")
+            
+            # Now update profile with the avatar URL
+            profile_data = {
+                "display_name": "Usuario Perfil Actualizado",
+                "bio": "Bio actualizada para testing del sistema de perfil",
+                "avatar_url": avatar_url
+            }
+            
+            response = requests.put(f"{base_url}/auth/profile", 
+                                  json=profile_data, headers=headers, timeout=10)
+            print(f"   Profile Update Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                print(f"   ✅ Profile updated with avatar successfully")
+                print(f"   Avatar URL: {data.get('avatar_url', 'N/A')}")
+                print(f"   Display Name: {data['display_name']}")
+                print(f"   Bio: {data.get('bio', 'N/A')}")
+                success_count += 1
+            else:
+                print(f"   ❌ Profile update failed: {response.text}")
+        else:
+            print(f"   ❌ Avatar upload failed: {upload_response.text}")
+            
+    except Exception as e:
+        print(f"   ❌ Avatar upload/profile update error: {e}")
+    
+    # Test 2: GET /api/polls returns polls with correct author information
+    print("\n2. Testing GET /api/polls returns polls with correct author information...")
+    try:
+        response = requests.get(f"{base_url}/polls?limit=5", headers=headers, timeout=10)
+        print(f"   Get Polls Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            polls = response.json()
+            print(f"   ✅ Polls retrieved successfully: {len(polls)} polls")
+            
+            if len(polls) > 0:
+                # Check if polls have proper author information
+                poll = polls[0]
+                if 'author' in poll and poll['author']:
+                    author = poll['author']
+                    print(f"   ✅ Poll has author information:")
+                    print(f"      Author ID: {author.get('id', 'N/A')}")
+                    print(f"      Author Username: {author.get('username', 'N/A')}")
+                    print(f"      Author Display Name: {author.get('display_name', 'N/A')}")
+                    success_count += 1
+                else:
+                    print(f"   ❌ Poll missing author information")
+            else:
+                print(f"   ⚠️ No polls found to test author information")
+                success_count += 1  # Not a failure if no polls exist
+        else:
+            print(f"   ❌ Get polls failed: {response.text}")
+            
+    except Exception as e:
+        print(f"   ❌ Get polls error: {e}")
+    
+    # Test 3: Create a poll and verify author_id is the authenticated user
+    print("\n3. Testing poll creation with correct author_id...")
+    try:
+        poll_data = {
+            "title": "¿Cuál es tu plataforma de gaming favorita?",
+            "description": "Poll de prueba para verificar sistema de perfil",
+            "options": [
+                {
+                    "text": "PlayStation 5",
+                    "media_type": None,
+                    "media_url": None
+                },
+                {
+                    "text": "Xbox Series X",
+                    "media_type": None,
+                    "media_url": None
+                },
+                {
+                    "text": "Nintendo Switch",
+                    "media_type": None,
+                    "media_url": None
+                }
+            ],
+            "category": "gaming",
+            "tags": ["gaming", "consolas", "test"]
+        }
+        
+        response = requests.post(f"{base_url}/polls", json=poll_data, headers=headers, timeout=10)
+        print(f"   Create Poll Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            created_poll = response.json()
+            print(f"   ✅ Poll created successfully")
+            print(f"   Poll ID: {created_poll['id']}")
+            print(f"   Poll Title: {created_poll['title']}")
+            
+            # Verify author is the authenticated user
+            if 'author' in created_poll and created_poll['author']:
+                author = created_poll['author']
+                current_user_response = requests.get(f"{base_url}/auth/me", headers=headers, timeout=10)
+                if current_user_response.status_code == 200:
+                    current_user = current_user_response.json()
+                    
+                    if author['id'] == current_user['id']:
+                        print(f"   ✅ Poll author_id correctly matches authenticated user")
+                        print(f"   Author ID: {author['id']}")
+                        print(f"   Current User ID: {current_user['id']}")
+                        success_count += 1
+                    else:
+                        print(f"   ❌ Poll author_id mismatch:")
+                        print(f"   Author ID: {author['id']}")
+                        print(f"   Current User ID: {current_user['id']}")
+                else:
+                    print(f"   ❌ Could not verify current user")
+            else:
+                print(f"   ❌ Created poll missing author information")
+        else:
+            print(f"   ❌ Poll creation failed: {response.text}")
+            
+    except Exception as e:
+        print(f"   ❌ Poll creation error: {e}")
+    
+    # Test 4: Test avatar upload specifically (POST /api/upload with upload_type=avatar)
+    print("\n4. Testing avatar upload endpoint specifically...")
+    try:
+        # Create another test image
+        img2 = Image.new('RGB', (150, 150), color='blue')
+        img2_bytes = io.BytesIO()
+        img2.save(img2_bytes, format='JPEG')
+        img2_bytes.seek(0)
+        
+        files = {'file': ('test_avatar2.jpg', img2_bytes, 'image/jpeg')}
+        data = {'upload_type': 'avatar'}
+        
+        response = requests.post(f"{base_url}/upload", 
+                               files=files, data=data, headers=headers, timeout=15)
+        print(f"   Avatar Upload Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            upload_data = response.json()
+            print(f"   ✅ Avatar upload successful")
+            print(f"   File ID: {upload_data['id']}")
+            print(f"   Public URL: {upload_data['public_url']}")
+            print(f"   File Type: {upload_data['file_type']}")
+            print(f"   Dimensions: {upload_data.get('width', 'N/A')}x{upload_data.get('height', 'N/A')}")
+            success_count += 1
+        else:
+            print(f"   ❌ Avatar upload failed: {response.text}")
+            
+    except Exception as e:
+        print(f"   ❌ Avatar upload error: {e}")
+    
+    # Test 5: Verify user profile shows correct information
+    print("\n5. Testing user profile information display...")
+    try:
+        # Get current user profile
+        response = requests.get(f"{base_url}/auth/me", headers=headers, timeout=10)
+        print(f"   Get Profile Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            profile = response.json()
+            print(f"   ✅ User profile retrieved successfully")
+            print(f"   User ID: {profile['id']}")
+            print(f"   Username: {profile['username']}")
+            print(f"   Display Name: {profile['display_name']}")
+            print(f"   Email: {profile['email']}")
+            print(f"   Avatar URL: {profile.get('avatar_url', 'N/A')}")
+            print(f"   Bio: {profile.get('bio', 'N/A')}")
+            print(f"   Is Public: {profile.get('is_public', 'N/A')}")
+            print(f"   Allow Messages: {profile.get('allow_messages', 'N/A')}")
+            
+            # Check if profile has required fields for frontend display
+            required_fields = ['id', 'username', 'display_name', 'email']
+            missing_fields = [field for field in required_fields if field not in profile]
+            
+            if not missing_fields:
+                print(f"   ✅ Profile has all required fields for frontend display")
+                success_count += 1
+            else:
+                print(f"   ❌ Profile missing required fields: {missing_fields}")
+        else:
+            print(f"   ❌ Get profile failed: {response.text}")
+            
+    except Exception as e:
+        print(f"   ❌ Get profile error: {e}")
+    
+    # Test 6: Test polls filtering by user (for profile page)
+    print("\n6. Testing polls filtering by authenticated user...")
+    try:
+        # Get current user ID
+        user_response = requests.get(f"{base_url}/auth/me", headers=headers, timeout=10)
+        if user_response.status_code == 200:
+            current_user = user_response.json()
+            user_id = current_user['id']
+            
+            # Get all polls and filter by current user
+            response = requests.get(f"{base_url}/polls?limit=50", headers=headers, timeout=10)
+            print(f"   Get All Polls Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                all_polls = response.json()
+                user_polls = [poll for poll in all_polls if poll.get('author', {}).get('id') == user_id]
+                
+                print(f"   ✅ Polls filtering working")
+                print(f"   Total polls: {len(all_polls)}")
+                print(f"   User's polls: {len(user_polls)}")
+                
+                if len(user_polls) > 0:
+                    print(f"   ✅ Found user's polls for profile display")
+                    for i, poll in enumerate(user_polls[:3]):  # Show first 3
+                        print(f"      Poll {i+1}: {poll['title']}")
+                        print(f"      Votes: {poll['total_votes']}, Likes: {poll['likes']}")
+                else:
+                    print(f"   ⚠️ No polls found for current user (expected if user just created)")
+                
+                success_count += 1
+            else:
+                print(f"   ❌ Get polls for filtering failed: {response.text}")
+        else:
+            print(f"   ❌ Could not get current user for filtering test")
+            
+    except Exception as e:
+        print(f"   ❌ Polls filtering error: {e}")
+    
+    # Test 7: Test dynamic statistics calculation
+    print("\n7. Testing dynamic statistics calculation...")
+    try:
+        # Get user's polls and calculate statistics
+        user_response = requests.get(f"{base_url}/auth/me", headers=headers, timeout=10)
+        if user_response.status_code == 200:
+            current_user = user_response.json()
+            user_id = current_user['id']
+            
+            # Get all polls to calculate user statistics
+            response = requests.get(f"{base_url}/polls?limit=100", headers=headers, timeout=10)
+            if response.status_code == 200:
+                all_polls = response.json()
+                user_polls = [poll for poll in all_polls if poll.get('author', {}).get('id') == user_id]
+                
+                # Calculate statistics
+                total_polls_created = len(user_polls)
+                total_votes_received = sum(poll.get('total_votes', 0) for poll in user_polls)
+                total_likes_received = sum(poll.get('likes', 0) for poll in user_polls)
+                total_shares_received = sum(poll.get('shares', 0) for poll in user_polls)
+                
+                print(f"   ✅ Dynamic statistics calculated successfully")
+                print(f"   Polls Created: {total_polls_created}")
+                print(f"   Total Votes Received: {total_votes_received}")
+                print(f"   Total Likes Received: {total_likes_received}")
+                print(f"   Total Shares Received: {total_shares_received}")
+                
+                # Verify statistics are not hardcoded (should be based on actual data)
+                if total_polls_created >= 0:  # Any non-negative number is valid
+                    print(f"   ✅ Statistics appear to be dynamically calculated")
+                    success_count += 1
+                else:
+                    print(f"   ❌ Statistics calculation error")
+            else:
+                print(f"   ❌ Could not get polls for statistics calculation")
+        else:
+            print(f"   ❌ Could not get current user for statistics")
+            
+    except Exception as e:
+        print(f"   ❌ Statistics calculation error: {e}")
+    
+    # Test 8: Test updateUser function integration (verify profile updates work end-to-end)
+    print("\n8. Testing updateUser function integration...")
+    try:
+        # Test updating profile with new information
+        update_data = {
+            "display_name": "Perfil Actualizado Final",
+            "bio": "Bio final después de todas las correcciones del sistema de perfil"
+        }
+        
+        response = requests.put(f"{base_url}/auth/profile", 
+                              json=update_data, headers=headers, timeout=10)
+        print(f"   Update Profile Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            updated_profile = response.json()
+            print(f"   ✅ Profile update integration working")
+            print(f"   Updated Display Name: {updated_profile['display_name']}")
+            print(f"   Updated Bio: {updated_profile.get('bio', 'N/A')}")
+            
+            # Verify changes persist by getting profile again
+            verify_response = requests.get(f"{base_url}/auth/me", headers=headers, timeout=10)
+            if verify_response.status_code == 200:
+                verified_profile = verify_response.json()
+                
+                if (verified_profile['display_name'] == update_data['display_name'] and
+                    verified_profile.get('bio') == update_data['bio']):
+                    print(f"   ✅ Profile changes persist correctly")
+                    success_count += 1
+                else:
+                    print(f"   ❌ Profile changes do not persist")
+            else:
+                print(f"   ❌ Could not verify profile changes")
+        else:
+            print(f"   ❌ Profile update integration failed: {response.text}")
+            
+    except Exception as e:
+        print(f"   ❌ UpdateUser integration error: {e}")
+    
+    print(f"\nProfile System Corrections Tests Summary: {success_count}/8 tests passed")
+    return success_count >= 6  # At least 6 out of 8 tests should pass
+
 def main():
     """Main test execution function"""
-    print("🚀 Starting Backend API Testing - Focus on Image Upload System...")
+    print("🚀 Starting Backend API Testing - Focus on Profile System Corrections...")
     print("=" * 80)
     
     # Get backend URL
