@@ -50,6 +50,19 @@ db = client[os.environ['DB_NAME']]
 # Create the main app without a prefix
 app = FastAPI(title="Social Network", description="Social network with messaging")
 
+# File upload configuration
+UPLOAD_DIR = Path("/app/backend/uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+
+# Create subdirectories for different upload types
+(UPLOAD_DIR / "avatars").mkdir(exist_ok=True)
+(UPLOAD_DIR / "poll_options").mkdir(exist_ok=True)
+(UPLOAD_DIR / "poll_backgrounds").mkdir(exist_ok=True)
+(UPLOAD_DIR / "general").mkdir(exist_ok=True)
+
+# Mount static files to serve uploads
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
