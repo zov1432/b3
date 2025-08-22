@@ -303,34 +303,47 @@ const RegisterPage = ({ onSwitchToLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4 relative">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 flex items-center justify-center p-4 relative">
       
-      <div className="w-full max-w-md">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        {/* Gradient Orbs */}
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-200/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200/25 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-indigo-200/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        
+        {/* Geometric Shapes */}
+        <div className="absolute top-20 left-10 w-4 h-4 border border-gray-300/40 rotate-45 animate-spin" style={{animationDuration: '8s'}}></div>
+        <div className="absolute bottom-20 right-10 w-6 h-6 border border-purple-300/40 rotate-12 animate-pulse"></div>
+        <div className="absolute top-1/3 right-20 w-3 h-3 bg-blue-300/50 rounded-full animate-ping"></div>
+      </div>
+      
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4 shadow-lg">
             <Sparkles className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">¡Únete ahora!</h1>
-          <p className="text-gray-300">Crea tu cuenta y comienza tu aventura adictiva</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">¡Únete ahora!</h1>
+          <p className="text-gray-600">Crea tu cuenta y comienza tu aventura adictiva</p>
         </div>
 
         {/* Register Form */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+        <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-gray-200/50 shadow-xl hover:bg-white/90 hover:shadow-2xl transition-all duration-300">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <div>
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block text-gray-700 text-sm font-medium mb-2">
                 Correo electrónico
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300"
                   placeholder="tu@email.com"
                   required
                 />
@@ -339,17 +352,17 @@ const RegisterPage = ({ onSwitchToLogin }) => {
 
             {/* Username */}
             <div>
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block text-gray-700 text-sm font-medium mb-2">
                 Nombre de usuario
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
                 <input
                   type="text"
                   name="username"
                   value={formData.username}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300"
                   placeholder="usuario123"
                   required
                   pattern="[a-zA-Z0-9_]+"
@@ -360,17 +373,17 @@ const RegisterPage = ({ onSwitchToLogin }) => {
 
             {/* Display Name */}
             <div>
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block text-gray-700 text-sm font-medium mb-2">
                 Nombre para mostrar
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
                 <input
                   type="text"
                   name="display_name"
                   value={formData.display_name}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300"
                   placeholder="Tu Nombre"
                   required
                 />
@@ -379,17 +392,17 @@ const RegisterPage = ({ onSwitchToLogin }) => {
 
             {/* Password */}
             <div>
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block text-gray-700 text-sm font-medium mb-2">
                 Contraseña
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-12 py-3 bg-gray-50/80 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300"
                   placeholder="••••••••"
                   required
                   minLength="6"
@@ -397,7 +410,7 @@ const RegisterPage = ({ onSwitchToLogin }) => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-white"
+                  className="absolute right-3 top-3 text-gray-500 hover:text-gray-700 focus:text-purple-500"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -406,17 +419,17 @@ const RegisterPage = ({ onSwitchToLogin }) => {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block text-gray-700 text-sm font-medium mb-2">
                 Confirmar contraseña
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-400 hover:bg-gray-50 transition-all duration-300"
                   placeholder="••••••••"
                   required
                 />
@@ -427,7 +440,7 @@ const RegisterPage = ({ onSwitchToLogin }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
             >
               {loading ? (
                 <div className="flex items-center justify-center">
@@ -442,11 +455,11 @@ const RegisterPage = ({ onSwitchToLogin }) => {
 
           {/* Switch to Login */}
           <div className="text-center mt-6">
-            <p className="text-gray-300">
+            <p className="text-gray-600">
               ¿Ya tienes cuenta?{' '}
               <button
                 onClick={onSwitchToLogin}
-                className="text-purple-300 hover:text-white font-medium transition-colors"
+                className="text-purple-600 hover:text-purple-800 font-medium transition-colors duration-300 hover:underline"
               >
                 Inicia sesión aquí
               </button>
