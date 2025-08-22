@@ -1421,6 +1421,8 @@ async def get_polls(
     polls_cursor = db.polls.find(filter_query).sort("created_at", -1).skip(offset).limit(limit)
     polls = await polls_cursor.to_list(limit)
     
+    print(f"DEBUG: Found {len(polls)} polls matching filter {filter_query}")
+    
     if not polls:
         return []
     
