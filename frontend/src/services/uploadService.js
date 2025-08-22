@@ -156,9 +156,13 @@ class UploadService {
 
   // Get public URL for file
   getPublicUrl(publicUrl) {
-    // Always prepend BACKEND_URL to relative paths
-    if (publicUrl && publicUrl.startsWith('/uploads/')) {
+    // Always prepend BACKEND_URL to API paths
+    if (publicUrl && publicUrl.startsWith('/api/uploads/')) {
       return `${BACKEND_URL}${publicUrl}`;
+    }
+    // Legacy support for old /uploads/ paths - convert to API format
+    if (publicUrl && publicUrl.startsWith('/uploads/')) {
+      return `${BACKEND_URL}/api${publicUrl}`;
     }
     // If already absolute, return as is
     if (publicUrl && publicUrl.startsWith('http')) {
