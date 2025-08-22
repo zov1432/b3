@@ -233,7 +233,7 @@ backend:
 
   - task: "Corrección URLs de Imágenes Subidas"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py, /app/frontend/src/services/uploadService.js, /app/frontend/src/services/pollService.js"
     stuck_count: 1
     priority: "high"
