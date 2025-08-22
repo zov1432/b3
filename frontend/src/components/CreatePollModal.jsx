@@ -132,17 +132,17 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
     if (!title.trim()) {
       toast({
         title: "Error",
-        description: "El título es obligatorio",
+        description: "Necesitas escribir una pregunta",
         variant: "destructive"
       });
       return;
     }
 
-    const validOptions = options.filter(opt => opt.text.trim() && opt.media);
+    const validOptions = options.filter(opt => opt.text.trim());
     if (validOptions.length < 2) {
       toast({
-        title: "Error", 
-        description: "Necesitas al menos 2 opciones con texto y media",
+        title: "Error",
+        description: "Necesitas al menos 2 opciones válidas",
         variant: "destructive"
       });
       return;
@@ -150,23 +150,31 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
 
     setIsCreating(true);
 
-    // Simular creación
-    setTimeout(() => {
-      onCreatePoll({
+    try {
+      // Prepare poll data for API
+      const pollData = {
         title: title.trim(),
-        music: selectedMusic,
+        description: null, // No description field in current UI
         options: validOptions.map(opt => ({
           text: opt.text.trim(),
-          media: opt.media
-        }))
-      });
+          media_type: opt.media?.type || null,
+          media_url: opt.media?.url || null,
+          thumbnail_url: opt.media?.type === 'image' ? opt.media?.url : opt.media?.thumbnail_url || null
+        })),
+        tags: [], // No tags field in current UI
+        category: 'general' // Default category
+      };
+
+      // Create poll using API
+      const newPoll = await pollService.createPoll(pollData);
 
       toast({
-        title: "¡Contenido publicado!",
-        description: selectedMusic 
-          ? `Tu contenido ha sido publicado con "${selectedMusic.title}"` 
-          : "Tu contenido ha sido publicado exitosamente",
+        title: "¡Votación creada!",
+        description: "Tu votación ha sido publicada exitosamente",
       });
+
+      // Call parent callback with the new poll
+      onCreatePoll(newPoll);
 
       // Reset form
       setTitle('');
@@ -176,9 +184,19 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
       ]);
       setSelectedMusic(null);
       setShowMusicSelector(false);
-      setIsCreating(false);
       setIsOpen(false);
-    }, 1000);
+
+    } catch (error) {
+      console.error('Error creating poll:', error);
+      
+      toast({
+        title: "Error al crear votación",
+        description: error.message || "No se pudo crear la votación. Intenta de nuevo.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (
