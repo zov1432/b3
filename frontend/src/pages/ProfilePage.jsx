@@ -254,20 +254,39 @@ const ProfilePage = () => {
     navigate(-1);
   };
 
-  // Determine which user to display
+  // Determine which user to display and calculate dynamic stats
   const isOwnProfile = !userId || userId === authUser?.username;
+  
+  // Filter user's polls based on actual author ID (must be before displayUser calculation)
+  const userPolls = polls.filter(poll => {
+    if (isOwnProfile) {
+      // For own profile, match by authenticated user ID
+      return poll.authorUser?.id === authUser?.id;
+    } else {
+      // For other profiles, match by the viewed user ID/username
+      return poll.authorUser?.id === userId || poll.authorUser?.username === userId;
+    }
+  });
+  
+  // Calculate dynamic statistics from actual user polls
+  const totalVotesReceived = userPolls.reduce((total, poll) => total + (poll.totalVotes || 0), 0);
+  const totalLikesReceived = userPolls.reduce((total, poll) => total + (poll.likes || 0), 0);
+  const totalSharesReceived = userPolls.reduce((total, poll) => total + (poll.shares || 0), 0);
+  
   const displayUser = isOwnProfile ? {
     id: authUser?.id || '1',
     username: authUser?.username || 'usuario_actual',
     displayName: authUser?.display_name || authUser?.username || 'Mi Perfil',
     email: authUser?.email || 'user@example.com',
-    bio: '🎯 Creando votaciones épicas | 📊 Fan de las estadísticas | 🚀 Siempre innovando',
+    bio: authUser?.bio || '🎯 Creando votaciones épicas | 📊 Fan de las estadísticas | 🚀 Siempre innovando',
     avatar: authUser?.avatar_url || null,
-    followers: 1234,
-    following: 567,
-    totalVotes: 89,
-    pollsCreated: 23,
-    totalPolls: polls.length,
+    followers: 1234, // TODO: Get from follow system when implemented
+    following: 567,  // TODO: Get from follow system when implemented
+    totalVotes: totalVotesReceived,
+    totalLikes: totalLikesReceived,
+    totalShares: totalSharesReceived,
+    pollsCreated: userPolls.length,
+    totalPolls: userPolls.length,
     verified: authUser?.is_verified || false
   } : viewedUser || {
     id: 'default_user',
@@ -279,6 +298,8 @@ const ProfilePage = () => {
     followers: 0,
     following: 0,
     totalVotes: 0,
+    totalLikes: 0, 
+    totalShares: 0,
     pollsCreated: 0,
     totalPolls: 0,
     verified: false
