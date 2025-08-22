@@ -251,7 +251,7 @@ const FeedPage = () => {
       <>
         {/* Logo fijo SIEMPRE VISIBLE - Mobile TikTok Mode */}
         <div 
-          className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-12 h-12 rounded-full bg-white/95 backdrop-blur-md border-2 border-white/60 shadow-2xl"
+          className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-8 h-8 rounded-full bg-white/95 backdrop-blur-md border border-white/60 shadow-lg"
           style={{ 
             position: 'fixed',
             top: '16px',
@@ -259,7 +259,7 @@ const FeedPage = () => {
             zIndex: 9999,
           }}
         >
-          <CustomLogo size={28} />
+          <CustomLogo size={20} />
         </div>
         
         <TikTokScrollView
