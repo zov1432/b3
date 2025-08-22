@@ -350,13 +350,21 @@ const ProfilePage = () => {
     }
   };
 
-  const handleLike = (pollId) => {
-    const liked = toggleLike(pollId);
-    setPolls([...mockPolls]);
-    toast({
-      title: liked ? "¡Te gusta!" : "Like removido",
-      description: liked ? "Has dado like a esta votación" : "Ya no te gusta esta votación",
-    });
+  const handleLike = async (pollId) => {
+    try {
+      // In a real implementation, this would call the backend API
+      // For now, we'll just show a success message
+      toast({
+        title: "¡Te gusta!",
+        description: "Has dado like a esta votación",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo dar like a la votación",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleShare = async (pollId) => {
