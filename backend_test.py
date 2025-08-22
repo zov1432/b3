@@ -2758,9 +2758,467 @@ def test_file_upload_endpoints(base_url):
     print(f"\nFile Upload System Tests Summary: {success_count}/15 tests passed")
     return success_count >= 12  # At least 12 out of 15 tests should pass
 
+def test_image_upload_and_static_files(base_url):
+    """Test image upload system and static file serving for mobile image display issue"""
+    print("\n=== Testing Image Upload and Static File System ===")
+    
+    if not auth_tokens:
+        print("❌ No auth tokens available for image upload testing")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    success_count = 0
+    uploaded_files = []
+    
+    # Test 1: Upload image file (JPG)
+    print("Testing POST /api/upload - Upload JPG image...")
+    try:
+        # Create a simple test image (1x1 pixel JPG)
+        import io
+        from PIL import Image
+        
+        # Create a small test image
+        img = Image.new('RGB', (100, 100), color='red')
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='JPEG')
+        img_bytes.seek(0)
+        
+        files = {
+            'file': ('test_image.jpg', img_bytes, 'image/jpeg')
+        }
+        data = {
+            'upload_type': 'general'
+        }
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+        print(f"Upload JPG Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            upload_data = response.json()
+            print(f"✅ JPG image uploaded successfully")
+            print(f"File ID: {upload_data['id']}")
+            print(f"Original filename: {upload_data['original_filename']}")
+            print(f"Public URL: {upload_data['public_url']}")
+            print(f"File size: {upload_data['file_size']} bytes")
+            print(f"Dimensions: {upload_data.get('width', 'N/A')}x{upload_data.get('height', 'N/A')}")
+            uploaded_files.append(upload_data)
+            success_count += 1
+        else:
+            print(f"❌ JPG upload failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ JPG upload error: {e}")
+    
+    # Test 2: Upload PNG image
+    print("\nTesting POST /api/upload - Upload PNG image...")
+    try:
+        # Create a PNG test image
+        img = Image.new('RGBA', (50, 50), color=(0, 255, 0, 128))  # Semi-transparent green
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='PNG')
+        img_bytes.seek(0)
+        
+        files = {
+            'file': ('test_avatar.png', img_bytes, 'image/png')
+        }
+        data = {
+            'upload_type': 'avatar'
+        }
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+        print(f"Upload PNG Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            upload_data = response.json()
+            print(f"✅ PNG image uploaded successfully")
+            print(f"File ID: {upload_data['id']}")
+            print(f"Upload type: avatar")
+            print(f"Public URL: {upload_data['public_url']}")
+            uploaded_files.append(upload_data)
+            success_count += 1
+        else:
+            print(f"❌ PNG upload failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ PNG upload error: {e}")
+    
+    # Test 3: Test static file serving - access uploaded files via public URL
+    print("\nTesting static file serving - Access uploaded images...")
+    for uploaded_file in uploaded_files:
+        try:
+            # Extract backend base URL (remove /api)
+            backend_base = base_url.replace('/api', '')
+            full_url = f"{backend_base}{uploaded_file['public_url']}"
+            
+            print(f"Testing access to: {full_url}")
+            response = requests.get(full_url, timeout=10)
+            print(f"Static File Access Status Code: {response.status_code}")
+            print(f"Content-Type: {response.headers.get('content-type', 'N/A')}")
+            print(f"Content-Length: {response.headers.get('content-length', 'N/A')} bytes")
+            
+            if response.status_code == 200:
+                content_type = response.headers.get('content-type', '')
+                if 'image' in content_type:
+                    print(f"✅ Static file served correctly with proper content-type")
+                    success_count += 1
+                else:
+                    print(f"❌ Static file served but wrong content-type: {content_type}")
+            else:
+                print(f"❌ Static file access failed: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Static file access error: {e}")
+    
+    # Test 4: Get file information
+    if uploaded_files:
+        print(f"\nTesting GET /api/upload/{{file_id}} - Get file information...")
+        try:
+            file_id = uploaded_files[0]['id']
+            response = requests.get(f"{base_url}/upload/{file_id}", headers=headers, timeout=10)
+            print(f"Get File Info Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                file_info = response.json()
+                print(f"✅ File information retrieved successfully")
+                print(f"Filename: {file_info['filename']}")
+                print(f"File type: {file_info['file_type']}")
+                print(f"Created at: {file_info['created_at']}")
+                success_count += 1
+            else:
+                print(f"❌ Get file info failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Get file info error: {e}")
+    
+    # Test 5: List user uploads
+    print(f"\nTesting GET /api/uploads/user - List user uploads...")
+    try:
+        response = requests.get(f"{base_url}/uploads/user", headers=headers, timeout=10)
+        print(f"List User Uploads Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            user_uploads = response.json()
+            print(f"✅ User uploads listed successfully")
+            print(f"Total uploads: {len(user_uploads)}")
+            
+            for upload in user_uploads[:3]:  # Show first 3
+                print(f"  - {upload['original_filename']} ({upload['file_type']}) - {upload['public_url']}")
+            
+            success_count += 1
+        else:
+            print(f"❌ List user uploads failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ List user uploads error: {e}")
+    
+    # Test 6: Filter uploads by type
+    print(f"\nTesting GET /api/uploads/user?upload_type=avatar - Filter by upload type...")
+    try:
+        response = requests.get(f"{base_url}/uploads/user?upload_type=avatar", headers=headers, timeout=10)
+        print(f"Filter Uploads Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            filtered_uploads = response.json()
+            print(f"✅ Filtered uploads retrieved successfully")
+            print(f"Avatar uploads: {len(filtered_uploads)}")
+            success_count += 1
+        else:
+            print(f"❌ Filter uploads failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Filter uploads error: {e}")
+    
+    # Test 7: Test URL format consistency - check if URLs are relative or absolute
+    print(f"\nTesting URL format consistency...")
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            public_url = uploaded_file['public_url']
+            print(f"Public URL format: {public_url}")
+            
+            if public_url.startswith('/uploads/'):
+                print(f"✅ URL is relative format (good for frontend handling)")
+                success_count += 1
+            elif public_url.startswith('http'):
+                print(f"⚠️  URL is absolute format: {public_url}")
+                # This is not necessarily wrong, but the issue mentions relative URLs should be used
+            else:
+                print(f"❌ Unexpected URL format: {public_url}")
+    
+    # Test 8: Test unsupported file format (should fail)
+    print(f"\nTesting unsupported file format - should fail...")
+    try:
+        # Create a text file
+        text_content = b"This is a test text file"
+        files = {
+            'file': ('test.txt', io.BytesIO(text_content), 'text/plain')
+        }
+        data = {
+            'upload_type': 'general'
+        }
+        
+        response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=10)
+        print(f"Unsupported Format Status Code: {response.status_code}")
+        
+        if response.status_code == 400:
+            print(f"✅ Unsupported file format properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should reject unsupported format, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Unsupported format test error: {e}")
+    
+    # Test 9: Test authentication requirement for upload
+    print(f"\nTesting authentication requirement for upload...")
+    try:
+        img = Image.new('RGB', (10, 10), color='blue')
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='JPEG')
+        img_bytes.seek(0)
+        
+        files = {
+            'file': ('test_no_auth.jpg', img_bytes, 'image/jpeg')
+        }
+        data = {
+            'upload_type': 'general'
+        }
+        
+        # No headers (no authentication)
+        response = requests.post(f"{base_url}/upload", files=files, data=data, timeout=10)
+        print(f"No Auth Upload Status Code: {response.status_code}")
+        
+        if response.status_code in [401, 403]:
+            print(f"✅ Upload properly requires authentication")
+            success_count += 1
+        else:
+            print(f"❌ Upload should require authentication, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Auth requirement test error: {e}")
+    
+    # Test 10: Test file deletion
+    if uploaded_files:
+        print(f"\nTesting DELETE /api/upload/{{file_id}} - Delete uploaded file...")
+        try:
+            file_to_delete = uploaded_files[0]
+            file_id = file_to_delete['id']
+            
+            response = requests.delete(f"{base_url}/upload/{file_id}", headers=headers, timeout=10)
+            print(f"Delete File Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                print(f"✅ File deleted successfully")
+                
+                # Verify file is no longer accessible
+                backend_base = base_url.replace('/api', '')
+                full_url = f"{backend_base}{file_to_delete['public_url']}"
+                
+                verify_response = requests.get(full_url, timeout=10)
+                print(f"Verify Deletion Status Code: {verify_response.status_code}")
+                
+                if verify_response.status_code == 404:
+                    print(f"✅ File properly removed from static serving")
+                    success_count += 1
+                else:
+                    print(f"⚠️  File still accessible after deletion (status: {verify_response.status_code})")
+                    
+            else:
+                print(f"❌ File deletion failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ File deletion error: {e}")
+    
+    print(f"\nImage Upload and Static Files Tests Summary: {success_count}/12 tests passed")
+    return success_count >= 9  # At least 9 out of 12 tests should pass
+
+def test_poll_creation_with_images(base_url):
+    """Test poll creation with uploaded images and verify URL handling"""
+    print("\n=== Testing Poll Creation with Images ===")
+    
+    if not auth_tokens:
+        print("❌ No auth tokens available for poll creation testing")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    success_count = 0
+    
+    # First upload some images for poll options
+    uploaded_images = []
+    
+    print("Step 1: Uploading images for poll options...")
+    try:
+        from PIL import Image
+        import io
+        
+        # Create test images for poll options
+        for i, color in enumerate(['red', 'blue', 'green']):
+            img = Image.new('RGB', (200, 200), color=color)
+            img_bytes = io.BytesIO()
+            img.save(img_bytes, format='JPEG')
+            img_bytes.seek(0)
+            
+            files = {
+                'file': (f'poll_option_{color}.jpg', img_bytes, 'image/jpeg')
+            }
+            data = {
+                'upload_type': 'poll_option'
+            }
+            
+            response = requests.post(f"{base_url}/upload", files=files, data=data, headers=headers, timeout=30)
+            
+            if response.status_code == 200:
+                upload_data = response.json()
+                uploaded_images.append({
+                    'color': color,
+                    'url': upload_data['public_url'],
+                    'id': upload_data['id']
+                })
+                print(f"✅ {color.capitalize()} image uploaded: {upload_data['public_url']}")
+            else:
+                print(f"❌ Failed to upload {color} image: {response.text}")
+        
+        if len(uploaded_images) >= 2:
+            success_count += 1
+            print(f"✅ Successfully uploaded {len(uploaded_images)} images for poll")
+        else:
+            print(f"❌ Need at least 2 images for poll, only got {len(uploaded_images)}")
+            
+    except Exception as e:
+        print(f"❌ Image upload for poll error: {e}")
+    
+    # Step 2: Create poll with uploaded images
+    if uploaded_images:
+        print(f"\nStep 2: Creating poll with uploaded images...")
+        try:
+            poll_data = {
+                "title": "¿Cuál es tu color favorito de estos?",
+                "description": "Elige el color que más te guste de las opciones",
+                "options": [
+                    {
+                        "text": f"Color {img['color'].capitalize()}",
+                        "media_type": "image",
+                        "media_url": img['url'],
+                        "thumbnail_url": img['url']
+                    }
+                    for img in uploaded_images[:3]  # Use up to 3 images
+                ],
+                "category": "entretenimiento",
+                "tags": ["colores", "preferencias", "test"]
+            }
+            
+            response = requests.post(f"{base_url}/polls", json=poll_data, headers=headers, timeout=10)
+            print(f"Create Poll Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                poll_response = response.json()
+                print(f"✅ Poll created successfully with images")
+                print(f"Poll ID: {poll_response['id']}")
+                print(f"Poll Title: {poll_response['title']}")
+                print(f"Options count: {len(poll_response['options'])}")
+                
+                # Verify image URLs in poll options
+                for i, option in enumerate(poll_response['options']):
+                    if option.get('media'):
+                        media_url = option['media']['url']
+                        print(f"  Option {i+1}: {option['text']} - Media URL: {media_url}")
+                        
+                        # Check if URL format is consistent
+                        if media_url and (media_url.startswith('/uploads/') or media_url.startswith('http')):
+                            print(f"    ✅ Media URL format is valid")
+                        else:
+                            print(f"    ❌ Media URL format may be invalid: {media_url}")
+                
+                success_count += 1
+                
+                # Store poll ID for further testing
+                created_poll_id = poll_response['id']
+                
+            else:
+                print(f"❌ Poll creation failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Poll creation error: {e}")
+    
+    # Step 3: Retrieve polls and verify image URLs
+    print(f"\nStep 3: Retrieving polls and verifying image URLs...")
+    try:
+        response = requests.get(f"{base_url}/polls?limit=5", headers=headers, timeout=10)
+        print(f"Get Polls Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            polls = response.json()
+            print(f"✅ Retrieved {len(polls)} polls")
+            
+            # Find our created poll and verify image URLs
+            for poll in polls:
+                if poll['title'] == "¿Cuál es tu color favorito de estos?":
+                    print(f"Found our test poll: {poll['id']}")
+                    
+                    for i, option in enumerate(poll['options']):
+                        if option.get('media'):
+                            media_url = option['media']['url']
+                            print(f"  Option {i+1} media URL: {media_url}")
+                            
+                            # Test if the image URL is accessible
+                            try:
+                                # Handle relative URLs
+                                if media_url.startswith('/uploads/'):
+                                    backend_base = base_url.replace('/api', '')
+                                    full_url = f"{backend_base}{media_url}"
+                                else:
+                                    full_url = media_url
+                                
+                                img_response = requests.get(full_url, timeout=5)
+                                print(f"    Image accessibility: {img_response.status_code}")
+                                print(f"    Content-Type: {img_response.headers.get('content-type', 'N/A')}")
+                                
+                                if img_response.status_code == 200 and 'image' in img_response.headers.get('content-type', ''):
+                                    print(f"    ✅ Image is accessible and properly served")
+                                    success_count += 1
+                                else:
+                                    print(f"    ❌ Image not accessible or wrong content type")
+                                    
+                            except Exception as img_e:
+                                print(f"    ❌ Error accessing image: {img_e}")
+                    
+                    break
+            else:
+                print(f"❌ Could not find our test poll in the results")
+                
+        else:
+            print(f"❌ Get polls failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get polls error: {e}")
+    
+    # Step 4: Test URL normalization (frontend concern but we can verify backend consistency)
+    print(f"\nStep 4: Testing URL consistency for frontend processing...")
+    if uploaded_images:
+        for img in uploaded_images:
+            url = img['url']
+            print(f"Image URL: {url}")
+            
+            # Check URL format
+            if url.startswith('/uploads/'):
+                print(f"  ✅ Relative URL format (good for frontend normalization)")
+                success_count += 1
+            elif url.startswith('http'):
+                print(f"  ⚠️  Absolute URL format: {url}")
+                # Check if it points to correct domain
+                if 'mediapolls.preview.emergentagent.com' in url:
+                    print(f"    ✅ Points to correct domain")
+                    success_count += 1
+                else:
+                    print(f"    ❌ Points to wrong domain")
+            else:
+                print(f"  ❌ Unexpected URL format: {url}")
+    
+    print(f"\nPoll Creation with Images Tests Summary: {success_count}/8 tests passed")
+    return success_count >= 6  # At least 6 out of 8 tests should pass
+
 def main():
     """Main test execution function"""
-    print("🚀 Starting Backend API Testing for TikTok Profile Grid Implementation")
+    print("🚀 Starting Backend API Testing - Focus on Image Upload System...")
     print("=" * 80)
     
     # Get backend URL
