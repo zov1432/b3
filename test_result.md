@@ -266,6 +266,18 @@ backend:
           agent: "testing"
           comment: "✅ FOLLOW SYSTEM VERIFIED FOR TIKTOK PROFILE GRID (2025-01-08): Comprehensive testing of follow system completed successfully, fully supporting TikTok profile grid social features. VERIFIED FUNCTIONALITY (16/15 tests passed + 14/12 username tests passed): 1) ✅ FOLLOW USER: POST /api/users/{user_id}/follow working perfectly - successfully followed users, generates unique follow_id, rejects duplicates and self-follows, 2) ✅ UNFOLLOW USER: DELETE /api/users/{user_id}/follow working perfectly - removes relationships, handles non-existent relationships properly, 3) ✅ FOLLOW STATUS: GET /api/users/{user_id}/follow-status working perfectly - returns correct is_following status and follow_id, 4) ✅ FOLLOWING LIST: GET /api/users/following working perfectly - returns complete list of followed users with proper counts, 5) ✅ FOLLOWERS LIST: GET /api/users/{user_id}/followers working perfectly - returns followers with complete user info, 6) ✅ USER FOLLOWING: GET /api/users/{user_id}/following working perfectly - shows who a user is following, 7) ✅ USERNAME TESTING: Created and tested specific users (progamer_alex, artmaster_studio) matching frontend mockData, 8) ✅ USER SEARCH: GET /api/users/search working perfectly for finding users to follow, 9) ✅ ERROR HANDLING: Proper 404 responses for non-existent users, 400 for invalid operations, 10) ✅ AUTHENTICATION: All endpoints properly protected and require valid JWT tokens. Follow system fully supports TikTok profile grid plus button functionality and user interactions."
 
+  - task: "Sistema de Archivos Estáticos"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "🎯 SISTEMA DE ARCHIVOS ESTÁTICOS COMPLETAMENTE FUNCIONAL (2025-08-22): Testing exhaustivo del nuevo endpoint GET /api/uploads/{category}/{filename} completado exitosamente con resultados perfectos. VERIFICACIÓN COMPLETA: 1) ✅ ENDPOINT IMPLEMENTATION: GET /api/uploads/{category}/{filename} implementado correctamente con FileResponse, validación de categorías (avatars, poll_options, poll_backgrounds, general), detección automática de MIME types (image/png, image/jpeg), manejo de errores 404 para archivos/categorías inexistentes, 2) ✅ CONTENT-TYPE HANDLING: Archivos PNG servidos con content-type: image/png correcto, archivos JPG servidos con content-type: image/jpeg correcto, Content-Length headers incluidos apropiadamente, 3) ✅ CATEGORY VALIDATION: Categorías válidas (avatars, poll_options, poll_backgrounds, general) funcionan correctamente, categorías inválidas retornan 404 apropiadamente, estructura de directorios respetada, 4) ✅ ERROR HANDLING: Archivos no existentes retornan 404 correctamente, categorías inválidas retornan 404 apropiadamente, validación de paths funcional, 5) ✅ INTEGRATION: Integración perfecta con sistema de upload existente, URLs generadas automáticamente con formato /api/uploads/, compatibilidad con diferentes formatos de imagen. RESULTADO: El nuevo sistema de static file serving está completamente operacional y resuelve el problema de imágenes móviles al usar rutas /api/ que se enrutan correctamente al backend a través del proxy/ingress de Kubernetes."
+
 frontend:
   - task: "Gestión de Logo en Dispositivos Móviles"
     implemented: true
