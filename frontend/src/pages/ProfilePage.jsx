@@ -308,8 +308,17 @@ const ProfilePage = () => {
     );
   }
 
-  // Filter user's polls (in real app, this would be filtered by user ID)
-  const userPolls = polls.filter(poll => poll.author === 'Noviago' || poll.id === '1');
+  // Filter user's polls based on actual author ID
+  const userPolls = polls.filter(poll => {
+    if (isOwnProfile) {
+      // For own profile, match by authenticated user ID
+      return poll.authorUser?.id === authUser?.id;
+    } else {
+      // For other profiles, match by the viewed user ID/username
+      return poll.authorUser?.id === userId || poll.authorUser?.username === userId;
+    }
+  });
+  
   const likedPolls = polls.filter(poll => poll.userLiked);
   
   // Mock mentions - polls where user is mentioned in options
