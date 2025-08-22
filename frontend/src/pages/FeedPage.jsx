@@ -248,17 +248,15 @@ const FeedPage = () => {
   // Renderizado móvil (TikTok mode)
   if (isMobile || isTikTokMode) {
     return (
-      <div className="relative w-full h-screen">
-        {/* Logo fijo en la parte superior de la pantalla - SIEMPRE VISIBLE */}
+      <>
+        {/* Logo fijo SIEMPRE VISIBLE - Mobile TikTok Mode */}
         <div 
-          className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border-2 border-white/50 shadow-2xl"
+          className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-12 h-12 rounded-full bg-white/95 backdrop-blur-md border-2 border-white/60 shadow-2xl"
           style={{ 
             position: 'fixed',
             top: '16px',
             right: '16px',
             zIndex: 9999,
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(10px)'
           }}
         >
           <CustomLogo size={28} />
@@ -275,7 +273,7 @@ const FeedPage = () => {
           onCreatePoll={handleCreatePoll}
           showLogo={false}
         />
-      </div>
+      </>
     );
   }
 
