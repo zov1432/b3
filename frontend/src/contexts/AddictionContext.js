@@ -102,16 +102,33 @@ export const AddictionProvider = ({ children }) => {
         setAddictionScore(profile.addiction_metrics.addiction_score);
       }
       
-      // Load achievements, streaks, FOMO content, and leaderboard
-      await Promise.all([
-        loadUserAchievements(),
-        loadUserStreaks(),
-        loadFOMOContent(),
-        loadLeaderboard()
-      ]);
+      // Temporarily disable loading of unimplemented endpoints
+      // TODO: Re-enable when endpoints are implemented
+      // await Promise.all([
+      //   loadUserAchievements(),
+      //   loadUserStreaks(),
+      //   loadFOMOContent(),
+      //   loadLeaderboard()
+      // ]);
+      
+      // Set default values instead
+      setUserAchievements([]);
+      setUserStreaks([]);
+      setFomoContent([]);
+      setLeaderboard([]);
       
     } catch (error) {
       console.error('Failed to initialize authenticated user:', error);
+      // Set default values on error
+      setUserProfile(null);
+      setLevel(1);
+      setXp(0);
+      setStreak(0);
+      setAddictionScore(0);
+      setUserAchievements([]);
+      setUserStreaks([]);
+      setFomoContent([]);
+      setLeaderboard([]);
     }
   };
 
