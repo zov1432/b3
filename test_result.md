@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: I need to test the new file upload endpoints I just added to the backend. Please test these endpoints comprehensively.
+user_problem_statement: Las imágenes que subi desde un dispositivo móvil no se muestran - necesita solución para que las imágenes subidas localmente se visualicen correctamente en el feed y perfiles.
 
 backend:
   - task: "Sistema de Subida de Archivos (File Upload)"
