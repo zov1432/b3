@@ -218,10 +218,20 @@ const FeedPage = () => {
   // Renderizado móvil (TikTok mode)
   if (isMobile || isTikTokMode) {
     return (
-      <div className="relative">
-        {/* Logo fijo en la parte superior de la pantalla */}
-        <div className="fixed top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg">
-          <CustomLogo size={24} />
+      <div className="relative w-full h-screen">
+        {/* Logo fijo en la parte superior de la pantalla - SIEMPRE VISIBLE */}
+        <div 
+          className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border-2 border-white/50 shadow-2xl"
+          style={{ 
+            position: 'fixed',
+            top: '16px',
+            right: '16px',
+            zIndex: 9999,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <CustomLogo size={28} />
         </div>
         
         <TikTokScrollView
