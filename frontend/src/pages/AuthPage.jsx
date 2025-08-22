@@ -8,8 +8,28 @@ const LoginPage = ({ onSwitchToRegister }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [particles, setParticles] = useState([]);
   const { login } = useAuth();
   const { toast } = useToast();
+
+  // Generate floating particles for background animation
+  useEffect(() => {
+    const generateParticles = () => {
+      const newParticles = [];
+      for (let i = 0; i < 20; i++) {
+        newParticles.push({
+          id: i,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          delay: Math.random() * 5,
+          duration: 3 + Math.random() * 4,
+          size: 2 + Math.random() * 4
+        });
+      }
+      setParticles(newParticles);
+    };
+    generateParticles();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
