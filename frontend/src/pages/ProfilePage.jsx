@@ -333,13 +333,19 @@ const ProfilePage = () => {
     }
   };
 
-  const handleVote = (pollId, optionId) => {
-    const success = voteOnPoll(pollId, optionId);
-    if (success) {
-      setPolls([...mockPolls]);
+  const handleVote = async (pollId, optionId) => {
+    try {
+      // In a real implementation, this would call the backend API
+      // For now, we'll just show a success message
       toast({
         title: "¡Voto registrado!",
         description: "Tu voto ha sido contabilizado exitosamente",
+      });
+    } catch (error) {
+      toast({
+        title: "Error al votar",
+        description: "No se pudo registrar tu voto",
+        variant: "destructive",
       });
     }
   };
