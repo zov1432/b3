@@ -3502,7 +3502,7 @@ def main():
     
     # Special focus on image upload results
     print("\n🖼️  IMAGE UPLOAD SYSTEM RESULTS (MAIN FOCUS):")
-    image_tests = ['image_upload_static_files', 'poll_creation_with_images']
+    image_tests = ['static_file_serving', 'image_upload_static_files', 'poll_creation_with_images']
     image_passed = sum(1 for test in image_tests if test_results.get(test, False))
     print(f"Image Upload Tests: {image_passed}/{len(image_tests)} passed")
     
