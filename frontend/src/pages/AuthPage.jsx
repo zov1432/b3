@@ -61,20 +61,20 @@ const LoginPage = ({ onSwitchToRegister }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 flex items-center justify-center p-4 relative overflow-hidden">
       
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-blue-500/25 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-200/40 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-indigo-200/35 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
         
         {/* Floating Particles */}
         {particles.map((particle) => (
           <div
             key={particle.id}
-            className="absolute w-1 h-1 bg-white/40 rounded-full animate-bounce"
+            className="absolute w-1 h-1 bg-gray-400/60 rounded-full animate-bounce"
             style={{
               left: `${particle.x}%`,
               top: `${particle.y}%`,
@@ -87,9 +87,9 @@ const LoginPage = ({ onSwitchToRegister }) => {
         ))}
         
         {/* Geometric Shapes */}
-        <div className="absolute top-20 left-10 w-4 h-4 border border-white/20 rotate-45 animate-spin" style={{animationDuration: '8s'}}></div>
-        <div className="absolute bottom-20 right-10 w-6 h-6 border border-purple-300/30 rotate-12 animate-pulse"></div>
-        <div className="absolute top-1/3 right-20 w-3 h-3 bg-pink-400/40 rounded-full animate-ping"></div>
+        <div className="absolute top-20 left-10 w-4 h-4 border border-gray-300/50 rotate-45 animate-spin" style={{animationDuration: '8s'}}></div>
+        <div className="absolute bottom-20 right-10 w-6 h-6 border border-purple-300/50 rotate-12 animate-pulse"></div>
+        <div className="absolute top-1/3 right-20 w-3 h-3 bg-blue-300/50 rounded-full animate-ping"></div>
       </div>
 
       <div className="w-full max-w-md relative z-10">
