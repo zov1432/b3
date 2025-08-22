@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Request, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
@@ -14,6 +14,10 @@ from datetime import datetime, date, timedelta
 import random
 import asyncio
 import re
+import hashlib
+import json
+import aiohttp
+from user_agents import parse
 
 # Import models
 from models import (
@@ -21,7 +25,8 @@ from models import (
     Message, MessageCreate, Conversation, ConversationResponse,
     UserUpdate, PasswordChange, UserSettings,
     Comment, CommentCreate, CommentUpdate, CommentResponse, CommentLike,
-    Follow, FollowCreate, FollowResponse, FollowStatus, FollowingList, FollowersList
+    Follow, FollowCreate, FollowResponse, FollowStatus, FollowingList, FollowersList,
+    LoginAttempt, UserDevice, UserSession, SecurityNotification
 )
 from auth import (
     verify_password, get_password_hash, create_access_token, 
