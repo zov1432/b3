@@ -305,58 +305,15 @@ const CreatePollModal = ({ onCreatePoll, children }) => {
                   )}
                 </div>
 
-                {/* Media Upload/Preview Mejorado - Mobile Optimized */}
+                {/* Media Upload with new PollOptionUpload component */}
                 <div className="space-y-4">
-                  {option.media ? (
-                    <MediaUploadPreview 
-                      media={option.media}
-                      isVideo={option.media.type === 'video'}
-                      onRemove={() => updateOption(index, 'media', null)}
-                    />
-                  ) : (
-                    <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6 sm:p-10 text-center hover:border-gray-400 hover:bg-white transition-all duration-300">
-                      <div className="space-y-4 sm:space-y-6">
-                        <div className="flex justify-center gap-2 sm:gap-4">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
-                            <Image className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-                          </div>
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
-                            <Video className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-                          </div>
-                        </div>
-                        <div>
-                          <p className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
-                            Sube una imagen o video
-                          </p>
-                          <p className="text-sm sm:text-base text-gray-600">
-                            Arrastra el archivo aquí o haz clic para seleccionar
-                          </p>
-                        </div>
-                        <div className="flex justify-center">
-                          <label className="cursor-pointer">
-                            <input
-                              type="file"
-                              accept="image/*,video/*"
-                              onChange={(e) => {
-                                const file = e.target.files[0];
-                                if (file) handleFileUpload(index, file);
-                              }}
-                              className="hidden"
-                            />
-                            <Button 
-                              type="button" 
-                              variant="outline" 
-                              size="default" 
-                              className="bg-white border-2 border-gray-300 hover:bg-gray-50 rounded-2xl h-10 sm:h-14 px-4 sm:px-8 text-sm sm:text-lg font-semibold text-gray-700 shadow-sm"
-                            >
-                              <Upload className="w-4 h-4 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                              Seleccionar Archivo
-                            </Button>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  <PollOptionUpload
+                    currentMedia={option.media}
+                    onMediaSelect={(media) => updateOption(index, 'media', media)}
+                    onMediaRemove={() => updateOption(index, 'media', null)}
+                    optionText={option.text}
+                    disabled={isCreating}
+                  />
                 </div>
               </div>
             ))}
