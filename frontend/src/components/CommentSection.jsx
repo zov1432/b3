@@ -155,28 +155,7 @@ const CommentSection = ({
 
   // Responder a comentario
   const handleReplyToComment = async (parentCommentId, content) => {
-    if (!user) return;
-    
-    try {
-      const response = await apiRequest(`/api/polls/${pollId}/comments`, {
-        method: 'POST',
-        body: JSON.stringify({
-          poll_id: pollId,
-          content: content,
-          parent_comment_id: parentCommentId
-        })
-      });
-      
-      if (response.ok) {
-        // Recargar comentarios para mostrar la nueva respuesta
-        loadComments(0, false);
-      } else {
-        throw new Error('Failed to reply to comment');
-      }
-    } catch (err) {
-      console.error('Error replying to comment:', err);
-      throw new Error('Error al responder comentario');
-    }
+    return await handleAddComment(content, parentCommentId);
   };
 
   // Editar comentario
