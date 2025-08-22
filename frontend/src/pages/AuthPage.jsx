@@ -640,6 +640,25 @@ const RegisterPage = ({ onSwitchToLogin }) => {
                 'Crear Cuenta'
               )}
             </button>
+
+            {/* Divider */}
+            <div className="flex items-center my-4">
+              <div className="flex-1 border-t border-gray-300"></div>
+              <div className="mx-4 text-gray-500 text-sm font-medium">o regístrate con</div>
+              <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            {/* Google Sign Up Button */}
+            <button
+              type="button"
+              onClick={handleGoogleSignUp}
+              className="w-full bg-white border-2 border-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+            >
+              <div className="flex items-center justify-center">
+                <Chrome className="w-5 h-5 mr-3 text-blue-500" />
+                <span>Continuar con Google</span>
+              </div>
+            </button>
           </form>
 
           {/* Switch to Login */}
