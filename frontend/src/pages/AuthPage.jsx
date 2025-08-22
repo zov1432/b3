@@ -193,25 +193,25 @@ const LoginPage = ({ onSwitchToRegister }) => {
 
         {/* Enhanced Features Preview */}
         <div className="mt-10 text-center animate-fadeInUp">
-          <p className="text-gray-400 text-sm mb-6">Únete a la experiencia más adictiva:</p>
+          <p className="text-gray-500 text-sm mb-6">Únete a la experiencia más adictiva:</p>
           <div className="flex justify-center space-x-8">
             <div className="text-center group transform hover:scale-110 transition-all duration-300 cursor-pointer">
-              <div className="w-14 h-14 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-2xl flex items-center justify-center mb-3 mx-auto backdrop-blur-sm border border-white/10 group-hover:bg-purple-500/40 transition-all duration-300">
+              <div className="w-14 h-14 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center mb-3 mx-auto backdrop-blur-sm border border-gray-200 group-hover:bg-purple-200/80 group-hover:border-purple-300 transition-all duration-300 shadow-sm hover:shadow-md">
                 <span className="text-2xl animate-bounce group-hover:animate-pulse">🏆</span>
               </div>
-              <span className="text-gray-300 text-sm font-medium group-hover:text-white transition-colors duration-300">Logros</span>
+              <span className="text-gray-600 text-sm font-medium group-hover:text-gray-800 transition-colors duration-300">Logros</span>
             </div>
             <div className="text-center group transform hover:scale-110 transition-all duration-300 cursor-pointer">
-              <div className="w-14 h-14 bg-gradient-to-r from-pink-500/30 to-red-500/30 rounded-2xl flex items-center justify-center mb-3 mx-auto backdrop-blur-sm border border-white/10 group-hover:bg-pink-500/40 transition-all duration-300">
+              <div className="w-14 h-14 bg-gradient-to-r from-pink-100 to-red-100 rounded-2xl flex items-center justify-center mb-3 mx-auto backdrop-blur-sm border border-gray-200 group-hover:bg-pink-200/80 group-hover:border-pink-300 transition-all duration-300 shadow-sm hover:shadow-md">
                 <span className="text-2xl animate-bounce group-hover:animate-pulse" style={{animationDelay: '0.2s'}}>💬</span>
               </div>
-              <span className="text-gray-300 text-sm font-medium group-hover:text-white transition-colors duration-300">Chat</span>
+              <span className="text-gray-600 text-sm font-medium group-hover:text-gray-800 transition-colors duration-300">Chat</span>
             </div>
             <div className="text-center group transform hover:scale-110 transition-all duration-300 cursor-pointer">
-              <div className="w-14 h-14 bg-gradient-to-r from-blue-500/30 to-indigo-500/30 rounded-2xl flex items-center justify-center mb-3 mx-auto backdrop-blur-sm border border-white/10 group-hover:bg-blue-500/40 transition-all duration-300">
+              <div className="w-14 h-14 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mb-3 mx-auto backdrop-blur-sm border border-gray-200 group-hover:bg-blue-200/80 group-hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md">
                 <span className="text-2xl animate-bounce group-hover:animate-pulse" style={{animationDelay: '0.4s'}}>🔥</span>
               </div>
-              <span className="text-gray-300 text-sm font-medium group-hover:text-white transition-colors duration-300">Rachas</span>
+              <span className="text-gray-600 text-sm font-medium group-hover:text-gray-800 transition-colors duration-300">Rachas</span>
             </div>
           </div>
         </div>
