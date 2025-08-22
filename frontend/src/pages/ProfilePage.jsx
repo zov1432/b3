@@ -63,48 +63,74 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const { shareModal, shareProfile, closeShareModal } = useShare();
 
-  // Create a comprehensive user database from poll options AND poll authors
+  // Load user's polls
+  useEffect(() => {
+    const loadUserPolls = async () => {
+      if (!user?.id && !userId) return;
+      
+      setPollsLoading(true);
+      try {
+        // Get all polls and filter by author (for now, until we have a dedicated endpoint)
+        const allPolls = await pollService.getPollsForFrontend({ limit: 50 });
+        const targetUserId = userId || user?.id;
+        
+        // Filter polls by the target user
+        const userPolls = allPolls.filter(poll => 
+          poll.authorUser?.id === targetUserId || 
+          poll.authorUser?.username === targetUserId
+        );
+        
+        setPolls(userPolls);
+      } catch (error) {
+        console.error('Error loading user polls:', error);
+        toast({
+          title: "Error al cargar votaciones",
+          description: "No se pudieron cargar las votaciones del usuario",
+          variant: "destructive",
+        });
+      } finally {
+        setPollsLoading(false);
+      }
+    };
+
+    loadUserPolls();
+  }, [user?.id, userId, toast]);
+
+  // Create a comprehensive user database from actual polls
   const allUsers = [
-    // Users from poll options
-    ...mockPolls.flatMap(poll => 
-      poll.options.map(option => ({
-        id: option.user.username, // Use username as ID
-        username: option.user.username,
-        displayName: option.user.displayName,
-        avatar: option.user.avatar,
-        verified: option.user.verified,
-        followers: parseInt(option.user.followers.replace('K', '000')) || Math.floor(Math.random() * 50000) + 10000,
-        following: Math.floor(Math.random() * 1000) + 100,
-        totalVotes: Math.floor(Math.random() * 200) + 50,
-        pollsCreated: Math.floor(Math.random() * 50) + 5,
-        bio: `✨ Creador de contenido | 🎯 ${option.user.displayName} | 📍 Madrid`,
-        location: 'Madrid, España',
-        joinDate: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toLocaleDateString('es-ES', { 
-          year: 'numeric', 
-          month: 'long' 
-        }),
-      }))
-    ),
-    // Users from poll authors
-    ...mockPolls
-      .filter(poll => poll.authorUser) // Only polls with authorUser data
-      .map(poll => ({
+    // Add current authenticated user
+    ...(user ? [{
+      id: user.id,
+      username: user.username,
+      displayName: user.display_name,
+      avatar: user.avatar_url,
+      verified: user.is_verified || false,
+      followers: '1K', // Placeholder
+      bio: user.bio || ''
+    }] : []),
+    // Add users from polls
+    ...polls.flatMap(poll => [
+      // Poll author
+      ...(poll.authorUser ? [{
         id: poll.authorUser.username,
         username: poll.authorUser.username,
         displayName: poll.authorUser.displayName,
         avatar: poll.authorUser.avatar,
-        verified: poll.authorUser.verified,
-        followers: parseInt(poll.authorUser.followers.replace(/[KM]/g, match => match === 'K' ? '000' : '000000')) || Math.floor(Math.random() * 50000) + 10000,
-        following: Math.floor(Math.random() * 2000) + 200,
-        totalVotes: Math.floor(Math.random() * 500) + 100,
-        pollsCreated: Math.floor(Math.random() * 100) + 15,
-        bio: `🏆 Creador de encuestas | 🎯 ${poll.authorUser.displayName} | 📍 Madrid`,
-        location: 'Madrid, España',
-        joinDate: new Date(Date.now() - Math.random() * 730 * 24 * 60 * 60 * 1000).toLocaleDateString('es-ES', { 
-          year: 'numeric', 
-          month: 'long' 
-        }),
+        verified: poll.authorUser.verified || false,
+        followers: poll.authorUser.followers || '1K',
+        bio: 'Bio from poll data'
+      }] : []),
+      // Option users
+      ...poll.options.map(option => ({
+        id: option.user.username,
+        username: option.user.username,
+        displayName: option.user.displayName,
+        avatar: option.user.avatar,
+        verified: option.user.verified || false,
+        followers: option.user.followers || '1K',
+        bio: 'Bio from option data'
       }))
+    ])
   ];
 
   // Remove duplicates by username
