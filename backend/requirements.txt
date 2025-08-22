@@ -29,3 +29,4 @@ schedule>=1.2.0
 bcrypt>=4.0.1
 emergentintegrations
 user-agents
+aiohttp==3.12.15
