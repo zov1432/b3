@@ -282,7 +282,7 @@ const FeedPage = () => {
     <>
       {/* Logo fijo SIEMPRE VISIBLE - Desktop Mode */}
       <div 
-        className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-8 h-8 rounded-full bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-lg"
+        className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-10 h-10 rounded-full bg-white/95 backdrop-blur-md border border-gray-200/60 shadow-lg"
         style={{ 
           position: 'fixed',
           top: '16px',
@@ -290,7 +290,7 @@ const FeedPage = () => {
           zIndex: 9999,
         }}
       >
-        <CustomLogo size={20} />
+        <CustomLogo size={24} />
       </div>
       
       <div className="min-h-screen bg-gray-50 pt-6 relative">
