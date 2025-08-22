@@ -1735,26 +1735,25 @@ async def get_polls(
         if not options or not poll_data.get("title"):
             continue
         
-        poll_response = PollResponse(
-            id=poll_data["id"],
-            title=poll_data["title"],
-            author=authors_dict.get(poll_data["author_id"]),
-            description=poll_data.get("description"),
-            options=options,
-            total_votes=poll_data["total_votes"],
-            likes=poll_data["likes"],
-            shares=poll_data["shares"],
-            comments_count=poll_data["comments_count"],
-            music=None,  # TODO: Implement music system
-            user_vote=user_votes_dict.get(poll_data["id"]),
-            user_liked=poll_data["id"] in liked_poll_ids,
-            is_featured=poll_data["is_featured"],
-            tags=poll_data.get("tags", []),
-            category=poll_data.get("category"),
-            created_at=poll_data["created_at"],
-            time_ago=calculate_time_ago(poll_data["created_at"])
-        )
-        result.append(poll_response)
+    return PollResponse(
+        id=poll_data["id"],
+        title=poll_data["title"],
+        author=authors_dict.get(poll_data["author_id"]),
+        description=poll_data.get("description"),
+        options=options,
+        total_votes=poll_data["total_votes"],
+        likes=poll_data["likes"],
+        shares=poll_data["shares"],
+        comments_count=poll_data["comments_count"],
+        music=None,  # TODO: Implement music system
+        user_vote=user_votes_dict.get(poll_data["id"]),
+        user_liked=poll_data["id"] in liked_poll_ids,
+        is_featured=poll_data["is_featured"],
+        tags=poll_data.get("tags", []),
+        category=poll_data.get("category"),
+        created_at=poll_data["created_at"],
+        time_ago=calculate_time_ago(poll_data["created_at"])
+    )
     
     return result
 
