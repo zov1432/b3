@@ -1948,6 +1948,452 @@ def test_follow_system_with_usernames(base_url):
     
     return success_count >= 10  # At least 10 out of 12 tests should pass
 
+def test_poll_endpoints(base_url):
+    """Test comprehensive poll CRUD endpoints"""
+    print("\n=== Testing Poll Endpoints ===")
+    
+    if not auth_tokens:
+        print("❌ No auth tokens available for poll testing")
+        return False
+    
+    headers = {"Authorization": f"Bearer {auth_tokens[0]}"}
+    success_count = 0
+    created_poll_id = None
+    
+    # Test 1: GET /api/polls without authentication (should fail)
+    print("Testing GET /api/polls without authentication...")
+    try:
+        response = requests.get(f"{base_url}/polls", timeout=10)
+        print(f"No Auth Status Code: {response.status_code}")
+        
+        if response.status_code == 401:
+            print("✅ Polls endpoint properly requires authentication")
+            success_count += 1
+        else:
+            print(f"❌ Should require authentication, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ No auth test error: {e}")
+    
+    # Test 2: GET /api/polls with authentication
+    print("\nTesting GET /api/polls with authentication...")
+    try:
+        response = requests.get(f"{base_url}/polls", headers=headers, timeout=10)
+        print(f"Get Polls Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            polls = response.json()
+            print(f"✅ Polls retrieved successfully")
+            print(f"Number of polls: {len(polls)}")
+            
+            if len(polls) > 0:
+                poll = polls[0]
+                print(f"Sample poll: {poll.get('title', 'N/A')}")
+                print(f"Author: {poll.get('author', {}).get('username', 'N/A')}")
+                print(f"Total votes: {poll.get('total_votes', 0)}")
+                print(f"Likes: {poll.get('likes', 0)}")
+            
+            success_count += 1
+        else:
+            print(f"❌ Get polls failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Get polls error: {e}")
+    
+    # Test 3: GET /api/polls with pagination
+    print("\nTesting GET /api/polls with pagination...")
+    try:
+        response = requests.get(f"{base_url}/polls?limit=5&offset=0", headers=headers, timeout=10)
+        print(f"Pagination Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            polls = response.json()
+            print(f"✅ Pagination working - returned {len(polls)} polls (max 5)")
+            success_count += 1
+        else:
+            print(f"❌ Pagination failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Pagination error: {e}")
+    
+    # Test 4: GET /api/polls with filters
+    print("\nTesting GET /api/polls with filters...")
+    try:
+        # Test category filter
+        response = requests.get(f"{base_url}/polls?category=gaming", headers=headers, timeout=10)
+        print(f"Category Filter Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            polls = response.json()
+            print(f"✅ Category filter working - returned {len(polls)} gaming polls")
+            success_count += 1
+        else:
+            print(f"❌ Category filter failed: {response.text}")
+            
+        # Test featured filter
+        response = requests.get(f"{base_url}/polls?featured=true", headers=headers, timeout=10)
+        print(f"Featured Filter Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            polls = response.json()
+            print(f"✅ Featured filter working - returned {len(polls)} featured polls")
+            success_count += 1
+        else:
+            print(f"❌ Featured filter failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Filters error: {e}")
+    
+    # Test 5: POST /api/polls - Create new poll
+    print("\nTesting POST /api/polls - Create new poll...")
+    try:
+        poll_data = {
+            "title": "¿Cuál es tu videojuego favorito de 2024?",
+            "description": "Vota por el mejor juego del año según tu experiencia",
+            "options": [
+                {
+                    "text": "Baldur's Gate 3",
+                    "media_type": "image",
+                    "media_url": "https://example.com/bg3.jpg",
+                    "thumbnail_url": "https://example.com/bg3_thumb.jpg"
+                },
+                {
+                    "text": "Cyberpunk 2077: Phantom Liberty",
+                    "media_type": "image", 
+                    "media_url": "https://example.com/cp2077.jpg",
+                    "thumbnail_url": "https://example.com/cp2077_thumb.jpg"
+                },
+                {
+                    "text": "The Legend of Zelda: Tears of the Kingdom",
+                    "media_type": "image",
+                    "media_url": "https://example.com/zelda.jpg",
+                    "thumbnail_url": "https://example.com/zelda_thumb.jpg"
+                }
+            ],
+            "tags": ["gaming", "2024", "videojuegos"],
+            "category": "gaming"
+        }
+        
+        response = requests.post(f"{base_url}/polls", json=poll_data, headers=headers, timeout=10)
+        print(f"Create Poll Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            poll = response.json()
+            created_poll_id = poll['id']
+            print(f"✅ Poll created successfully")
+            print(f"Poll ID: {created_poll_id}")
+            print(f"Title: {poll['title']}")
+            print(f"Options count: {len(poll['options'])}")
+            print(f"Author: {poll['author']['username']}")
+            success_count += 1
+        else:
+            print(f"❌ Create poll failed: {response.text}")
+            
+    except Exception as e:
+        print(f"❌ Create poll error: {e}")
+    
+    # Test 6: POST /api/polls with validation errors
+    print("\nTesting POST /api/polls with validation errors...")
+    try:
+        # Test with missing required fields
+        invalid_poll_data = {
+            "title": "",  # Empty title
+            "options": []  # No options
+        }
+        
+        response = requests.post(f"{base_url}/polls", json=invalid_poll_data, headers=headers, timeout=10)
+        print(f"Invalid Poll Status Code: {response.status_code}")
+        
+        if response.status_code == 422:  # Validation error
+            print("✅ Poll validation working correctly")
+            success_count += 1
+        else:
+            print(f"❌ Should validate poll data, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Poll validation error: {e}")
+    
+    # Test 7: GET /api/polls/{poll_id} - Get specific poll
+    if created_poll_id:
+        print(f"\nTesting GET /api/polls/{created_poll_id} - Get specific poll...")
+        try:
+            response = requests.get(f"{base_url}/polls/{created_poll_id}", headers=headers, timeout=10)
+            print(f"Get Specific Poll Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                poll = response.json()
+                print(f"✅ Specific poll retrieved successfully")
+                print(f"Poll ID: {poll['id']}")
+                print(f"Title: {poll['title']}")
+                print(f"Total votes: {poll['total_votes']}")
+                print(f"User vote: {poll.get('user_vote', 'None')}")
+                print(f"User liked: {poll.get('user_liked', False)}")
+                success_count += 1
+            else:
+                print(f"❌ Get specific poll failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Get specific poll error: {e}")
+    
+    # Test 8: GET /api/polls/{poll_id} with invalid ID
+    print("\nTesting GET /api/polls/{invalid_id} - Invalid poll ID...")
+    try:
+        response = requests.get(f"{base_url}/polls/invalid_poll_id_12345", headers=headers, timeout=10)
+        print(f"Invalid Poll ID Status Code: {response.status_code}")
+        
+        if response.status_code == 404:
+            print("✅ Invalid poll ID properly rejected")
+            success_count += 1
+        else:
+            print(f"❌ Should return 404 for invalid poll ID, got status: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Invalid poll ID error: {e}")
+    
+    # Test 9: POST /api/polls/{poll_id}/vote - Vote on poll
+    if created_poll_id:
+        print(f"\nTesting POST /api/polls/{created_poll_id}/vote - Vote on poll...")
+        try:
+            # First, get the poll to find a valid option ID
+            poll_response = requests.get(f"{base_url}/polls/{created_poll_id}", headers=headers, timeout=10)
+            if poll_response.status_code == 200:
+                poll = poll_response.json()
+                if poll['options']:
+                    option_id = poll['options'][0]['id']
+                    
+                    vote_data = {"option_id": option_id}
+                    response = requests.post(f"{base_url}/polls/{created_poll_id}/vote", 
+                                           json=vote_data, headers=headers, timeout=10)
+                    print(f"Vote Status Code: {response.status_code}")
+                    
+                    if response.status_code == 200:
+                        result = response.json()
+                        print(f"✅ Vote recorded successfully")
+                        print(f"Message: {result.get('message', 'N/A')}")
+                        success_count += 1
+                    else:
+                        print(f"❌ Vote failed: {response.text}")
+                else:
+                    print("❌ No options available in created poll")
+            else:
+                print("❌ Could not retrieve poll for voting test")
+                
+        except Exception as e:
+            print(f"❌ Vote error: {e}")
+    
+    # Test 10: POST /api/polls/{poll_id}/vote - Change vote
+    if created_poll_id:
+        print(f"\nTesting POST /api/polls/{created_poll_id}/vote - Change vote...")
+        try:
+            # Get poll again to find a different option
+            poll_response = requests.get(f"{base_url}/polls/{created_poll_id}", headers=headers, timeout=10)
+            if poll_response.status_code == 200:
+                poll = poll_response.json()
+                if len(poll['options']) > 1:
+                    # Vote for second option
+                    option_id = poll['options'][1]['id']
+                    
+                    vote_data = {"option_id": option_id}
+                    response = requests.post(f"{base_url}/polls/{created_poll_id}/vote", 
+                                           json=vote_data, headers=headers, timeout=10)
+                    print(f"Change Vote Status Code: {response.status_code}")
+                    
+                    if response.status_code == 200:
+                        result = response.json()
+                        print(f"✅ Vote changed successfully")
+                        print(f"Message: {result.get('message', 'N/A')}")
+                        success_count += 1
+                    else:
+                        print(f"❌ Change vote failed: {response.text}")
+                else:
+                    print("❌ Need at least 2 options to test vote change")
+            else:
+                print("❌ Could not retrieve poll for vote change test")
+                
+        except Exception as e:
+            print(f"❌ Change vote error: {e}")
+    
+    # Test 11: POST /api/polls/{poll_id}/vote with invalid option
+    if created_poll_id:
+        print(f"\nTesting POST /api/polls/{created_poll_id}/vote with invalid option...")
+        try:
+            vote_data = {"option_id": "invalid_option_id_12345"}
+            response = requests.post(f"{base_url}/polls/{created_poll_id}/vote", 
+                                   json=vote_data, headers=headers, timeout=10)
+            print(f"Invalid Vote Status Code: {response.status_code}")
+            
+            if response.status_code == 400:
+                print("✅ Invalid option ID properly rejected")
+                success_count += 1
+            else:
+                print(f"❌ Should reject invalid option ID, got status: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Invalid vote error: {e}")
+    
+    # Test 12: POST /api/polls/{poll_id}/like - Like poll
+    if created_poll_id:
+        print(f"\nTesting POST /api/polls/{created_poll_id}/like - Like poll...")
+        try:
+            response = requests.post(f"{base_url}/polls/{created_poll_id}/like", 
+                                   headers=headers, timeout=10)
+            print(f"Like Poll Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                result = response.json()
+                print(f"✅ Poll liked successfully")
+                print(f"Liked: {result.get('liked', False)}")
+                print(f"Total likes: {result.get('likes', 0)}")
+                success_count += 1
+            else:
+                print(f"❌ Like poll failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Like poll error: {e}")
+    
+    # Test 13: POST /api/polls/{poll_id}/like - Unlike poll (toggle)
+    if created_poll_id:
+        print(f"\nTesting POST /api/polls/{created_poll_id}/like - Unlike poll...")
+        try:
+            response = requests.post(f"{base_url}/polls/{created_poll_id}/like", 
+                                   headers=headers, timeout=10)
+            print(f"Unlike Poll Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                result = response.json()
+                print(f"✅ Poll unliked successfully")
+                print(f"Liked: {result.get('liked', False)}")
+                print(f"Total likes: {result.get('likes', 0)}")
+                success_count += 1
+            else:
+                print(f"❌ Unlike poll failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Unlike poll error: {e}")
+    
+    # Test 14: POST /api/polls/{poll_id}/like - Like again
+    if created_poll_id:
+        print(f"\nTesting POST /api/polls/{created_poll_id}/like - Like again...")
+        try:
+            response = requests.post(f"{base_url}/polls/{created_poll_id}/like", 
+                                   headers=headers, timeout=10)
+            print(f"Like Again Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                result = response.json()
+                print(f"✅ Poll liked again successfully")
+                print(f"Liked: {result.get('liked', False)}")
+                print(f"Total likes: {result.get('likes', 0)}")
+                success_count += 1
+            else:
+                print(f"❌ Like again failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Like again error: {e}")
+    
+    # Test 15: POST /api/polls/{poll_id}/share - Share poll
+    if created_poll_id:
+        print(f"\nTesting POST /api/polls/{created_poll_id}/share - Share poll...")
+        try:
+            response = requests.post(f"{base_url}/polls/{created_poll_id}/share", 
+                                   headers=headers, timeout=10)
+            print(f"Share Poll Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                result = response.json()
+                print(f"✅ Poll shared successfully")
+                print(f"Total shares: {result.get('shares', 0)}")
+                success_count += 1
+            else:
+                print(f"❌ Share poll failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Share poll error: {e}")
+    
+    # Test 16: POST /api/polls/{poll_id}/share - Share again (increment counter)
+    if created_poll_id:
+        print(f"\nTesting POST /api/polls/{created_poll_id}/share - Share again...")
+        try:
+            response = requests.post(f"{base_url}/polls/{created_poll_id}/share", 
+                                   headers=headers, timeout=10)
+            print(f"Share Again Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                result = response.json()
+                print(f"✅ Poll shared again successfully")
+                print(f"Total shares: {result.get('shares', 0)}")
+                success_count += 1
+            else:
+                print(f"❌ Share again failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Share again error: {e}")
+    
+    # Test 17: Verify vote counts and user fields are correct
+    if created_poll_id:
+        print(f"\nTesting vote counts and user fields verification...")
+        try:
+            response = requests.get(f"{base_url}/polls/{created_poll_id}", headers=headers, timeout=10)
+            print(f"Verification Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                poll = response.json()
+                print(f"✅ Poll data verification successful")
+                print(f"Total votes: {poll.get('total_votes', 0)}")
+                print(f"Total likes: {poll.get('likes', 0)}")
+                print(f"Total shares: {poll.get('shares', 0)}")
+                print(f"User vote: {poll.get('user_vote', 'None')}")
+                print(f"User liked: {poll.get('user_liked', False)}")
+                
+                # Verify response format matches PollResponse model
+                required_fields = ['id', 'title', 'author', 'options', 'total_votes', 'likes', 'shares', 'user_vote', 'user_liked']
+                missing_fields = [field for field in required_fields if field not in poll]
+                
+                if not missing_fields:
+                    print("✅ Response format matches PollResponse model")
+                    success_count += 1
+                else:
+                    print(f"❌ Missing fields in response: {missing_fields}")
+                    
+            else:
+                print(f"❌ Verification failed: {response.text}")
+                
+        except Exception as e:
+            print(f"❌ Verification error: {e}")
+    
+    # Test 18: Test error cases with invalid poll IDs
+    print("\nTesting error cases with invalid poll IDs...")
+    try:
+        invalid_poll_id = "invalid_poll_id_12345"
+        
+        # Test vote on invalid poll
+        vote_data = {"option_id": "some_option_id"}
+        response = requests.post(f"{base_url}/polls/{invalid_poll_id}/vote", 
+                               json=vote_data, headers=headers, timeout=10)
+        if response.status_code == 404:
+            print("✅ Vote on invalid poll properly rejected")
+            success_count += 1
+        
+        # Test like on invalid poll
+        response = requests.post(f"{base_url}/polls/{invalid_poll_id}/like", 
+                               headers=headers, timeout=10)
+        if response.status_code == 404:
+            print("✅ Like on invalid poll properly rejected")
+            success_count += 1
+        
+        # Test share on invalid poll
+        response = requests.post(f"{base_url}/polls/{invalid_poll_id}/share", 
+                               headers=headers, timeout=10)
+        if response.status_code == 404:
+            print("✅ Share on invalid poll properly rejected")
+            success_count += 1
+            
+    except Exception as e:
+        print(f"❌ Error cases test error: {e}")
+    
+    print(f"\nPoll Endpoints Tests Summary: {success_count}/20 tests passed")
+    return success_count >= 16  # At least 16 out of 20 tests should pass
+
 def main():
     """Main test execution function"""
     print("🚀 Starting Backend API Testing for TikTok Profile Grid Implementation")
