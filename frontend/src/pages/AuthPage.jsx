@@ -166,14 +166,10 @@ const LoginPage = ({ onSwitchToRegister }) => {
       <div className="w-full max-w-md relative z-10">
         {/* Header with Enhanced Animation */}
         <div className="text-center mb-8 animate-fadeInUp">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full mb-6 relative group transition-all duration-500 hover:scale-110 hover:rotate-12 shadow-lg">
-            <Sparkles className="w-10 h-10 text-white animate-pulse" />
-            <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
-          </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-3 animate-slideInLeft">
             ¡Bienvenido de vuelta!
           </h1>
-          <p className="text-gray-600 text-lg animate-slideInRight">Inicia sesión para continuar tu experiencia adictiva</p>
+          <p className="text-gray-600 text-lg animate-slideInRight">Inicia sesión para acceder a tu cuenta</p>
         </div>
 
         {/* Enhanced Login Form */}
