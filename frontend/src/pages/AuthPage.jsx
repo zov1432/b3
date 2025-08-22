@@ -516,11 +516,8 @@ const RegisterPage = ({ onSwitchToLogin }) => {
       <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4 shadow-lg">
-            <Sparkles className="w-8 h-8 text-white" />
-          </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">¡Únete ahora!</h1>
-          <p className="text-gray-600">Crea tu cuenta y comienza tu aventura adictiva</p>
+          <p className="text-gray-600">Crea tu cuenta y descubre nuevas experiencias</p>
         </div>
 
         {/* Register Form */}
