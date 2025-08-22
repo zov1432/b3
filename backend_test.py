@@ -3847,8 +3847,21 @@ def main():
     print("=" * 80)
     print(f"📈 OVERALL RESULTS: {passed_tests}/{total_tests} tests passed ({(passed_tests/total_tests)*100:.1f}%)")
     
-    # Special focus on image upload results
-    print("\n🖼️  IMAGE UPLOAD SYSTEM RESULTS (MAIN FOCUS):")
+    # Special focus on profile system corrections results
+    print("\n👤 PROFILE SYSTEM CORRECTIONS RESULTS (MAIN FOCUS):")
+    profile_tests = ['profile_system_corrections']
+    profile_passed = sum(1 for test in profile_tests if test_results.get(test, False))
+    print(f"Profile System Tests: {profile_passed}/{len(profile_tests)} passed")
+    
+    if profile_passed == len(profile_tests):
+        print("🎉 Profile system corrections are working correctly!")
+        print("✅ Publications showing, statistics calculating, avatar upload working")
+    else:
+        print("⚠️  Profile system corrections have issues that need attention.")
+        print("❌ Some profile functionality may not be working properly")
+    
+    # Also show image upload results
+    print("\n🖼️  IMAGE UPLOAD SYSTEM RESULTS:")
     image_tests = ['static_file_serving', 'image_upload_static_files', 'poll_creation_with_images']
     image_passed = sum(1 for test in image_tests if test_results.get(test, False))
     print(f"Image Upload Tests: {image_passed}/{len(image_tests)} passed")
