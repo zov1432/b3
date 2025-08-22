@@ -229,48 +229,6 @@ export const AddictionProvider = ({ children }) => {
       return { success: false, error: error.message };
     }
   };
-        
-        // Show reward popup
-        if (result.reward) {
-          setRewardData(result.reward);
-          setShowRewardPopup(true);
-          
-          // Auto hide after 3 seconds
-          setTimeout(() => setShowRewardPopup(false), 3000);
-        }
-        
-        // Show level up
-        if (result.level_up) {
-          setShowLevelUp(true);
-          setTimeout(() => setShowLevelUp(false), 4000);
-        }
-        
-        // Show achievements
-        if (result.achievements_unlocked && result.achievements_unlocked.length > 0) {
-          setAchievementData(result.achievements_unlocked[0]); // Show first achievement
-          setShowAchievement(true);
-          setTimeout(() => setShowAchievement(false), 5000);
-          
-          // Reload achievements
-          loadUserAchievements();
-        }
-        
-        // Track dopamine hits
-        if (result.dopamine_triggers > 0) {
-          setDopamineHits(prev => prev + result.dopamine_triggers);
-        }
-        
-        // Rare jackpot chance (0.1%)
-        if (Math.random() < 0.001) {
-          triggerJackpot();
-        }
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('Failed to track action:', error);
-    }
-  };
 
   const triggerJackpot = async () => {
     if (!isAuthenticated || !user) return;
