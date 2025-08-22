@@ -1706,6 +1706,12 @@ async def get_polls(
         for option in poll_data.get("options", []):
             option_user = option_users_dict.get(option["user_id"])
             if option_user:
+                # Unify media format - ensure we use absolute URLs
+                media_url = option.get("media_url")
+                if media_url and not media_url.startswith('http'):
+                    # Convert relative URL to absolute
+                    media_url = f"{os.environ.get('BACKEND_URL', 'http://localhost:8001')}{media_url}"
+                
                 option_dict = {
                     "id": option["id"],
                     "text": option["text"],
@@ -1719,9 +1725,9 @@ async def get_polls(
                     },
                     "media": {
                         "type": option.get("media_type"),
-                        "url": option.get("media_url"),
-                        "thumbnail": option.get("thumbnail_url")
-                    } if option.get("media_url") else None
+                        "url": media_url,
+                        "thumbnail": option.get("thumbnail_url") or media_url
+                    } if media_url else None
                 }
                 options.append(option_dict)
         
