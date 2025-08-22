@@ -188,13 +188,28 @@ const FeedPage = () => {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-white">Cargando tu feed...</h2>
-          <p className="text-white/70 mt-2">Obteniendo las votaciones más recientes</p>
+      <>
+        {/* Logo fijo SIEMPRE VISIBLE - Loading */}
+        <div 
+          className="fixed top-4 right-4 z-[9999] flex items-center justify-center w-12 h-12 rounded-full bg-white/95 backdrop-blur-md border-2 border-white/60 shadow-2xl"
+          style={{ 
+            position: 'fixed',
+            top: '16px',
+            right: '16px',
+            zIndex: 9999,
+          }}
+        >
+          <CustomLogo size={28} />
         </div>
-      </div>
+        
+        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-white">Cargando tu feed...</h2>
+            <p className="text-white/70 mt-2">Obteniendo las votaciones más recientes</p>
+          </div>
+        </div>
+      </>
     );
   }
 
