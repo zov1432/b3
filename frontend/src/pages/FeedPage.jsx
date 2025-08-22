@@ -218,17 +218,24 @@ const FeedPage = () => {
   // Renderizado móvil (TikTok mode)
   if (isMobile || isTikTokMode) {
     return (
-      <TikTokScrollView
-        polls={polls}
-        onVote={handleVote}
-        onLike={handleLike}
-        onShare={handleShare}
-        onComment={handleComment}
-        onSave={handleSave}
-        onExitTikTok={handleExitTikTok}
-        onCreatePoll={handleCreatePoll}
-        showLogo={true}
-      />
+      <div className="relative">
+        {/* Logo fijo en la parte superior de la pantalla */}
+        <div className="fixed top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+          <CustomLogo size={24} className="text-white" />
+        </div>
+        
+        <TikTokScrollView
+          polls={polls}
+          onVote={handleVote}
+          onLike={handleLike}
+          onShare={handleShare}
+          onComment={handleComment}
+          onSave={handleSave}
+          onExitTikTok={handleExitTikTok}
+          onCreatePoll={handleCreatePoll}
+          showLogo={false}
+        />
+      </div>
     );
   }
 
