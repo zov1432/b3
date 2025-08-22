@@ -250,6 +250,18 @@ backend:
           comment: "🎉 SISTEMA DE ARCHIVOS ESTÁTICOS COMPLETAMENTE FUNCIONAL (2025-08-22): Testing exhaustivo del nuevo sistema de static file serving completado exitosamente con resultados perfectos (8/10+ tests passed). CONTEXTO: Se solicitó testing específico de la nueva solución implementada para el problema de imágenes móviles. VERIFICACIÓN COMPLETA: 1) ✅ NUEVO ENDPOINT GET /api/uploads/{category}/{filename}: Funciona perfectamente - archivos PNG/JPG servidos correctamente con content-type apropiado (image/png, image/jpeg), validación de categorías funcional (avatars, poll_options, poll_backgrounds, general), manejo de errores 404 para archivos inexistentes y categorías inválidas, 2) ✅ GENERACIÓN DE URLs ACTUALIZADA: Todas las URLs ahora usan formato /api/uploads/ correctamente, función get_upload_path genera URLs con prefijo /api/uploads/ en lugar de /uploads/, 3) ✅ UPLOAD SYSTEM INTEGRATION: Sistema de subida funciona perfectamente con nuevas URLs, archivos JPG (825 bytes, 100x100) y PNG (287 bytes, 100x100) subidos exitosamente, metadata y dimensiones capturadas correctamente, 4) ✅ EXTERNAL URL ACCESS: URLs externas funcionan perfectamente - https://mediapolls.preview.emergentagent.com/api/uploads/general/filename.png devuelve 200 OK con content-type: image/png correcto, confirmando que el routing de Kubernetes funciona correctamente para rutas /api/, 5) ✅ ERROR HANDLING: Categorías inválidas retornan 404 apropiadamente, archivos no existentes retornan 404 correctamente, validación de formatos funcional. RESULTADO CRÍTICO: La solución implementada por el main agent está funcionando perfectamente. Las imágenes subidas desde dispositivos móviles ahora se mostrarán correctamente en toda la aplicación porque el sistema usa rutas /api/uploads/ que se enrutan correctamente al backend a través del proxy/ingress de Kubernetes."
   - task: "Sistema de Seguimiento de Usuarios (Follow/Unfollow)"
     implemented: true
+  - task: "Corrección Sistema de Perfil de Usuario"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ProfilePage.jsx, /app/frontend/src/contexts/AuthContext.js, /app/frontend/src/components/AvatarUpload.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "✅ PROBLEMAS DE PERFIL SOLUCIONADOS COMPLETAMENTE (2025-08-22): Corregidos los tres problemas reportados por el usuario en el sistema de perfil. PROBLEMAS IDENTIFICADOS Y RESUELTOS: 1) ✅ PUBLICACIONES NO SE MOSTRABAN: El filtrado de polls del usuario estaba hardcodeado con 'Noviago', corregido para filtrar por el ID real del usuario autenticado (poll.authorUser?.id === authUser?.id), 2) ✅ ESTADÍSTICAS INCORRECTAS: Las estadísticas estaban hardcodeadas, implementado cálculo dinámico basado en polls reales del usuario (totalVotesReceived, totalLikesReceived, pollsCreated = userPolls.length), 3) ✅ UPLOAD DE AVATAR NO FUNCIONABA: Faltaba función updateUser en AuthContext, agregada función completa que llama al endpoint PUT /api/auth/profile para actualizar avatar_url. MEJORAS IMPLEMENTADAS: Reorganizado código para calcular estadísticas dinámicamente antes de mostrar displayUser, mejorado filtrado de polls para perfiles propios vs otros usuarios, agregado manejo completo de actualización de perfil via API. RESULTADO: Los usuarios ahora ven sus publicaciones reales en el perfil, estadísticas correctas calculadas dinámicamente, y pueden subir fotos de perfil exitosamente."
+
     working: true
     file: "/app/backend/server.py, /app/backend/models.py"
     stuck_count: 0
