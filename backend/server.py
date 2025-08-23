@@ -39,32 +39,33 @@ from auth import (
     verify_token, ACCESS_TOKEN_EXPIRE_MINUTES
 )
 
+# Import configuration
+from config import config
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+# MongoDB connection using config
+mongo_url = config.MONGO_URL
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[config.DB_NAME]
 
 # Create the main app without a prefix
-app = FastAPI(title="Social Network", description="Social network with messaging")
+app = FastAPI(
+    title="Social Media Network", 
+    description="Advanced social network with polls, messaging and media",
+    version=config.API_VERSION
+)
 
-# File upload configuration
-UPLOAD_DIR = Path("/app/backend/uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
-
-# Create subdirectories for different upload types
-(UPLOAD_DIR / "avatars").mkdir(exist_ok=True)
-(UPLOAD_DIR / "poll_options").mkdir(exist_ok=True)
-(UPLOAD_DIR / "poll_backgrounds").mkdir(exist_ok=True)
-(UPLOAD_DIR / "general").mkdir(exist_ok=True)
+# File upload configuration using config
+config.create_upload_directories()
+UPLOAD_DIR = config.UPLOAD_BASE_DIR
 
 # Mount static files to serve uploads
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
-# Create a router with the /api prefix
-api_router = APIRouter(prefix="/api")
+# Create a router with configurable prefix
+api_router = APIRouter(prefix=config.API_PREFIX)
 
 # Security
 security = HTTPBearer()
