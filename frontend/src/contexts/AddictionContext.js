@@ -244,7 +244,7 @@ export const AddictionProvider = ({ children }) => {
       // Refresh user data
       refreshUserData();
       
-      setTimeout(() => setShowJackpot(false), 8000);
+      setTimeout(() => setShowJackpot(false), AppConfig.AUTO_HIDE_TIMEOUT);
     } catch (error) {
       console.error('Failed to trigger jackpot:', error);
     }
