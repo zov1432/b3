@@ -1,3 +1,4 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import AppConfig from '../config/config';
 import { addictionAPI, behaviorTracker } from '../services/addictionApi';
 import { useAuth } from './AuthContext';
