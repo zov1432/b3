@@ -10,7 +10,7 @@ import { useFollow } from '../contexts/FollowContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useShare } from '../hooks/useShare';
 import { cn } from '../lib/utils';
-import { ChevronUp, ChevronDown, Heart, MessageCircle, Send, Bookmark, MoreHorizontal, CheckCircle, User, Home, Search, Plus, Mail, Trophy, Share2 } from 'lucide-react';
+import AppConfig from '../config/config';
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { useToast } from '../hooks/use-toast';
