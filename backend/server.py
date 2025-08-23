@@ -1392,27 +1392,20 @@ async def get_comment(
 
 # =============  FILE UPLOAD UTILITIES =============
 
-# Supported file types
-SUPPORTED_IMAGE_FORMATS = {"jpg", "jpeg", "png", "gif", "webp"}
-SUPPORTED_VIDEO_FORMATS = {"mp4", "webm", "mov"}
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
-MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB for images
-MAX_VIDEO_SIZE = 50 * 1024 * 1024  # 50MB for videos
-
 def get_file_format(filename: str) -> str:
     """Extract file format from filename"""
     return Path(filename).suffix.lower().lstrip('.')
 
 def is_image_file(file_format: str) -> bool:
     """Check if file format is a supported image"""
-    return file_format.lower() in SUPPORTED_IMAGE_FORMATS
+    return file_format.lower() in config.SUPPORTED_IMAGE_FORMATS
 
 def is_video_file(file_format: str) -> bool:
     """Check if file format is a supported video"""
-    return file_format.lower() in SUPPORTED_VIDEO_FORMATS
+    return file_format.lower() in config.SUPPORTED_VIDEO_FORMATS
 
 def validate_file(file: UploadFile, upload_type: UploadType) -> tuple[bool, str, FileType]:
-    """Validate uploaded file"""
+    """Validate uploaded file using configuration"""
     if not file.filename:
         return False, "No filename provided", FileType.IMAGE
     
@@ -1420,14 +1413,14 @@ def validate_file(file: UploadFile, upload_type: UploadType) -> tuple[bool, str,
     
     # Check if supported format
     if not (is_image_file(file_format) or is_video_file(file_format)):
-        supported_formats = list(SUPPORTED_IMAGE_FORMATS) + list(SUPPORTED_VIDEO_FORMATS)
+        supported_formats = config.SUPPORTED_IMAGE_FORMATS + config.SUPPORTED_VIDEO_FORMATS
         return False, f"Unsupported file format. Supported: {', '.join(supported_formats)}", FileType.IMAGE
     
     # Determine file type
     file_type = FileType.IMAGE if is_image_file(file_format) else FileType.VIDEO
     
-    # Check file size
-    max_size = MAX_IMAGE_SIZE if file_type == FileType.IMAGE else MAX_VIDEO_SIZE
+    # Check file size using config
+    max_size = config.IMAGE_MAX_SIZE if file_type == FileType.IMAGE else config.VIDEO_MAX_SIZE
     if hasattr(file, 'size') and file.size > max_size:
         max_mb = max_size // (1024 * 1024)
         return False, f"File too large. Maximum size: {max_mb}MB", file_type
@@ -1435,21 +1428,22 @@ def validate_file(file: UploadFile, upload_type: UploadType) -> tuple[bool, str,
     return True, "", file_type
 
 def get_upload_path(upload_type: UploadType, file_format: str, filename: str) -> tuple[Path, str]:
-    """Get the upload path and public URL for a file"""
+    """Get the upload path and public URL for a file using configuration"""
     # Create unique filename to avoid conflicts
     unique_filename = f"{uuid.uuid4()}.{file_format}"
     
     # Determine subdirectory based on upload type
-    subdir = {
-        UploadType.AVATAR: "avatars",
-        UploadType.POLL_OPTION: "poll_options", 
-        UploadType.POLL_BACKGROUND: "poll_backgrounds",
-        UploadType.GENERAL: "general"
-    }[upload_type]
+    subdir_map = {
+        UploadType.AVATAR: config.UPLOAD_SUBDIRS[0],           # "avatars"
+        UploadType.POLL_OPTION: config.UPLOAD_SUBDIRS[1],      # "poll_options"
+        UploadType.POLL_BACKGROUND: config.UPLOAD_SUBDIRS[2],  # "poll_backgrounds"
+        UploadType.GENERAL: config.UPLOAD_SUBDIRS[3]           # "general"
+    }
+    subdir = subdir_map[upload_type]
     
-    file_path = UPLOAD_DIR / subdir / unique_filename
+    file_path = config.UPLOAD_BASE_DIR / subdir / unique_filename
     # Use API endpoint URL instead of direct static file URL
-    public_url = f"/api/uploads/{subdir}/{unique_filename}"
+    public_url = f"{config.API_PREFIX}/uploads/{subdir}/{unique_filename}"
     
     return file_path, public_url
 
