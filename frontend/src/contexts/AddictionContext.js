@@ -54,12 +54,12 @@ export const AddictionProvider = ({ children }) => {
     }
   }, [isAuthenticated, user]);
 
-  // Auto-refresh data every 60 seconds when authenticated
+  // Auto-refresh data using configurable interval when authenticated
   useEffect(() => {
     if (isAuthenticated && userProfile) {
       const dataInterval = setInterval(() => {
         refreshUserData();
-      }, 60000);
+      }, AppConfig.REFRESH_INTERVAL);
 
       return () => clearInterval(dataInterval);
     }
