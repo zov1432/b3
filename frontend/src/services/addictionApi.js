@@ -126,10 +126,10 @@ export class BehaviorTracker {
     // Track page visibility
     this.setupVisibilityTracking();
     
-    // Send behavior data every 30 seconds
+    // Send behavior data using configurable interval
     this.behaviorInterval = setInterval(() => {
       this.sendBehaviorData();
-    }, 30000);
+    }, AppConfig.BEHAVIOR_TRACKING_INTERVAL);
   }
 
   setupVisibilityTracking() {
