@@ -5,16 +5,17 @@ from passlib.context import CryptContext
 from passlib.hash import bcrypt
 import os
 from dotenv import load_dotenv
+from config import config
 
 load_dotenv()
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# JWT settings from environment variables
-SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key-for-development-only")
-ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+# JWT settings from configuration
+SECRET_KEY = config.SECRET_KEY
+ALGORITHM = config.JWT_ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = config.ACCESS_TOKEN_EXPIRE_MINUTES
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
