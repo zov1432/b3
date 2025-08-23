@@ -110,7 +110,7 @@ class AddictionAPI {
 
 export const addictionAPI = new AddictionAPI();
 
-// Behavior Tracking Service
+import AppConfig from '../config/config';
 export class BehaviorTracker {
   constructor() {
     this.sessionStart = Date.now();
