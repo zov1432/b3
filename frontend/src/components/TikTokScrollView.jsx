@@ -120,7 +120,7 @@ const TikTokPollCard = ({ poll, onVote, onLike, onShare, onComment, onSave, onCr
           title: "Error",
           description: result.error || "Error al seguir al usuario",
           variant: "destructive",
-          duration: 3000,
+          duration: AppConfig.TOAST_DURATION,
         });
       }
     } catch (error) {
